@@ -1,5 +1,5 @@
 # Per-category borrow limits (updated by admin)
-GLOBAL|3
+GLOBAL|5
 |1
 cademic|3
 0|0
