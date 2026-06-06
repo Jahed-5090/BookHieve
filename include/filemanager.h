@@ -27,8 +27,12 @@ public:
         ifstream f(BOOKS_FILE);
         if (!f) return;
         string line;
-        while (getline(f, line))
-            if (!line.empty()) bst.insert(Book::deserialize(line));
+        while (getline(f, line)) {
+            if (line.empty()) continue;
+            Book b = Book::deserialize(line);
+            if (b.isValid())          // skip corrupted / garbage entries
+                bst.insert(b);
+        }
     }
 
     // ─── Users ────────────────────────────────────────────────────────────

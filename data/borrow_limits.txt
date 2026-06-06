@@ -1,8 +1,11 @@
-# Per-category borrow limits
-# Format: genre|max_books
-GLOBAL|5
-Academic|2
-Textbook|2
-Fiction|3
-Reference|1
-Magazine|2
+# Per-category borrow limits (updated by admin)
+GLOBAL|3
+|1
+cademic|3
+0|0
+academic|2
+magazine|2
+textbook|2
+fiction|3
+reference|1
+lobal|6

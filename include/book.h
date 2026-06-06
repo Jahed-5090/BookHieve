@@ -41,22 +41,39 @@ struct Book
                to_string(totalCopies) + "|" + to_string(availableCopies);
     }
 
+    // Returns true only if all fields look sane
+    bool isValid() const
+    {
+        if (id <= 0 || id > 99999)          return false;
+        if (title.empty())                   return false;
+        if (author.empty())                  return false;
+        if (year < 0 || year > 2100)         return false;
+        if (totalCopies <= 0 || totalCopies > 9999)      return false;
+        if (availableCopies < 0 || availableCopies > totalCopies) return false;
+        return true;
+    }
+
     static Book deserialize(const string &line)
     {
         Book b;
-        stringstream ss(line);
-        string tok;
-        getline(ss, tok, '|');
-        b.id = stoi(tok);
-        getline(ss, b.title, '|');
-        getline(ss, b.author, '|');
-        getline(ss, b.genre, '|');
-        getline(ss, tok, '|');
-        b.year = stoi(tok);
-        getline(ss, tok, '|');
-        b.totalCopies = stoi(tok);
-        getline(ss, tok, '|');
-        b.availableCopies = stoi(tok);
+        try {
+            stringstream ss(line);
+            string tok;
+            getline(ss, tok, '|');
+            b.id = stoi(tok);
+            getline(ss, b.title, '|');
+            getline(ss, b.author, '|');
+            getline(ss, b.genre, '|');
+            getline(ss, tok, '|');
+            b.year = stoi(tok);
+            getline(ss, tok, '|');
+            b.totalCopies = stoi(tok);
+            getline(ss, tok, '|');
+            b.availableCopies = stoi(tok);
+        } catch (...) {
+            // Return a zero-id Book so the caller can discard it
+            return Book();
+        }
         return b;
     }
 };

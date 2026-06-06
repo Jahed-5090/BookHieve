@@ -9,7 +9,6 @@ static void addBook(Library &lib)
     printTitle("Add Book");
     string title, author, genre;
     int year, copies;
-    cin.ignore();
     cout << "  Title   : ";
     getline(cin, title);
     cout << "  Author  : ";
@@ -364,9 +363,11 @@ void runAdminPanel(Library &lib)
             break;
         case 12:
             condMgr.showWornBooks();
+            pauseScreen();
             break; // E6
         case 13:
             limitMgr.adminUpdateLimit();
+            pauseScreen();
             break; // E7
         case 0:
             lib.currentUser = nullptr;

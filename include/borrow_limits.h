@@ -161,7 +161,6 @@ public:
 
         std::cout << "\n  Enter genre to update (or GLOBAL): ";
         std::string genre;
-        std::cin.ignore();
         std::getline(std::cin, genre);
 
         std::cout << "  New limit: ";
