@@ -107,7 +107,7 @@ public:
         auto git = counts.find("__total__");
         if (git != counts.end()) total = git->second;
         if (total >= globalLimit) {
-            std::cout << "\n  ❌ Global borrow limit reached (" << globalLimit
+            std::cout << "\n   Global borrow limit reached (" << globalLimit
                       << " books). Please return a book first.\n";
             return false;
         }
@@ -120,7 +120,7 @@ public:
             auto cit = counts.find(key);
             int catCount = (cit != counts.end()) ? cit->second : 0;
             if (catCount >= catLimit) {
-                std::cout << "\n  ❌ Category limit for \"" << genre
+                std::cout << "\n    Category limit for \"" << genre
                           << "\" reached (" << catCount << "/" << catLimit
                           << "). Return a book in this category first.\n";
                 return false;
@@ -184,7 +184,7 @@ public:
             f << g << "|" << l << "\n";
         }
 
-        std::cout << "  ✅ Limit updated.\n";
+        std::cout << "    Limit updated.\n";
     }
 };
 

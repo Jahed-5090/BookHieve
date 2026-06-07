@@ -61,13 +61,13 @@ static bool signIn(Library &lib)
     User *u = lib.members.findByEmail(email);
     if (!u || u->password != pass)
     {
-        cout << RED << "\n  ✗ Invalid email or password.\n"
+        cout << RED << "\n  Invalid email or password.\n"
              << RESET;
         pauseScreen();
         return false;
     }
     lib.currentUser = u;
-    cout << GREEN << "\n  ✓ Welcome, " << u->name << "!\n"
+    cout << GREEN << "\n  Welcome, " << u->name << "!\n"
          << RESET;
 
     // E2 & E5: Show Notifications & Overdue Warnings upon Login
@@ -90,7 +90,7 @@ static bool signUp(Library &lib)
 
     if (lib.members.findByEmail(email))
     {
-        cout << RED << "\n  ✗ Email already registered.\n"
+        cout << RED << "\n  Email already registered.\n"
              << RESET;
         pauseScreen();
         return false;
@@ -102,7 +102,7 @@ static bool signUp(Library &lib)
     confirm = readPassword();
     if (pass != confirm)
     {
-        cout << RED << "\n  ✗ Passwords do not match.\n"
+        cout << RED << "\n  Passwords do not match.\n"
              << RESET;
         pauseScreen();
         return false;
@@ -111,7 +111,7 @@ static bool signUp(Library &lib)
     int id = lib.members.nextId();
     lib.members.insertEnd(User(id, name, email, pass, false));
     lib.save();
-    cout << GREEN << "\n  ✓ Account created! You can now sign in.\n"
+    cout << GREEN << "\n  Account created! You can now sign in.\n"
          << RESET;
     pauseScreen();
     return true;

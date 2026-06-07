@@ -86,13 +86,13 @@ public:
         std::cout << "\n  ╔══ ⚠️  DUE DATE ALERT ═══════════════════════════════╗\n";
         for (auto& w : warnings) {
             if (w.daysLeft < 0) {
-                std::cout << "  ║  🔴 OVERDUE by " << -w.daysLeft << " day"
+                std::cout << "  ║  OVERDUE by " << -w.daysLeft << " day"
                           << (-w.daysLeft > 1 ? "s" : "") << ": \""
                           << w.bookTitle << "\" (due " << w.dueDate << ")\n";
             } else if (w.daysLeft == 0) {
                 std::cout << "  ║  🟠 DUE TODAY: \"" << w.bookTitle << "\"\n";
             } else {
-                std::cout << "  ║  🟡 Due in " << w.daysLeft << " day"
+                std::cout << "  ║  Due in " << w.daysLeft << " day"
                           << (w.daysLeft > 1 ? "s" : "") << ": \""
                           << w.bookTitle << "\" (due " << w.dueDate << ")\n";
             }
@@ -128,7 +128,7 @@ public:
         std::cout << "\n  ╔══ Admin: Overdue & Soon-Due Report ══════════════════╗\n";
 
         if (!alreadyOverdue.empty()) {
-            std::cout << "  ║  🔴 Currently Overdue:\n";
+            std::cout << "  ║  Currently Overdue:\n";
             for (auto& e : alreadyOverdue)
                 std::cout << "  ║    User: " << e.userId
                           << "  Book: " << e.bookTitle
@@ -136,7 +136,7 @@ public:
         }
 
         if (!soonOverdue.empty()) {
-            std::cout << "  ║\n  ║  🟡 Due Within " << days << " Day"
+            std::cout << "  ║\n  ║  Due Within " << days << " Day"
                       << (days > 1 ? "s" : "") << ":\n";
             for (auto& e : soonOverdue)
                 std::cout << "  ║    User: " << e.userId
@@ -146,7 +146,7 @@ public:
         }
 
         if (alreadyOverdue.empty() && soonOverdue.empty())
-            std::cout << "  ║  ✅ No overdue or near-due books right now.\n";
+            std::cout << "  ║  No overdue or near-due books right now.\n";
 
         std::cout << "  ╚═════════════════════════════════════════════════════╝\n";
     }

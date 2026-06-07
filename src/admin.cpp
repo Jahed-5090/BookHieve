@@ -29,7 +29,7 @@ static void addBook(Library &lib)
     condMgr.setCondition(std::to_string(id), cond);
     lib.catalogue.insert(Book(id, title, author, genre, year, copies));
     lib.save();
-    cout << GREEN << "\n  ✓ Book added with ID " << id << "\n"
+    cout << GREEN << "\n  Book added with ID " << id << "\n"
          << RESET;
     pauseScreen();
 }
@@ -65,7 +65,7 @@ static void removeBook(Library &lib)
     }
     lib.catalogue.remove(id);
     lib.save();
-    cout << GREEN << "  ✓ Book removed.\n"
+    cout << GREEN << "  Book removed.\n"
          << RESET;
     pauseScreen();
 }
@@ -176,7 +176,7 @@ static void removeMember(Library &lib)
     }
     lib.members.remove(id);
     lib.save();
-    cout << GREEN << "  ✓ Member removed.\n"
+    cout << GREEN << "  Member removed.\n"
          << RESET;
     pauseScreen();
 }

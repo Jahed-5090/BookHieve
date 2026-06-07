@@ -45,11 +45,11 @@ inline BookCondition strToCondition(const std::string& s) {
 // Visual badge shown in catalog
 inline std::string conditionBadge(BookCondition c) {
     switch (c) {
-        case BookCondition::New:  return "[🟢 New ]";
-        case BookCondition::Good: return "[🔵 Good]";
-        case BookCondition::Fair: return "[🟡 Fair]";
-        case BookCondition::Worn: return "[🔴 Worn]";
-        default:                  return "[❓    ]";
+        case BookCondition::New:  return "[ New ]";
+        case BookCondition::Good: return "[ Good ]";
+        case BookCondition::Fair: return "[ Fair ]";
+        case BookCondition::Worn: return "[ Worn ]";
+        default:                  return "[ ?    ]";
     }
 }
 
@@ -90,7 +90,7 @@ public:
     void setCondition(const std::string& bookId, BookCondition c) {
         condMap[bookId] = c;
         save();
-        std::cout << "  ✅ Condition for book [" << bookId << "] set to: "
+        std::cout << "  Condition for book [" << bookId << "] set to: "
                   << conditionToStr(c) << "\n";
     }
 
@@ -136,12 +136,12 @@ public:
             auto& id = p.first;
             auto& c = p.second;
             if (c == BookCondition::Worn) {
-                std::cout << "  ║  🔴 Book ID: " << id << "\n";
+                std::cout << "  ║      Book ID: " << id << "\n";
                 any = true;
             }
         }
         if (!any)
-            std::cout << "  ║  ✅ No worn books flagged.\n";
+            std::cout << "  ║  No worn books flagged.\n";
         std::cout << "  ╚════════════════════════════════════════════════════╝\n";
     }
 

@@ -168,7 +168,7 @@ public:
         strftime(buf, sizeof(buf), "%Y-%m-%d", lt);
         dueHeap.insert(DueEntry(rec.recordId, uid, bid, string(buf), node->data.title));
         save();
-        cout << GREEN << "  ✓ Borrowed: " << node->data.title
+        cout << GREEN << "  Borrowed: " << node->data.title
              << " (due " << buf << ")\n"
              << RESET;
         return true;
@@ -205,7 +205,7 @@ public:
         }
         else
         {
-            cout << GREEN << "  ✓ Book returned on time. No fine.\n"
+            cout << GREEN << "  Book returned on time. No fine.\n"
                  << RESET;
         }
 
@@ -260,7 +260,7 @@ public:
         if (c == 'y' || c == 'Y')
         {
             // Mark all overdue records as fine cleared (demo: just flag)
-            cout << GREEN << "  ✓ Fine of BDT " << fixed << setprecision(2)
+            cout << GREEN << "  Fine of BDT " << fixed << setprecision(2)
                  << fine << " paid. Thank you!\n"
                  << RESET;
             return true;

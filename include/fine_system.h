@@ -78,7 +78,7 @@ public:
 
         std::cout << "\n  ╔══ Fine Breakdown ═══════════════════════════════╗\n";
         if (daysOverdue <= 0) {
-            std::cout << "  ║  ✅ Returned on time — no fine.                 ║\n";
+            std::cout << "  ║  Returned on time — no fine.                 ║\n";
         } else {
             int t1 = std::min(daysOverdue, cfg.tier1Days);
             int t2 = std::max(0, daysOverdue - cfg.tier1Days);
@@ -115,7 +115,7 @@ public:
         bool canUseGrace = useGrace && !graceUsedThisYear(userId);
         if (canUseGrace) {
             markGraceUsed(userId);
-            std::cout << "\n  ✅ Grace period applied — fine waived for this offence.\n"
+            std::cout << "\n  Grace period applied — fine waived for this offence.\n"
                       << "  (Grace period quota exhausted until next year.)\n";
             return 0.0;
         }

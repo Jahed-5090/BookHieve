@@ -184,13 +184,13 @@ static void userPayFine(Library &lib)
             double charged = fineSys.applyPayment(std::to_string(lib.currentUser->id), daysOD, useGrace);
             if (charged > 0)
             {
-                cout << GREEN << "  ✓ Fine paid. Amount deducted: BDT " << charged << "!\n"
+                cout << GREEN << "  Fine paid. Amount deducted: BDT " << charged << "!\n"
                      << RESET;
                 // In production, mark paid in DB
             }
             else
             {
-                cout << GREEN << "  ✓ Fine completely waived via grace period!\n"
+                cout << GREEN << "  Fine completely waived via grace period!\n"
                      << RESET;
             }
         }
