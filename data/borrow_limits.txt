@@ -1,7 +1,8 @@
 # Per-category borrow limits (updated by admin)
 GLOBAL|3
-academic|2
-magazine|2
-textbook|2
-fiction|3
 reference|1
+fiction|3
+textbook|2
+magazine|2
+0|4
+academic|2

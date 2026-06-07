@@ -22,6 +22,35 @@ static void addBook(Library &lib)
     cin >> copies;
     cin.ignore();
 
+    // Check if book already exists (case-insensitive match on title and author)
+    for (auto &b : lib.catalogue.getAll())
+    {
+        string t1 = b.title;
+        string t2 = title;
+        for (char &c : t1) c = tolower(c);
+        for (char &c : t2) c = tolower(c);
+        
+        string a1 = b.author;
+        string a2 = author;
+        for (char &c : a1) c = tolower(c);
+        for (char &c : a2) c = tolower(c);
+
+        if (t1 == t2 && a1 == a2)
+        {
+            BSTNode *node = lib.catalogue.search(b.id);
+            if (node)
+            {
+                node->data.totalCopies += copies;
+                node->data.availableCopies += copies;
+                lib.save();
+                cout << GREEN << "\n  Book already exists. Added " << copies 
+                     << " copies to existing book (ID: " << b.id << ").\n" << RESET;
+                pauseScreen();
+                return;
+            }
+        }
+    }
+
     int id = lib.nextBookId();
 
     // E6: Prompt and set condition when a new book is added

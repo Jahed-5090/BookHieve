@@ -5,6 +5,7 @@
 // ║  "Borrow Book" checks both global and category limits before        ║
 // ║  allowing a borrow.                                                 ║
 // ╚══════════════════════════════════════════════════════════════════════╝
+#include "globals.h"
 #ifndef BORROW_LIMITS_H
 #define BORROW_LIMITS_H
 
@@ -44,7 +45,8 @@ private:
         if (!f.is_open()) {
             // Write sane defaults on first run
             writeLimits();
-            return;
+            f.clear();
+            f.open(limitsFile);
         }
         std::string line;
         while (std::getline(f, line)) {
@@ -163,6 +165,11 @@ public:
         std::string genre;
         std::getline(std::cin, genre);
 
+        if (normalise(genre).empty()) {
+            std::cout << YELLOW << "  Warning: Genre cannot be blank or spaces.\n" << RESET;
+            return;
+        }
+
         std::cout << "  New limit: ";
         int lim;
         std::cin >> lim;
@@ -172,7 +179,6 @@ public:
         else
             limits[normalise(genre)] = lim;
 
-        writeLimits();
         // Rewrite with current values
         portableMkdir("data");
         std::ofstream f(limitsFile);

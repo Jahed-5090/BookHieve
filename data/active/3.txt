@@ -1,3 +1,3 @@
 2|Clean Code|2026-06-21|Programming
 7|Sapiens|2026-06-21|History
-12|KI OBOSTHA|2026-06-21|NAI
+12|KI OBOSTHA|2026-07-05|NAI
