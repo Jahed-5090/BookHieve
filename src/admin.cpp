@@ -123,17 +123,18 @@ static void viewCatalogue(Library &lib)
 {
     printTitle("View Catalogue");
     cout << "  Sort by:\n"
-         << "  1. Title (Bubble Sort)\n"
-         << "  2. Year  (Insertion Sort)\n"
-         << "  3. Author (Selection Sort)\n"
-         << "  4. Title (Quick Sort)\n"
-         << "  5. Availability (Merge Sort)\n"
-         << "  6. Default (BST inorder by ID)\n"
+         << "  1. Title\n"
+         << "  2. Year\n"
+         << "  3. Author\n"
+         << "  4. Title (alternate)\n"
+         << "  5. Availability\n"
+         << "  6. Genre\n"
+         << "  7. Default (by ID)\n"
          << "  Choice: ";
     int ch;
     cin >> ch;
     cin.ignore();
-    if (ch == 6 || ch < 1 || ch > 6)
+    if (ch == 7 || ch < 1 || ch > 7)
     {
         lib.catalogue.printAll();
     }
@@ -191,14 +192,14 @@ static void viewBorrowHistory(Library &lib)
 
 static void viewFineHistory(Library &lib)
 {
-    printTitle("Fine / Jorimana History");
+    printTitle("Fine History");
 
     // E3 & E5: Show system overviews for the admin
     fineSys.showAdminFineSummary();
     OverdueWarningSystem::showAdminWarnings(2);
 
-    cout << "  1. View top fines (Max-Heap)\n"
-         << "  2. View all fine cumulative stats (BIT)\n"
+    cout << "  1. View top fines\n"
+         << "  2. View all fine cumulative stats /*(BIT)*/\n"
          << "  3. Heap-sort all fines\n"
          << "  Choice: ";
     int ch;
@@ -245,7 +246,8 @@ static void genreGraphMenu(Library &lib)
     cout << "\n  1. BFS from a genre\n"
          << "  2. DFS from a genre\n"
          << "  3. Topological Sort\n"
-         << "  4. Back\n"
+         << "  4. Add New Genre\n"
+         << "  5. Back\n"
          << "  Choice: ";
     int ch;
     cin >> ch;
@@ -267,6 +269,32 @@ static void genreGraphMenu(Library &lib)
     else if (ch == 3)
     {
         lib.genreGraph.topoSort();
+    }
+    else if (ch == 4)
+    {
+        cout << "  New genre name: ";
+        string genre;
+        getline(cin, genre);
+        if (genre.empty())
+        {
+            cout << RED << "  Genre name cannot be empty.\n" << RESET;
+        }
+        else
+        {
+            cout << "  Parent genre (leave empty for standalone): ";
+            string parent;
+            getline(cin, parent);
+            if (parent.empty())
+            {
+                lib.genreGraph.addNode(genre);
+                cout << GREEN << "  Genre \"" << genre << "\" added as standalone.\n" << RESET;
+            }
+            else
+            {
+                lib.genreGraph.addEdge(parent, genre);
+                cout << GREEN << "  Genre \"" << genre << "\" added under \"" << parent << "\".\n" << RESET;
+            }
+        }
     }
     pauseScreen();
 }

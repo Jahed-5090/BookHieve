@@ -90,6 +90,15 @@ inline void sortByAvailability(vector<Book>& v) {
     if (!v.empty()) mergeSortByAvailability(v, 0, (int)v.size()-1);
 }
 
+// ─── Genre Sort (Bubble Sort) ────────────────────────────────────────────────
+inline void bubbleSortByGenre(vector<Book>& v) {
+    int n = v.size();
+    for (int i = 0; i < n-1; i++)
+        for (int j = 0; j < n-i-1; j++)
+            if (v[j].genre > v[j+1].genre)
+                swap(v[j], v[j+1]);
+}
+
 // ─── Print sorted catalogue ───────────────────────────────────────────────────
 inline void printSortedCatalogue(vector<Book>& books, int choice) {
     if (books.empty()) { cout << RED << "  Catalogue is empty.\n" << RESET; return; }
@@ -99,6 +108,7 @@ inline void printSortedCatalogue(vector<Book>& books, int choice) {
         case 3: selectionSortByAuthor(books);  cout << YELLOW << "  Sorted by Author (Selection Sort)\n" << RESET; break;
         case 4: quickSortByTitle(books);       cout << YELLOW << "  Sorted by Title (Quick Sort)\n" << RESET; break;
         case 5: sortByAvailability(books);     cout << YELLOW << "  Sorted by Availability (Merge Sort)\n" << RESET; break;
+        case 6: bubbleSortByGenre(books);       cout << YELLOW << "  Sorted by Genre\n" << RESET; break;
         default: break;
     }
     cout << BOLD << left
