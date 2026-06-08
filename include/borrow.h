@@ -22,7 +22,24 @@ struct BorrowRecord {
         : recordId(rid), userId(uid), bookId(bid), bookTitle(bt),
           borrowDate(bd), returned(false), fine(0), finePaid(0) {}
 
+    static double calculateFineForDays(int daysOverdue) {
+        if (daysOverdue <= 0) return 0.0;
+        int tier1 = min(daysOverdue, 3);
+        int tier2 = max(0, daysOverdue - 3);
+        return tier1 * 5.0 + tier2 * 15.0;
+    }
+
+    double dueFine() const {
+        if (returned) {
+            return max(0.0, fine - finePaid);
+        }
+        int overdue = daysBetween(borrowDate, currentDate()) - BORROW_DAYS;
+        if (overdue <= 0) return 0.0;
+        return max(0.0, calculateFineForDays(overdue) - finePaid);
+    }
+
     void print() const {
+        double due = dueFine();
         cout << CYAN << left
              << setw(6)  << recordId
              << setw(8)  << userId
@@ -30,8 +47,8 @@ struct BorrowRecord {
              << setw(28) << bookTitle.substr(0,27)
              << setw(12) << borrowDate
              << setw(12) << (returned ? returnDate : "—")
-             << (fine > 0 ? RED : GREEN)
-             << fixed << setprecision(2) << fine
+             << (due > 0 ? RED : GREEN)
+             << fixed << setprecision(2) << due
              << RESET << "\n";
     }
 
@@ -217,7 +234,7 @@ public:
              << setw(28) << "Title"
              << setw(12) << "Borrowed"
              << setw(12) << "Returned"
-             << "Fine\n" << RESET;
+             << "Due Fine\n" << RESET;
         printLine();
         for (auto& r : records) r.print();
     }
@@ -231,7 +248,7 @@ public:
              << setw(28) << "Title"
              << setw(12) << "Borrowed"
              << setw(12) << "Returned"
-             << "Fine\n" << RESET;
+             << "Due Fine\n" << RESET;
         printLine();
         for (auto& r : records)
             if (r.userId == uid) { r.print(); found = true; }
@@ -241,14 +258,14 @@ public:
     double totalFineForUser(int uid) const {
         double total = 0;
         for (auto& r : records)
-            if (r.userId == uid && !r.returned) total += r.fine;
+            if (r.userId == uid) total += r.dueFine();
         return total;
     }
 
     double unpaidFine(int uid) const {
         double total = 0;
         for (auto& r : records)
-            if (r.userId == uid && !r.returned) total += r.fine;
+            if (r.userId == uid) total += r.dueFine();
         return total;
     }
 

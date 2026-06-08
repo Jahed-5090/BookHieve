@@ -172,15 +172,8 @@ static void userPayFine(Library &lib)
         cin.ignore();
         if (c == 'y' || c == 'Y')
         {
-            // E3: Fine grace period logic
-            cout << "  Apply grace period (1 free/year)? (y/n): ";
-            char g;
-            cin >> g;
-            cin.ignore();
-            bool useGrace = (g == 'y' || g == 'Y');
-
             double previousFine = fine;
-            double charged = lib.payFine(lib.currentUser->id, useGrace);
+            double charged = lib.payFine(lib.currentUser->id);
             double remainingFine = lib.currentFine(lib.currentUser->id);
             if (charged > 0)
             {
@@ -189,7 +182,7 @@ static void userPayFine(Library &lib)
             }
             else if (remainingFine < previousFine)
             {
-                cout << GREEN << "  Fine reduced by grace or cleared!\n"
+                cout << GREEN << "  Fine cleared!\n"
                      << RESET;
             }
             else

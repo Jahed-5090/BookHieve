@@ -140,12 +140,12 @@ public:
             waitQueue.enqueue(req);
             return false;
         }
-        // Check unpaid fines
+        // Block borrowing only if outstanding unpaid fines exceed BDT 100
         double unpaid = currentFine(uid);
-        if (unpaid > 0)
+        if (unpaid > 100.0)
         {
-            cout << RED << "  You have unpaid fines of BDT " << fixed << setprecision(2)
-                 << unpaid << ". Please pay before borrowing.\n"
+            cout << RED << "  Your unpaid fines are BDT " << fixed << setprecision(2)
+                 << unpaid << ". You must pay them before borrowing more books.\n"
                  << RESET;
             return false;
         }
@@ -191,22 +191,20 @@ public:
         rec->returned = true;
 
         int overdue = daysBetween(rec->borrowDate, today) - BORROW_DAYS;
-        double fine = 0;
         if (overdue > 0)
         {
             double grossFine = fineSys.calculateFine(overdue);
             double owed = max(0.0, grossFine - rec->finePaid);
-            fine = owed;
-            rec->fine = fine;
-            if (fine > 0)
+            rec->fine = grossFine;
+            if (owed > 0)
             {
                 cout << YELLOW << "  Book returned " << overdue << " day(s) late."
-                     << " Fine: BDT " << fixed << setprecision(2) << fine << "\n"
+                     << " Fine: BDT " << fixed << setprecision(2) << owed << "\n"
                      << RESET;
-                fineBIT.update(uid, fine);
+                fineBIT.update(uid, owed);
                 User *u = members.findById(uid);
                 if (u)
-                    fineHeap.insert(FineEntry(uid, u->name, fine));
+                    fineHeap.insert(FineEntry(uid, u->name, owed));
             }
             else
             {
@@ -238,67 +236,47 @@ public:
     // ─── Pay fine ────────────────────────────────────────────────────────
     double currentFine(int uid)
     {
-        string today = currentDate();
         double total = 0;
         for (auto &r : history.getAll())
         {
-            if (r.userId == uid && !r.returned)
-            {
-                int overdue = daysBetween(r.borrowDate, today) - BORROW_DAYS;
-                if (overdue > 0)
-                {
-                    double grossFine = fineSys.calculateFine(overdue);
-                    total += max(0.0, grossFine - r.finePaid);
-                }
-            }
+            if (r.userId != uid)
+                continue;
+            total += r.dueFine();
         }
         return total;
     }
 
-    double payFine(int uid, bool useGrace)
+    double payFine(int uid)
     {
-        string userIdStr = to_string(uid);
-        string today = currentDate();
         double totalCharged = 0;
-        bool graceUsed = false;
+        bool changed = false;
 
         for (auto &r : history.getAll())
         {
-            if (r.userId != uid || r.returned)
+            if (r.userId != uid)
                 continue;
 
-            int overdue = daysBetween(r.borrowDate, today) - BORROW_DAYS;
-            if (overdue <= 0)
-                continue;
-
-            double grossFine = fineSys.calculateFine(overdue);
-            double owed = max(0.0, grossFine - r.finePaid);
+            double owed = r.dueFine();
             if (owed <= 0)
                 continue;
 
-            if (useGrace && !graceUsed)
-            {
-                double charged = fineSys.applyPayment(userIdStr, overdue, true);
-                if (charged == 0)
-                {
-                    r.finePaid += owed;
-                    graceUsed = true;
-                }
-                else
-                {
-                    r.finePaid += owed;
-                    totalCharged += owed;
-                }
-            }
+            double grossFine = 0.0;
+            if (r.returned)
+                grossFine = fineSys.calculateFine(daysBetween(r.borrowDate, r.returnDate) - BORROW_DAYS);
             else
-            {
-                fineSys.applyPayment(userIdStr, overdue, false);
-                r.finePaid += owed;
-                totalCharged += owed;
-            }
+                grossFine = fineSys.calculateFine(daysBetween(r.borrowDate, currentDate()) - BORROW_DAYS);
+
+            r.finePaid += owed;
+            if (r.finePaid >= grossFine)
+                r.fine = 0.0;
+            else
+                r.fine = grossFine;
+
+            totalCharged += owed;
+            changed = true;
         }
 
-        if (totalCharged > 0 || graceUsed)
+        if (changed)
         {
             rebuildHeaps();
             save();
