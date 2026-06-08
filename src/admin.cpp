@@ -9,8 +9,9 @@ static void addBook(Library &lib)
     printTitle("Add Book");
     string title, author, genre;
     int year, copies;
-    cout << "  Title   : ";
+    cout << "  Title (0 to cancel): ";
     getline(cin, title);
+    if (title == "0") return;
     cout << "  Author  : ";
     getline(cin, author);
     cout << "  Genre   : ";
@@ -67,8 +68,9 @@ static void removeBook(Library &lib)
 {
     printTitle("Remove Book");
     int id;
-    cout << "  Enter Book ID to remove: ";
+    cout << "  Enter Book ID to remove (0 to cancel): ";
     cin >> id;
+    if (id == 0) return;
     cin.ignore();
     BSTNode *node = lib.catalogue.search(id);
     if (!node)
@@ -105,10 +107,12 @@ static void searchBook(Library &lib)
     cout << "  1. Search by Title\n"
          << "  2. Search by Author\n"
          << "  3. Search by ID\n"
+         << "  0. Go Back\n"
          << "  Choice: ";
     int ch;
     cin >> ch;
     cin.ignore();
+    if (ch == 0) return;
     if (ch == 1)
     {
         cout << "  Keyword: ";
@@ -159,10 +163,12 @@ static void viewCatalogue(Library &lib)
          << "  5. Availability\n"
          << "  6. Genre\n"
          << "  7. Default (by ID)\n"
+         << "  0. Go Back\n"
          << "  Choice: ";
     int ch;
     cin >> ch;
     cin.ignore();
+    if (ch == 0) return;
     if (ch == 7 || ch < 1 || ch > 7)
     {
         lib.catalogue.printAll();
@@ -186,8 +192,9 @@ static void removeMember(Library &lib)
 {
     printTitle("Remove Member");
     int id;
-    cout << "  User ID to remove: ";
+    cout << "  User ID to remove (0 to cancel): ";
     cin >> id;
+    if (id == 0) return;
     cin.ignore();
     User *u = lib.members.findById(id);
     if (!u)
@@ -230,10 +237,12 @@ static void viewFineHistory(Library &lib)
     cout << "  1. View top fines\n"
          << "  2. View all fine cumulative stats /*(BIT)*/\n"
          << "  3. Heap-sort all fines\n"
+         << "  0. Go Back\n"
          << "  Choice: ";
     int ch;
     cin >> ch;
     cin.ignore();
+    if (ch == 0) return;
     if (ch == 1)
     {
         lib.fineHeap.printTopFines(10);
@@ -301,9 +310,10 @@ static void genreGraphMenu(Library &lib)
     }
     else if (ch == 4)
     {
-        cout << "  New genre name: ";
+        cout << "  New genre name (0 to cancel): ";
         string genre;
         getline(cin, genre);
+        if (genre == "0") return;
         if (genre.empty())
         {
             cout << RED << "  Genre name cannot be empty.\n" << RESET;

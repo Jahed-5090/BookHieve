@@ -15,10 +15,11 @@ static void userViewCatalogue(Library &lib)
 static void userSearchBook(Library &lib)
 {
     printTitle("Search Book");
-    cout << "  1. By Title\n  2. By Author\n  3. By ID\n  Choice: ";
+    cout << "  1. By Title\n  2. By Author\n  3. By ID\n  0. Go Back\n  Choice: ";
     int ch;
     cin >> ch;
     cin.ignore();
+    if (ch == 0) return;
     if (ch == 1)
     {
         cout << "  Keyword: ";
@@ -66,9 +67,10 @@ static void userBorrowBook(Library &lib)
     limitMgr.showUsage(std::to_string(uid));
     cout << "  Active borrows: " << active << " / " << MAX_BORROW << "\n\n";
 
-    cout << "  Enter Book ID to borrow: ";
+    cout << "  Enter Book ID to borrow (0 to cancel): ";
     int bid;
     cin >> bid;
+    if (bid == 0) return;
     cin.ignore();
 
     BSTNode *node = lib.catalogue.search(bid);
@@ -137,9 +139,10 @@ static void userViewProfile(Library &lib)
 static void userReturnBook(Library &lib)
 {
     printTitle("Return a Book");
-    cout << "  Enter Book ID to return: ";
+    cout << "  Enter Book ID to return (0 to cancel): ";
     int bid;
     cin >> bid;
+    if (bid == 0) return;
     cin.ignore();
 
     BSTNode *node = lib.catalogue.search(bid);

@@ -53,8 +53,9 @@ static bool signIn(Library &lib)
 {
     printTitle("Sign In");
     string email, pass;
-    cout << "  Email    : ";
+    cout << "  Email (0 to cancel): ";
     getline(cin, email);
+    if (email == "0") return false;
     cout << "  Password : ";
     pass = readPassword();
 
@@ -94,8 +95,9 @@ static bool signUp(Library &lib)
 {
     printTitle("Sign Up");
     string name, email, pass, confirm;
-    cout << "  Full Name : ";
+    cout << "  Full Name (0 to cancel): ";
     getline(cin, name);
+    if (name == "0") return false;
     cout << "  Email     : ";
     getline(cin, email);
 
