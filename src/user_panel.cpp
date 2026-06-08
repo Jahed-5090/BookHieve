@@ -179,18 +179,22 @@ static void userPayFine(Library &lib)
             cin.ignore();
             bool useGrace = (g == 'y' || g == 'Y');
 
-            // Assuming an approx daysOD since days isn't tracked in this block naturally
-            int daysOD = static_cast<int>(fine / 10);
-            double charged = fineSys.applyPayment(std::to_string(lib.currentUser->id), daysOD, useGrace);
+            double previousFine = fine;
+            double charged = lib.payFine(lib.currentUser->id, useGrace);
+            double remainingFine = lib.currentFine(lib.currentUser->id);
             if (charged > 0)
             {
                 cout << GREEN << "  Fine paid. Amount deducted: BDT " << charged << "!\n"
                      << RESET;
-                // In production, mark paid in DB
+            }
+            else if (remainingFine < previousFine)
+            {
+                cout << GREEN << "  Fine reduced by grace or cleared!\n"
+                     << RESET;
             }
             else
             {
-                cout << GREEN << "  Fine completely waived via grace period!\n"
+                cout << YELLOW << "  No payment was made.\n"
                      << RESET;
             }
         }

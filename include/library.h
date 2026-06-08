@@ -79,8 +79,9 @@ public:
                 int overdue = daysBetween(r.borrowDate, today) - BORROW_DAYS;
                 if (overdue > 0)
                 {
-                    double fine = overdue * FINE_PER_DAY;
-                    userFines[r.userId] += fine;
+                    double grossFine = fineSys.calculateFine(overdue);
+                    double owed = max(0.0, grossFine - r.finePaid);
+                    userFines[r.userId] += owed;
                     // Due date
                     // (simple: borrowDate + BORROW_DAYS, skip for brevity)
                 }
@@ -140,7 +141,7 @@ public:
             return false;
         }
         // Check unpaid fines
-        double unpaid = history.unpaidFine(uid);
+        double unpaid = currentFine(uid);
         if (unpaid > 0)
         {
             cout << RED << "  You have unpaid fines of BDT " << fixed << setprecision(2)
@@ -193,15 +194,25 @@ public:
         double fine = 0;
         if (overdue > 0)
         {
-            fine = overdue * FINE_PER_DAY;
+            double grossFine = fineSys.calculateFine(overdue);
+            double owed = max(0.0, grossFine - rec->finePaid);
+            fine = owed;
             rec->fine = fine;
-            cout << YELLOW << "  Book returned " << overdue << " day(s) late."
-                 << " Fine: BDT " << fixed << setprecision(2) << fine << "\n"
-                 << RESET;
-            fineBIT.update(uid, fine);
-            User *u = members.findById(uid);
-            if (u)
-                fineHeap.insert(FineEntry(uid, u->name, fine));
+            if (fine > 0)
+            {
+                cout << YELLOW << "  Book returned " << overdue << " day(s) late."
+                     << " Fine: BDT " << fixed << setprecision(2) << fine << "\n"
+                     << RESET;
+                fineBIT.update(uid, fine);
+                User *u = members.findById(uid);
+                if (u)
+                    fineHeap.insert(FineEntry(uid, u->name, fine));
+            }
+            else
+            {
+                cout << GREEN << "  Book returned late, but overdue fine already cleared.\n"
+                     << RESET;
+            }
         }
         else
         {
@@ -235,36 +246,64 @@ public:
             {
                 int overdue = daysBetween(r.borrowDate, today) - BORROW_DAYS;
                 if (overdue > 0)
-                    total += overdue * FINE_PER_DAY;
+                {
+                    double grossFine = fineSys.calculateFine(overdue);
+                    total += max(0.0, grossFine - r.finePaid);
+                }
             }
         }
         return total;
     }
 
-    bool payFine(int uid)
+    double payFine(int uid, bool useGrace)
     {
-        double fine = currentFine(uid);
-        if (fine <= 0)
+        string userIdStr = to_string(uid);
+        string today = currentDate();
+        double totalCharged = 0;
+        bool graceUsed = false;
+
+        for (auto &r : history.getAll())
         {
-            cout << GREEN << "  No outstanding fine.\n"
-                 << RESET;
-            return true;
+            if (r.userId != uid || r.returned)
+                continue;
+
+            int overdue = daysBetween(r.borrowDate, today) - BORROW_DAYS;
+            if (overdue <= 0)
+                continue;
+
+            double grossFine = fineSys.calculateFine(overdue);
+            double owed = max(0.0, grossFine - r.finePaid);
+            if (owed <= 0)
+                continue;
+
+            if (useGrace && !graceUsed)
+            {
+                double charged = fineSys.applyPayment(userIdStr, overdue, true);
+                if (charged == 0)
+                {
+                    r.finePaid += owed;
+                    graceUsed = true;
+                }
+                else
+                {
+                    r.finePaid += owed;
+                    totalCharged += owed;
+                }
+            }
+            else
+            {
+                fineSys.applyPayment(userIdStr, overdue, false);
+                r.finePaid += owed;
+                totalCharged += owed;
+            }
         }
-        cout << YELLOW << "  Outstanding fine: BDT "
-             << fixed << setprecision(2) << fine << "\n"
-             << RESET;
-        cout << "  Pay now? (y/n): ";
-        char c;
-        cin >> c;
-        cin.ignore();
-        if (c == 'y' || c == 'Y')
+
+        if (totalCharged > 0 || graceUsed)
         {
-            // Mark all overdue records as fine cleared (demo: just flag)
-            cout << GREEN << "  Fine of BDT " << fixed << setprecision(2)
-                 << fine << " paid. Thank you!\n"
-                 << RESET;
-            return true;
+            rebuildHeaps();
+            save();
         }
-        return false;
+
+        return totalCharged;
     }
 };

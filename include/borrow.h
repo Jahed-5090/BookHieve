@@ -14,12 +14,13 @@ struct BorrowRecord {
     string returnDate;   // empty if not returned
     bool   returned;
     double fine;
+    double finePaid;
 
-    BorrowRecord() : recordId(0), userId(0), bookId(0), returned(false), fine(0) {}
+    BorrowRecord() : recordId(0), userId(0), bookId(0), returned(false), fine(0), finePaid(0) {}
 
     BorrowRecord(int rid, int uid, int bid, const string& bt, const string& bd)
         : recordId(rid), userId(uid), bookId(bid), bookTitle(bt),
-          borrowDate(bd), returned(false), fine(0) {}
+          borrowDate(bd), returned(false), fine(0), finePaid(0) {}
 
     void print() const {
         cout << CYAN << left
@@ -38,7 +39,8 @@ struct BorrowRecord {
         return to_string(recordId) + "|" + to_string(userId) + "|" +
                to_string(bookId)   + "|" + bookTitle + "|" +
                borrowDate + "|" + returnDate + "|" +
-               (returned ? "1" : "0") + "|" + to_string(fine);
+               (returned ? "1" : "0") + "|" + to_string(fine) +
+               "|" + to_string(finePaid);
     }
 
     static BorrowRecord deserialize(const string& line) {
@@ -53,6 +55,10 @@ struct BorrowRecord {
         getline(ss, r.returnDate, '|');
         getline(ss, tok, '|'); r.returned   = tok == "1";
         getline(ss, tok, '|'); r.fine       = stod(tok);
+        if (getline(ss, tok, '|'))
+            r.finePaid = stod(tok);
+        else
+            r.finePaid = 0;
         return r;
     }
 };
