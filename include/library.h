@@ -48,6 +48,18 @@ public:
         FileManager::loadBooks(catalogue);
         FileManager::loadUsers(members);
         FileManager::loadBorrows(history);
+        // Sync user.borrowCount with active (non-returned) borrows
+        // Prevents mismatch between stored user counters and history
+        for (auto &u_copy : members.getAll()) {
+            User *u = members.findById(u_copy.id);
+            if (u) u->borrowCount = 0;
+        }
+        for (auto &r : history.getAll()) {
+            if (!r.returned) {
+                User *u = members.findById(r.userId);
+                if (u) u->borrowCount++;
+            }
+        }
         FileManager::seedDefaults(catalogue, members);
 
         rebuildHeaps();
