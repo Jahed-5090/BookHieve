@@ -5,7 +5,7 @@
 #include "sorting.h"
 
 #include "heap.h"
-#include "bit.h"
+
 #include "filemanager.h"
 #include "recommendation.h"  // Enhancement 1
 #include "waitlist.h"        // Enhancement 2
@@ -35,14 +35,14 @@ public:
 
     FineMaxHeap fineHeap;  
     DueMinHeap dueHeap;    
-    BIT fineBIT;           
+
 
     User *currentUser = nullptr;
 
     // 2. REMOVE the manager variables from inside the class. 
     // They are now global externs, so the Library doesn't need to "own" them.
 
-    Library() : fineBIT(10000)
+    Library()
     {
         FileManager::ensureDataDir();
         FileManager::loadBooks(catalogue);
@@ -94,7 +94,6 @@ public:
             if (u)
             {
                 fineHeap.insert(FineEntry(uid, u->name, fine));
-                fineBIT.update(uid, fine);
             }
         }
     }
@@ -201,7 +200,6 @@ public:
                 cout << YELLOW << "  Book returned " << overdue << " day(s) late."
                      << " Fine: BDT " << fixed << setprecision(2) << owed << "\n"
                      << RESET;
-                fineBIT.update(uid, owed);
                 User *u = members.findById(uid);
                 if (u)
                     fineHeap.insert(FineEntry(uid, u->name, owed));

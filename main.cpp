@@ -10,7 +10,7 @@
 // ║   • Singly Linked List    – UserList membership                          ║
 // ║   • BST                   – BookBST catalogue search/insert/delete       ║
 // ║   • Sorting (5 kinds)     – Bubble/Insertion/Selection/Quick/Merge       ║
-// ║   • Binary Indexed Tree   – Fine prefix-sum queries                      ║
+
 // ║   • Heap sort/min/max     – FineMaxHeap, DueMinHeap                      ║
 // ║   • BFS / DFS / Topo Sort – GenreGraph recommendations                   ║
 // ╚══════════════════════════════════════════════════════════════════════════╝
@@ -33,6 +33,6 @@ int main() {
 }
 
 
-//BIT shorate hobe
+
 //allignment thik korte hobe
 //

@@ -241,21 +241,16 @@ static void viewFineHistory(Library &lib)
     OverdueWarningSystem::showAdminWarnings(2);
 
     cout << "  1. View top fines\n"
-         << "  2. View all fine cumulative stats /*(BIT)*/\n"
-         << "  3. Heap-sort all fines\n"
+         << "  2. Heap-sort all fines\n"
          << "  0. Go Back\n"
          << "  Choice: ";
-    int ch = getIntInput();
+    int ch = getMenuChoice(0, 2);
     if (ch == 0) return;
     if (ch == 1)
     {
         lib.fineHeap.printTopFines(10);
     }
     else if (ch == 2)
-    {
-        lib.fineBIT.printStats(lib.members.nextId() - 1);
-    }
-    else if (ch == 3)
     {
         // Collect all user fines
         vector<FineEntry> all;
@@ -277,10 +272,7 @@ static void viewFineHistory(Library &lib)
             lib.fineHeap.heapSort(all);
         }
     }
-    else
-    {
-        cout << RED << "  Invalid choice.\n" << RESET;
-    }
+
     pauseScreen();
 }
 
