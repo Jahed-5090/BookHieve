@@ -125,3 +125,27 @@ inline void printTitle(const string &title) {
   cout << BOLD << YELLOW << "  " << title << "\n" << RESET;
   printLine('-');
 }
+
+// Helper for robust integer input to prevent cin crashes
+inline int getIntInput() {
+    int val;
+    while (!(cin >> val)) {
+        cin.clear();
+        cin.ignore(numeric_limits<streamsize>::max(), '\n');
+        cout << RED << "  Invalid input. Please enter a valid number: " << RESET;
+    }
+    cin.ignore(numeric_limits<streamsize>::max(), '\n');
+    return val;
+}
+
+// Helper for menus to enforce valid range without returning to main loop
+inline int getMenuChoice(int minVal, int maxVal) {
+    while (true) {
+        int val = getIntInput();
+        if (val >= minVal && val <= maxVal) {
+            return val;
+        }
+        cout << RED << "  Invalid choice. Please enter a number between " 
+             << minVal << " and " << maxVal << ": " << RESET;
+    }
+}

@@ -144,9 +144,7 @@ void runHomepage(Library &lib)
              << "  0. Exit\n\n";
         printLine();
         cout << "  Choice: ";
-        int ch;
-        cin >> ch;
-        cin.ignore();
+        int ch = getMenuChoice(0, 2);
 
         if (ch == 0)
         {
@@ -168,10 +166,6 @@ void runHomepage(Library &lib)
         {
             signUp(lib);
         }
-        else
-        {
-            cout << RED << "  Invalid choice.\n"
-                 << RESET;
-        }
+
     }
 }

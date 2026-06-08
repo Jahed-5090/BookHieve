@@ -17,11 +17,9 @@ static void addBook(Library &lib)
     cout << "  Genre   : ";
     getline(cin, genre);
     cout << "  Year    : ";
-    cin >> year;
-    cin.ignore();
+    year = getIntInput();
     cout << "  Copies  : ";
-    cin >> copies;
-    cin.ignore();
+    copies = getIntInput();
 
     // Check if book already exists (case-insensitive match on title and author)
     for (auto &b : lib.catalogue.getAll())
@@ -69,9 +67,8 @@ static void removeBook(Library &lib)
     printTitle("Remove Book");
     int id;
     cout << "  Enter Book ID to remove (0 to cancel): ";
-    cin >> id;
+    id = getIntInput();
     if (id == 0) return;
-    cin.ignore();
     BSTNode *node = lib.catalogue.search(id);
     if (!node)
     {
@@ -107,11 +104,10 @@ static void searchBook(Library &lib)
     cout << "  1. Search by Title\n"
          << "  2. Search by Author\n"
          << "  3. Search by ID\n"
+         << "  4. Search by Genre\n"
          << "  0. Go Back\n"
          << "  Choice: ";
-    int ch;
-    cin >> ch;
-    cin.ignore();
+    int ch = getMenuChoice(0, 4);
     if (ch == 0) return;
     if (ch == 1)
     {
@@ -127,12 +123,10 @@ static void searchBook(Library &lib)
         getline(cin, kw);
         lib.catalogue.searchAuthor(kw);
     }
-    else
+    else if (ch == 3)
     {
         cout << "  Book ID: ";
-        int id;
-        cin >> id;
-        cin.ignore();
+        int id = getIntInput();
         BSTNode *n = lib.catalogue.search(id);
         if (n)
         {
@@ -146,6 +140,17 @@ static void searchBook(Library &lib)
         else
             cout << RED << "  Not found.\n"
                  << RESET;
+    }
+    else if (ch == 4)
+    {
+        cout << "  Keyword: ";
+        string kw;
+        getline(cin, kw);
+        lib.catalogue.searchGenre(kw);
+    }
+    else
+    {
+        cout << RED << "  Invalid choice.\n" << RESET;
     }
     pauseScreen();
 }
@@ -165,18 +170,20 @@ static void viewCatalogue(Library &lib)
          << "  7. Default (by ID)\n"
          << "  0. Go Back\n"
          << "  Choice: ";
-    int ch;
-    cin >> ch;
-    cin.ignore();
+    int ch = getIntInput();
     if (ch == 0) return;
-    if (ch == 7 || ch < 1 || ch > 7)
+    if (ch == 7)
     {
         lib.catalogue.printAll();
     }
-    else
+    else if (ch >= 1 && ch <= 6)
     {
         auto books = lib.catalogue.getAll();
         printSortedCatalogue(books, ch);
+    }
+    else
+    {
+        cout << RED << "  Invalid choice.\n" << RESET;
     }
     pauseScreen();
 }
@@ -193,9 +200,8 @@ static void removeMember(Library &lib)
     printTitle("Remove Member");
     int id;
     cout << "  User ID to remove (0 to cancel): ";
-    cin >> id;
+    id = getIntInput();
     if (id == 0) return;
-    cin.ignore();
     User *u = lib.members.findById(id);
     if (!u)
     {
@@ -239,9 +245,7 @@ static void viewFineHistory(Library &lib)
          << "  3. Heap-sort all fines\n"
          << "  0. Go Back\n"
          << "  Choice: ";
-    int ch;
-    cin >> ch;
-    cin.ignore();
+    int ch = getIntInput();
     if (ch == 0) return;
     if (ch == 1)
     {
@@ -273,70 +277,13 @@ static void viewFineHistory(Library &lib)
             lib.fineHeap.heapSort(all);
         }
     }
+    else
+    {
+        cout << RED << "  Invalid choice.\n" << RESET;
+    }
     pauseScreen();
 }
 
-// Data Structures: Directed Graph (adjacency list); algorithms: BFS, DFS, Topological Sort
-static void genreGraphMenu(Library &lib)
-{
-    printTitle("Genre Graph");
-    lib.genreGraph.printGraph();
-    cout << "\n  1. BFS from a genre\n"
-         << "  2. DFS from a genre\n"
-         << "  3. Topological Sort\n"
-         << "  4. Add New Genre\n"
-         << "  5. Back\n"
-         << "  Choice: ";
-    int ch;
-    cin >> ch;
-    cin.ignore();
-    if (ch == 1)
-    {
-        cout << "  Start genre: ";
-        string g;
-        getline(cin, g);
-        lib.genreGraph.bfs(g);
-    }
-    else if (ch == 2)
-    {
-        cout << "  Start genre: ";
-        string g;
-        getline(cin, g);
-        lib.genreGraph.dfs(g);
-    }
-    else if (ch == 3)
-    {
-        lib.genreGraph.topoSort();
-    }
-    else if (ch == 4)
-    {
-        cout << "  New genre name (0 to cancel): ";
-        string genre;
-        getline(cin, genre);
-        if (genre == "0") return;
-        if (genre.empty())
-        {
-            cout << RED << "  Genre name cannot be empty.\n" << RESET;
-        }
-        else
-        {
-            cout << "  Parent genre (leave empty for standalone): ";
-            string parent;
-            getline(cin, parent);
-            if (parent.empty())
-            {
-                lib.genreGraph.addNode(genre);
-                cout << GREEN << "  Genre \"" << genre << "\" added as standalone.\n" << RESET;
-            }
-            else
-            {
-                lib.genreGraph.addEdge(parent, genre);
-                cout << GREEN << "  Genre \"" << genre << "\" added under \"" << parent << "\".\n" << RESET;
-            }
-        }
-    }
-    pauseScreen();
-}
 
 // Data Structures: Min-Heap (priority queue ordered by due date)
 static void dueSoonMenu(Library &lib)
@@ -382,17 +329,14 @@ void runAdminPanel(Library &lib)
              << "  6.  Remove Member\n"
              << "  7.  View Borrow History\n"
              << "  8.  Fine / Jorimana History\n"
-             << "  9.  Genre Graph\n"
-             << "  10. Books Due Soon\n"
-             << "  11. Wait Queue\n"
-             << "  12. Manage Worn Books\n"
-             << "  13. Update Borrow Limits\n"
+             << "  9.  Books Due Soon\n"
+             << "  10. Wait Queue\n"
+             << "  11. Manage Worn Books\n"
+             << "  12. Update Borrow Limits\n"
              << "  0.  Sign Out\n";
         printLine();
         cout << "  Choice: ";
-        int ch;
-        cin >> ch;
-        cin.ignore();
+        int ch = getMenuChoice(0, 12);
         switch (ch)
         {
         case 1:
@@ -419,29 +363,24 @@ void runAdminPanel(Library &lib)
         case 8:
             viewFineHistory(lib);
             break;
+
         case 9:
-            genreGraphMenu(lib);
-            break;
-        case 10:
             dueSoonMenu(lib);
             break;
-        case 11:
+        case 10:
             waitQueueMenu(lib);
             break;
-        case 12:
+        case 11:
             condMgr.showWornBooks();
             pauseScreen();
             break; // E6
-        case 13:
+        case 12:
             limitMgr.adminUpdateLimit();
             pauseScreen();
             break; // E7
         case 0:
             lib.currentUser = nullptr;
             return;
-        default:
-            cout << RED << "  Invalid choice.\n"
-                 << RESET;
         }
     }
 }

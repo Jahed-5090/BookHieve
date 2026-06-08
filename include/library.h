@@ -3,7 +3,7 @@
 #include "user.h"
 #include "borrow.h"
 #include "sorting.h"
-#include "graph.h"
+
 #include "heap.h"
 #include "bit.h"
 #include "filemanager.h"
@@ -32,7 +32,7 @@ public:
     BorrowHistory history; 
     BorrowStack undoStack; 
     BorrowQueue waitQueue; 
-    GenreGraph genreGraph; 
+
     FineMaxHeap fineHeap;  
     DueMinHeap dueHeap;    
     BIT fineBIT;           
@@ -49,7 +49,7 @@ public:
         FileManager::loadUsers(members);
         FileManager::loadBorrows(history);
         FileManager::seedDefaults(catalogue, members);
-        genreGraph.seedDefault();
+
         rebuildHeaps();
     }
 

@@ -15,10 +15,8 @@ static void userViewCatalogue(Library &lib)
 static void userSearchBook(Library &lib)
 {
     printTitle("Search Book");
-    cout << "  1. By Title\n  2. By Author\n  3. By ID\n  0. Go Back\n  Choice: ";
-    int ch;
-    cin >> ch;
-    cin.ignore();
+    cout << "  1. By Title\n  2. By Author\n  3. By ID\n  4. By Genre\n  0. Go Back\n  Choice: ";
+    int ch = getMenuChoice(0, 4);
     if (ch == 0) return;
     if (ch == 1)
     {
@@ -34,12 +32,10 @@ static void userSearchBook(Library &lib)
         getline(cin, kw);
         lib.catalogue.searchAuthor(kw);
     }
-    else
+    else if (ch == 3)
     {
         cout << "  Book ID: ";
-        int id;
-        cin >> id;
-        cin.ignore();
+        int id = getIntInput();
         BSTNode *n = lib.catalogue.search(id);
         if (n)
         {
@@ -54,6 +50,14 @@ static void userSearchBook(Library &lib)
             cout << RED << "  Not found.\n"
                  << RESET;
     }
+    else if (ch == 4)
+    {
+        cout << "  Keyword: ";
+        string kw;
+        getline(cin, kw);
+        lib.catalogue.searchGenre(kw);
+    }
+
     recEngine.displayRecommendations(std::to_string(lib.currentUser->id));
     pauseScreen();
 }
@@ -68,10 +72,8 @@ static void userBorrowBook(Library &lib)
     cout << "  Active borrows: " << active << " / " << MAX_BORROW << "\n\n";
 
     cout << "  Enter Book ID to borrow (0 to cancel): ";
-    int bid;
-    cin >> bid;
+    int bid = getIntInput();
     if (bid == 0) return;
-    cin.ignore();
 
     BSTNode *node = lib.catalogue.search(bid);
     if (node)
@@ -140,10 +142,8 @@ static void userReturnBook(Library &lib)
 {
     printTitle("Return a Book");
     cout << "  Enter Book ID to return (0 to cancel): ";
-    int bid;
-    cin >> bid;
+    int bid = getIntInput();
     if (bid == 0) return;
-    cin.ignore();
 
     BSTNode *node = lib.catalogue.search(bid);
     lib.returnBook(lib.currentUser->id, bid);
@@ -213,9 +213,7 @@ void runUserPanel(Library &lib)
              << "  0. Sign Out\n";
         printLine();
         cout << "  Choice: ";
-        int ch;
-        cin >> ch;
-        cin.ignore();
+        int ch = getMenuChoice(0, 7);
         switch (ch)
         {
         case 1:
@@ -242,9 +240,6 @@ void runUserPanel(Library &lib)
         case 0:
             lib.currentUser = nullptr;
             return;
-        default:
-            cout << RED << "  Invalid choice.\n"
-                 << RESET;
         }
     }
 }

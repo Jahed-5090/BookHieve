@@ -202,6 +202,24 @@ class BookBST
         searchByAuthor(node->right, kw, found);
     }
 
+    void searchByGenre(BSTNode *node, const string &kw, bool &found) const
+    {
+        if (!node)
+            return;
+        searchByGenre(node->left, kw, found);
+        string g = node->data.genre, kl = kw;
+        for (char &c : g)
+            c = tolower(c);
+        for (char &c : kl)
+            c = tolower(c);
+        if (g.find(kl) != string::npos)
+        {
+            node->data.print();
+            found = true;
+        }
+        searchByGenre(node->right, kw, found);
+    }
+
     void collectAll(BSTNode *node, vector<Book> &out) const
     {
         if (!node)
@@ -279,6 +297,24 @@ public:
              << RESET;
         printLine();
         searchByAuthor(root, kw, found);
+        if (!found)
+            cout << RED << "  No books found.\n"
+                 << RESET;
+    }
+
+    void searchGenre(const string &kw) const
+    {
+        bool found = false;
+        cout << BOLD << left
+             << setw(6) << "ID"
+             << setw(32) << "Title"
+             << setw(22) << "Author"
+             << setw(14) << "Genre"
+             << setw(6) << "Year"
+             << "Avail/Total\n"
+             << RESET;
+        printLine();
+        searchByGenre(root, kw, found);
         if (!found)
             cout << RED << "  No books found.\n"
                  << RESET;

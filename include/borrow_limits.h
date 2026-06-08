@@ -171,8 +171,7 @@ public:
         }
 
         std::cout << "  New limit: ";
-        int lim;
-        std::cin >> lim;
+        int lim = getIntInput();
 
         if (normalise(genre) == "global")
             globalLimit = lim;

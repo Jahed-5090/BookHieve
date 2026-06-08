@@ -32,7 +32,7 @@ int main() {
     return 0;
 }
 
-//jekunu option theke back jawa jay na . ata implement korte hobe
+
 //BIT shorate hobe
 //allignment thik korte hobe
 //
