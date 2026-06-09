@@ -30,7 +30,3 @@ int main() {
     runHomepage(lib);
     return 0;
 }
-
-
-
-//allignment thik korte hobe
