@@ -161,22 +161,26 @@ static void viewCatalogue(Library &lib)
 {
     printTitle("View Catalogue");
     cout << "  Sort by:\n"
-         << "  1. Title\n"
+         << "  1. Title (Quick Sort)\n"
          << "  2. Year\n"
          << "  3. Author\n"
-         << "  4. Title (alternate)\n"
-         << "  5. Availability\n"
-         << "  6. Genre\n"
-         << "  7. Default (by ID)\n"
+         << "  4. Availability\n"
+         << "  5. Genre\n"
+         << "  6. Default (by ID)\n"
          << "  0. Go Back\n"
          << "  Choice: ";
     int ch = getIntInput();
     if (ch == 0) return;
-    if (ch == 7)
+    if (ch == 6)
     {
         lib.catalogue.printAll();
     }
-    else if (ch >= 1 && ch <= 6)
+    else if (ch == 1)
+    {
+        auto books = lib.catalogue.getAll();
+        printSortedCatalogue(books, 4);
+    }
+    else if (ch >= 2 && ch <= 5)
     {
         auto books = lib.catalogue.getAll();
         printSortedCatalogue(books, ch);
