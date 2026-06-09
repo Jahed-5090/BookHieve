@@ -1,5 +1,5 @@
 1|The Pragmatic Programmer|Hunt & Thomas|Programming|1999|10|10
-2|Clean Code|Robert C. Martin|Programming|2008|2|0
+2|Clean Code|Robert C. Martin|Programming|2008|2|1
 4|1984|George Orwell|Fiction|1949|5|5
 5|Dune|Frank Herbert|Science Fiction|1965|3|3
 6|The Hobbit|J.R.R. Tolkien|Fantasy|1937|4|4
@@ -10,3 +10,4 @@
 12|KI OBOSTHA|JAHED KHAN|NAI|2000|1200|1199
 13|The Pragmatic Programmer|Hunt & Thomas|Programming|1999|3|3
 14|religion|religiom|religion|2013|12|12
+15|Chronicles of Narnia|C.S. Lewis|Fantasy|1950|5|5

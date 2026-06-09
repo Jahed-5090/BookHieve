@@ -25,12 +25,12 @@ struct ReadingStats {
 
 // Milestone thresholds and their badge labels
 static const std::vector<std::pair<int,std::string>> MILESTONES = {
-    {1,   "🌱 First Borrow"},
-    {5,   " Bookworm (5 books)"},
-    {10,  "⭐ Avid Reader (10 books)"},
-    {25,  "🔥 Dedicated Reader (25 books)"},
-    {50,  "🏆 50-Book Reader"},
-    {100, "👑 Century Reader"},
+    {1,   "First Borrow"},
+    {5,   "Bookworm (5 books)"},
+    {10,  "Avid Reader (10 books)"},
+    {25,  "Dedicated Reader (25 books)"},
+    {50,  "50-Book Reader"},
+    {100, "Century Reader"},
 };
 
 class ReadingStreakTracker {
@@ -118,9 +118,9 @@ public:
 
         std::cout << "\n  ╔══ Your Reading Journey ═══════════════════════════╗\n";
         std::cout << "  ║    Total books borrowed : " << s.totalBorrowed << "\n";
-        std::cout << "  ║  🔥 Current streak       : " << s.currentStreak
+        std::cout << "  ║  Current streak       : " << s.currentStreak
                   << " month" << (s.currentStreak != 1 ? "s" : "") << " in a row\n";
-        std::cout << "  ║  🏅 Best streak ever      : " << s.longestStreak
+        std::cout << "  ║  Best streak ever      : " << s.longestStreak
                   << " month" << (s.longestStreak != 1 ? "s" : "") << "\n";
 
         // Show earned milestones

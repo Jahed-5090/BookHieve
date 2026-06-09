@@ -1,8 +1,9 @@
 # Per-category borrow limits (updated by admin)
 GLOBAL|3
+religion|1
 reference|1
+academic|2
 fiction|3
 textbook|2
 magazine|2
-academic|2
-reference|1
+fantasy|3

@@ -94,7 +94,7 @@ public:
             std::cout << "  ║  Gross fine      : BDT " << gross << "\n";
 
             if (graceAvail) {
-                std::cout << "  ║  ⭐ Grace Period  : Available! (1 free waiver/year)\n"
+                std::cout << "  ║  Grace Period  : Available! (1 free waiver/year)\n"
                           << "  ║  Net fine        : BDT 0.00 (if grace applied)\n";
             } else {
                 std::cout << "  ║  Grace Period    : Already used this year.\n"
