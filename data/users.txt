@@ -2,3 +2,4 @@
 4|AK AK|AK|AK|0|0
 5|alif|alif|alif|0|0
 6|ahmed|ahmed|ahmed|0|3
+7|jahed|jahed|jahed|0|1
