@@ -111,12 +111,33 @@ public:
     }
 
     // ─── Book next ID ─────────────────────────────────────────────────────
+    // Reuse vacant IDs first, then append after max ID
     int nextBookId()
     {
         auto books = catalogue.getAll();
+        if (books.empty()) return 1;
+
+        // Collect all existing IDs and find max
+        Array<int> ids;
         int mx = 0;
-        for (auto &b : books)
+        for (auto &b : books) {
+            ids.push_back(b.id);
             mx = max(mx, b.id);
+        }
+
+        // Find the smallest missing ID in range [1, mx]
+        for (int i = 1; i <= mx; i++) {
+            bool found = false;
+            for (auto &id : ids) {
+                if (id == i) {
+                    found = true;
+                    break;
+                }
+            }
+            if (!found) return i;  // Return the first vacant ID
+        }
+
+        // If no gaps, return mx + 1
         return mx + 1;
     }
 

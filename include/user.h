@@ -1,6 +1,6 @@
 #pragma once
 #include "globals.h"
-#include <vector>
+#include "dynamic_array.h"
 
 // ══════════════════════════════════════════════════════════════════════════════
 //  User  –  data entity
@@ -30,7 +30,7 @@ struct User {
                                          suffix.size(), suffix) == 0;
         };
 
-        const vector<string> commonTlds = {
+        const Array<string> commonTlds = {
             "com", "net", "org", "edu", "gov", "io", "co", "uk", "us", "bd"
         };
 
@@ -207,8 +207,8 @@ public:
         while (cur) { cur->data.print(); cur = cur->next; }
     }
 
-    vector<User> getAll() const {
-        vector<User> v;
+    Array<User> getAll() const {
+        Array<User> v;
         UserNode* cur = head;
         while (cur) { v.push_back(cur->data); cur = cur->next; }
         return v;

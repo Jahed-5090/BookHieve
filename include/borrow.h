@@ -1,6 +1,6 @@
 #pragma once
 #include "globals.h"
-#include <vector>
+#include "dynamic_array.h"
 
 // ══════════════════════════════════════════════════════════════════════════════
 //  BorrowRecord  –  one borrow event
@@ -183,12 +183,12 @@ public:
 //  BorrowHistory  –  array-based, sorted by recordId using merge sort
 // ══════════════════════════════════════════════════════════════════════════════
 class BorrowHistory {
-    vector<BorrowRecord> records;
+    Array<BorrowRecord> records;
 
     // Merge sort for history view
-    void merge(vector<BorrowRecord>& arr, int l, int m, int r) {
-        vector<BorrowRecord> left(arr.begin()+l, arr.begin()+m+1);
-        vector<BorrowRecord> right(arr.begin()+m+1, arr.begin()+r+1);
+    void merge(Array<BorrowRecord>& arr, int l, int m, int r) {
+        Array<BorrowRecord> left(arr.begin()+l, arr.begin()+m+1);
+        Array<BorrowRecord> right(arr.begin()+m+1, arr.begin()+r+1);
         int i=0, j=0, k=l;
         while (i<(int)left.size() && j<(int)right.size())
             arr[k++] = (left[i].recordId <= right[j].recordId) ? left[i++] : right[j++];
@@ -196,7 +196,7 @@ class BorrowHistory {
         while (j<(int)right.size()) arr[k++] = right[j++];
     }
 
-    void mergeSort(vector<BorrowRecord>& arr, int l, int r) {
+    void mergeSort(Array<BorrowRecord>& arr, int l, int r) {
         if (l >= r) return;
         int m = (l+r)/2;
         mergeSort(arr, l, m);
@@ -276,7 +276,7 @@ public:
         return c;
     }
 
-    vector<BorrowRecord>& getAll() { return records; }
+    Array<BorrowRecord>& getAll() { return records; }
 
     int nextId() const {
         int mx = 0;

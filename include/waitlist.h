@@ -9,7 +9,7 @@
 
 #include <string>
 #include <queue>
-#include <vector>
+#include "dynamic_array.h"
 #include <fstream>
 #include <sstream>
 #include <iostream>
@@ -101,8 +101,8 @@ public:
 
     // ── Called at login to display pending notifications ──────────────────
     void showNotifications(const std::string& userId) const {
-        std::vector<std::string> pending;
-        std::vector<std::string> remaining;
+        Array<std::string> pending;
+        Array<std::string> remaining;
 
         std::ifstream f(notifyFile);
         std::string line;

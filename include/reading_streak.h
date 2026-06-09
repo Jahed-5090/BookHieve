@@ -9,7 +9,7 @@
 #define READING_STREAK_H
 
 #include <string>
-#include <vector>
+#include "dynamic_array.h"
 #include <set>
 #include <fstream>
 #include <sstream>
@@ -24,7 +24,7 @@ struct ReadingStats {
 };
 
 // Milestone thresholds and their badge labels
-static const std::vector<std::pair<int,std::string>> MILESTONES = {
+static const Array<std::pair<int,std::string>> MILESTONES = {
     {1,   "First Borrow"},
     {5,   "Bookworm (5 books)"},
     {10,  "Avid Reader (10 books)"},
@@ -95,7 +95,7 @@ public:
 
         // Longest streak: brute force over sorted month set
         if (!activeMonths.empty()) {
-            std::vector<std::string> months(activeMonths.begin(), activeMonths.end());
+            Array<std::string> months(activeMonths.begin(), activeMonths.end());
             int best = 1, run = 1;
             for (size_t i = 1; i < months.size(); ++i) {
                 // Check consecutive
