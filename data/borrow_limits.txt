@@ -4,5 +4,4 @@ reference|1
 fiction|3
 textbook|2
 magazine|2
-0|4
 academic|2
