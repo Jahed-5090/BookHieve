@@ -1,6 +1,6 @@
-1|The Pragmatic Programmer|Hunt & Thomas|Programming|1999|10|10
-2|Clean Code|Robert C. Martin|Programming|2008|2|1
-4|1984|George Orwell|Fiction|1949|5|5
+1|The Pragmatic Programmer|Hunt & Thomas|Programming|1999|10|9
+2|Clean Code|Robert C. Martin|Programming|2008|2|0
+4|1984|George Orwell|Fiction|1949|5|4
 5|Dune|Frank Herbert|Science Fiction|1965|3|3
 6|The Hobbit|J.R.R. Tolkien|Fantasy|1937|4|4
 7|Sapiens|Yuval Noah Harari|History|2011|3|2
