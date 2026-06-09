@@ -5,3 +5,4 @@ fiction|3
 textbook|2
 magazine|2
 academic|2
+reference|1
