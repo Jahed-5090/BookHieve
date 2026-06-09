@@ -90,6 +90,12 @@ static bool signIn(Library &lib)
     return true;
 }
 
+// ── Password prototype suggestion ─────────────────────────────────────────────
+static string passwordPrototype()
+{
+    return "Ab#4xY7!";
+}
+
 // ── Sign Up ───────────────────────────────────────────────────────────────────
 static bool signUp(Library &lib)
 {
@@ -109,6 +115,10 @@ static bool signUp(Library &lib)
         return false;
     }
 
+    cout << YELLOW
+         << "  Strong password suggestion: letters + operators + numbers\n"
+         << "  Example prototype: " << passwordPrototype() << "\n"
+         << RESET;
     cout << "  Password  : ";
     pass = readPassword();
     cout << "  Confirm   : ";

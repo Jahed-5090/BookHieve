@@ -17,6 +17,68 @@ struct User {
     User(int id, const string& n, const string& e, const string& p, bool admin)
         : id(id), name(n), email(e), password(p), isAdmin(admin), borrowCount(0) {}
 
+    static bool isEncoded(const string& s) {
+        return !s.empty() && (s[0] == '@' || s[0] == '#');
+    }
+
+    static string restoreDomain(const string& compactDomain) {
+        if (compactDomain.empty()) return compactDomain;
+
+        auto endsWith = [&](const string& suffix) {
+            return compactDomain.size() > suffix.size() &&
+                   compactDomain.compare(compactDomain.size() - suffix.size(),
+                                         suffix.size(), suffix) == 0;
+        };
+
+        const vector<string> commonTlds = {
+            "com", "net", "org", "edu", "gov", "io", "co", "uk", "us", "bd"
+        };
+
+        for (auto& tld : commonTlds) {
+            if (endsWith(tld) && compactDomain.size() > tld.size()) {
+                return compactDomain.substr(0, compactDomain.size() - tld.size()) + "." + tld;
+            }
+        }
+
+        if (compactDomain.size() > 3) {
+            return compactDomain.substr(0, compactDomain.size() - 3) + "." +
+                   compactDomain.substr(compactDomain.size() - 3);
+        }
+        return compactDomain;
+    }
+
+    static string encodeCredential(const string& s) {
+        if (isEncoded(s)) return s; // already encoded
+        if (s.empty()) return "#";
+
+        size_t atPos = s.find('@');
+        if (atPos != string::npos) {
+            string local = s.substr(0, atPos);
+            string domain = s.substr(atPos + 1);
+            string compact;
+            for (char c : domain) {
+                if (c != '.') compact.push_back(c);
+            }
+            return string("@") + local + "." + compact;
+        }
+        return string("#") + s;
+    }
+
+    static string decodeCredential(const string& s) {
+        if (s.empty()) return s;
+        if (s[0] == '@') {
+            size_t delim = s.find('.', 1);
+            if (delim == string::npos) return s.substr(1);
+            string local = s.substr(1, delim - 1);
+            string compactDomain = s.substr(delim + 1);
+            return local + "@" + restoreDomain(compactDomain);
+        }
+        if (s[0] == '#') {
+            return s.substr(1);
+        }
+        return s;
+    }
+
     void print() const {
         cout << CYAN << left
              << setw(6)  << id
@@ -28,8 +90,10 @@ struct User {
     }
 
     string serialize() const {
-        return to_string(id) + "|" + name + "|" + email + "|" +
-               password + "|" + (isAdmin ? "1" : "0") + "|" +
+        return to_string(id) + "|" + name + "|" +
+               encodeCredential(email) + "|" +
+               encodeCredential(password) + "|" +
+               (isAdmin ? "1" : "0") + "|" +
                to_string(borrowCount);
     }
 
@@ -43,6 +107,9 @@ struct User {
         getline(ss, u.password,'|');
         getline(ss, tok,  '|'); u.isAdmin     = tok == "1";
         getline(ss, tok,  '|'); u.borrowCount = stoi(tok);
+
+        u.email    = decodeCredential(u.email);
+        u.password = decodeCredential(u.password);
         return u;
     }
 };
