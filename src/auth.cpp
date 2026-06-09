@@ -116,8 +116,8 @@ static bool signUp(Library &lib)
     }
 
     cout << YELLOW
-         << "  Strong password suggestion: letters + operators + numbers\n"
-         << "  Example prototype: " << passwordPrototype() << "\n"
+         << "  Strong password suggestion: letters + special symbols + numbers\n"
+         << "  Example : " << passwordPrototype() << "\n"
          << RESET;
     cout << "  Password  : ";
     pass = readPassword();
