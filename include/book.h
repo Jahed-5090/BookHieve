@@ -29,7 +29,7 @@ struct Book
     {
         std::cout << std::left << std::setw(6) << id
                   << condMgr.getBadge(std::to_string(id)) << " " << std::setw(28) << title << std::setw(22) << author
-                  << std::setw(14) << genre
+                  << std::setw(18) << genre
                   << std::setw(6) << year
                   << availableCopies << "/" << totalCopies << "\n";
     }
@@ -176,7 +176,16 @@ class BookBST
             c = tolower(c);
         for (char &c : kl)
             c = tolower(c);
-        if (tl.find(kl) != string::npos)
+        bool match = false;
+        size_t pos = 0;
+        while ((pos = tl.find(kl, pos)) != string::npos) {
+            if (pos == 0 || !isalnum(tl[pos - 1])) {
+                match = true;
+                break;
+            }
+            pos++;
+        }
+        if (match)
         {
             node->data.print();
             found = true;
@@ -194,7 +203,16 @@ class BookBST
             c = tolower(c);
         for (char &c : kl)
             c = tolower(c);
-        if (a.find(kl) != string::npos)
+        bool match = false;
+        size_t pos = 0;
+        while ((pos = a.find(kl, pos)) != string::npos) {
+            if (pos == 0 || !isalnum(a[pos - 1])) {
+                match = true;
+                break;
+            }
+            pos++;
+        }
+        if (match)
         {
             node->data.print();
             found = true;
@@ -212,7 +230,16 @@ class BookBST
             c = tolower(c);
         for (char &c : kl)
             c = tolower(c);
-        if (g.find(kl) != string::npos)
+        bool match = false;
+        size_t pos = 0;
+        while ((pos = g.find(kl, pos)) != string::npos) {
+            if (pos == 0 || !isalnum(g[pos - 1])) {
+                match = true;
+                break;
+            }
+            pos++;
+        }
+        if (match)
         {
             node->data.print();
             found = true;
@@ -256,9 +283,9 @@ public:
         }
         cout << BOLD << left
              << setw(6) << "ID"
-             << setw(32) << "Title"
+             << setw(11) << "" << setw(28) << "Title"
              << setw(22) << "Author"
-             << setw(14) << "Genre"
+             << setw(18) << "Genre"
              << setw(6) << "Year"
              << "Avail/Total\n"
              << RESET;
@@ -271,9 +298,9 @@ public:
         bool found = false;
         cout << BOLD << left
              << setw(6) << "ID"
-             << setw(32) << "Title"
+             << setw(11) << "" << setw(28) << "Title"
              << setw(22) << "Author"
-             << setw(14) << "Genre"
+             << setw(18) << "Genre"
              << setw(6) << "Year"
              << "Avail/Total\n"
              << RESET;
@@ -289,9 +316,9 @@ public:
         bool found = false;
         cout << BOLD << left
              << setw(6) << "ID"
-             << setw(32) << "Title"
+             << setw(11) << "" << setw(28) << "Title"
              << setw(22) << "Author"
-             << setw(14) << "Genre"
+             << setw(18) << "Genre"
              << setw(6) << "Year"
              << "Avail/Total\n"
              << RESET;
@@ -307,9 +334,9 @@ public:
         bool found = false;
         cout << BOLD << left
              << setw(6) << "ID"
-             << setw(32) << "Title"
+             << setw(11) << "" << setw(28) << "Title"
              << setw(22) << "Author"
-             << setw(14) << "Genre"
+             << setw(18) << "Genre"
              << setw(6) << "Year"
              << "Avail/Total\n"
              << RESET;

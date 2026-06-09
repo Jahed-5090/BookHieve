@@ -1,3 +1,4 @@
-15|Good
-13|Fair
 14|New
+13|Fair
+16|New
+15|Good

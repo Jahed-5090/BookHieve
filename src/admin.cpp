@@ -100,96 +100,112 @@ static void removeBook(Library &lib)
 
 static void searchBook(Library &lib)
 {
-    printTitle("Search Book");
-    cout << "  1. Search by Title\n"
-         << "  2. Search by Author\n"
-         << "  3. Search by ID\n"
-         << "  4. Search by Genre\n"
-         << "  0. Go Back\n"
-         << "  Choice: ";
-    int ch = getMenuChoice(0, 4);
-    if (ch == 0) return;
-    if (ch == 1)
+    while (true)
     {
-        cout << "  Keyword: ";
-        string kw;
-        getline(cin, kw);
-        lib.catalogue.searchTitle(kw);
-    }
-    else if (ch == 2)
-    {
-        cout << "  Keyword: ";
-        string kw;
-        getline(cin, kw);
-        lib.catalogue.searchAuthor(kw);
-    }
-    else if (ch == 3)
-    {
-        cout << "  Book ID: ";
-        int id = getIntInput();
-        BSTNode *n = lib.catalogue.search(id);
-        if (n)
+        printTitle("Search Book");
+        cout << "  1. By Title\n"
+             << "  2. By Author\n"
+             << "  3. By ID\n"
+             << "  4. By Genre\n"
+             << "  0. Go Back\n"
+             << "  Choice: ";
+        int ch = getMenuChoice(0, 4);
+        if (ch == 0) return;
+        if (ch == 1)
         {
-            cout << BOLD << left << setw(6) << "ID" << setw(32) << "Title"
-                 << setw(22) << "Author" << setw(14) << "Genre"
-                 << setw(6) << "Year" << "Avail/Total\n"
-                 << RESET;
-            printLine();
-            n->data.print();
+            cout << "  Keyword: ";
+            string kw;
+            getline(cin, kw);
+            lib.catalogue.searchTitle(kw);
+        }
+        else if (ch == 2)
+        {
+            cout << "  Keyword: ";
+            string kw;
+            getline(cin, kw);
+            lib.catalogue.searchAuthor(kw);
+        }
+        else if (ch == 3)
+        {
+            cout << "  Book ID: ";
+            int id = getIntInput();
+            BSTNode *n = lib.catalogue.search(id);
+            if (n)
+            {
+                cout << BOLD << left << setw(6) << "ID" << setw(11) << "" << setw(28) << "Title"
+                     << setw(22) << "Author" << setw(18) << "Genre"
+                     << setw(6) << "Year" << "Avail/Total\n"
+                     << RESET;
+                printLine();
+                n->data.print();
+            }
+            else
+                cout << RED << "  Not found.\n"
+                     << RESET;
+        }
+        else if (ch == 4)
+        {
+            cout << "  Keyword: ";
+            string kw;
+            getline(cin, kw);
+            lib.catalogue.searchGenre(kw);
         }
         else
-            cout << RED << "  Not found.\n"
-                 << RESET;
+        {
+            cout << RED << "  Invalid choice.\n" << RESET;
+        }
+        pauseScreen();
     }
-    else if (ch == 4)
-    {
-        cout << "  Keyword: ";
-        string kw;
-        getline(cin, kw);
-        lib.catalogue.searchGenre(kw);
-    }
-    else
-    {
-        cout << RED << "  Invalid choice.\n" << RESET;
-    }
-    pauseScreen();
 }
 
 // Data Structures: BST (inorder traversal for default view), Bubble Sort, Insertion Sort,
 //                  Selection Sort, Quick Sort, Merge Sort (user-selectable for sorted views)
 static void viewCatalogue(Library &lib)
 {
-    printTitle("View Catalogue");
-    cout << "  Sort by:\n"
-         << "  1. Title (Quick Sort)\n"
-         << "  2. Year\n"
-         << "  3. Author\n"
-         << "  4. Availability\n"
-         << "  5. Genre\n"
-         << "  6. Default (by ID)\n"
-         << "  0. Go Back\n"
-         << "  Choice: ";
-    int ch = getIntInput();
-    if (ch == 0) return;
-    if (ch == 6)
+    while (true)
     {
-        lib.catalogue.printAll();
+        printTitle("View Catalogue");
+        cout << "  Sort by:\n"
+             << "  1. Title\n"
+             << "  2. Year\n"
+             << "  3. Author\n"
+             << "  4. Availability\n"
+             << "  5. Genre\n"
+             << "  6. Default (by ID)\n"
+             << "  0. Go Back\n"
+             << "  Choice: ";
+        int ch = getIntInput();
+        if (ch == 0) return;
+        if (ch == 6)
+        {
+            lib.catalogue.printAll();
+        }
+        else if (ch == 1)
+        {
+            auto books = lib.catalogue.getAll();
+            printSortedCatalogue(books, 4);
+        }
+        else if (ch >= 2 && ch <= 3)
+        {
+            auto books = lib.catalogue.getAll();
+            printSortedCatalogue(books, ch);
+        }
+        else if (ch == 4)
+        {
+            auto books = lib.catalogue.getAll();
+            printSortedCatalogue(books, 5);
+        }
+        else if (ch == 5)
+        {
+            auto books = lib.catalogue.getAll();
+            printSortedCatalogue(books, 6);
+        }
+        else
+        {
+            cout << RED << "  Invalid choice.\n" << RESET;
+        }
+        pauseScreen();
     }
-    else if (ch == 1)
-    {
-        auto books = lib.catalogue.getAll();
-        printSortedCatalogue(books, 4);
-    }
-    else if (ch >= 2 && ch <= 5)
-    {
-        auto books = lib.catalogue.getAll();
-        printSortedCatalogue(books, ch);
-    }
-    else
-    {
-        cout << RED << "  Invalid choice.\n" << RESET;
-    }
-    pauseScreen();
 }
 
 static void viewMemberships(Library &lib)
@@ -238,46 +254,48 @@ static void viewBorrowHistory(Library &lib)
 
 static void viewFineHistory(Library &lib)
 {
-    printTitle("Fine History");
-
-    // E3 & E5: Show system overviews for the admin
-    fineSys.showAdminFineSummary();
-    OverdueWarningSystem::showAdminWarnings(2);
-
-    cout << "  1. View top fines\n"
-         << "  2. Heap-sort all fines\n"
-         << "  0. Go Back\n"
-         << "  Choice: ";
-    int ch = getMenuChoice(0, 2);
-    if (ch == 0) return;
-    if (ch == 1)
+    while (true)
     {
-        lib.fineHeap.printTopFines(10);
-    }
-    else if (ch == 2)
-    {
-        // Collect all user fines
-        vector<FineEntry> all;
-        for (auto &u : lib.members.getAll())
-        {
-            double fine = lib.currentFine(u.id);
-            if (fine > 0)
-                all.push_back(FineEntry(u.id, u.name, fine));
-        }
-        if (all.empty())
-        {
-            cout << GREEN << "  No outstanding fines.\n"
-                 << RESET;
-        }
-        else
-        {
-            cout << YELLOW << "  Fine list (Heap Sort – ascending):\n"
-                 << RESET;
-            lib.fineHeap.heapSort(all);
-        }
-    }
+        printTitle("Fine History");
 
-    pauseScreen();
+        // E3 & E5: Show system overviews for the admin
+        fineSys.showAdminFineSummary();
+        OverdueWarningSystem::showAdminWarnings(2);
+
+        cout << "  1. View top fines\n"
+             << "  2. Heap-sort all fines\n"
+             << "  0. Go Back\n"
+             << "  Choice: ";
+        int ch = getMenuChoice(0, 2);
+        if (ch == 0) return;
+        if (ch == 1)
+        {
+            lib.fineHeap.printTopFines(10);
+        }
+        else if (ch == 2)
+        {
+            // Collect all user fines
+            vector<FineEntry> all;
+            for (auto &u : lib.members.getAll())
+            {
+                double fine = lib.currentFine(u.id);
+                if (fine > 0)
+                    all.push_back(FineEntry(u.id, u.name, fine));
+            }
+            if (all.empty())
+            {
+                cout << GREEN << "  No outstanding fines.\n"
+                     << RESET;
+            }
+            else
+            {
+                cout << YELLOW << "  Fine list:\n"
+                     << RESET;
+                lib.fineHeap.heapSort(all);
+            }
+        }
+        pauseScreen();
+    }
 }
 
 

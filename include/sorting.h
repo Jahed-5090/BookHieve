@@ -103,19 +103,19 @@ inline void bubbleSortByGenre(vector<Book>& v) {
 inline void printSortedCatalogue(vector<Book>& books, int choice) {
     if (books.empty()) { cout << RED << "  Catalogue is empty.\n" << RESET; return; }
     switch (choice) {
-        case 1: bubbleSortByTitle(books);      cout << YELLOW << "  Sorted by Title (Bubble Sort)\n" << RESET; break;
-        case 2: insertionSortByYear(books);    cout << YELLOW << "  Sorted by Year (Insertion Sort)\n" << RESET; break;
-        case 3: selectionSortByAuthor(books);  cout << YELLOW << "  Sorted by Author (Selection Sort)\n" << RESET; break;
-        case 4: quickSortByTitle(books);       cout << YELLOW << "  Sorted by Title (Quick Sort)\n" << RESET; break;
-        case 5: sortByAvailability(books);     cout << YELLOW << "  Sorted by Availability (Merge Sort)\n" << RESET; break;
+        case 1: bubbleSortByTitle(books);      cout << YELLOW << "  Sorted by Title \n" << RESET; break;
+        case 2: insertionSortByYear(books);    cout << YELLOW << "  Sorted by Year \n" << RESET; break;
+        case 3: selectionSortByAuthor(books);  cout << YELLOW << "  Sorted by Author \n" << RESET; break;
+        case 4: quickSortByTitle(books);       cout << YELLOW << "  Sorted by Title \n" << RESET; break;
+        case 5: sortByAvailability(books);     cout << YELLOW << "  Sorted by Availability \n" << RESET; break;
         case 6: bubbleSortByGenre(books);       cout << YELLOW << "  Sorted by Genre\n" << RESET; break;
         default: break;
     }
     cout << BOLD << left
          << setw(6)  << "ID"
-         << setw(32) << "Title"
+         << setw(11) << "" << setw(28) << "Title"
          << setw(22) << "Author"
-         << setw(14) << "Genre"
+         << setw(18) << "Genre"
          << setw(6)  << "Year"
          << "Avail/Total\n" << RESET;
     printLine();

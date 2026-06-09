@@ -112,7 +112,7 @@ inline int daysBetween(const string &d1, const string &d2) {
   return (int)difftime(s2, s1) / 86400;
 }
 
-inline void printLine(char c = '-', int n = 60) {
+inline void printLine(char c = '-', int n = 102) {
   cout << string(n, c) << "\n";
 }
 

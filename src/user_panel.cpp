@@ -14,52 +14,55 @@ static void userViewCatalogue(Library &lib)
 
 static void userSearchBook(Library &lib)
 {
-    printTitle("Search Book");
-    cout << "  1. By Title\n  2. By Author\n  3. By ID\n  4. By Genre\n  0. Go Back\n  Choice: ";
-    int ch = getMenuChoice(0, 4);
-    if (ch == 0) return;
-    if (ch == 1)
+    while (true)
     {
-        cout << "  Keyword: ";
-        string kw;
-        getline(cin, kw);
-        lib.catalogue.searchTitle(kw);
-    }
-    else if (ch == 2)
-    {
-        cout << "  Keyword: ";
-        string kw;
-        getline(cin, kw);
-        lib.catalogue.searchAuthor(kw);
-    }
-    else if (ch == 3)
-    {
-        cout << "  Book ID: ";
-        int id = getIntInput();
-        BSTNode *n = lib.catalogue.search(id);
-        if (n)
+        printTitle("Search Book");
+        cout << "  1. By Title\n  2. By Author\n  3. By ID\n  4. By Genre\n  0. Go Back\n  Choice: ";
+        int ch = getMenuChoice(0, 4);
+        if (ch == 0) return;
+        if (ch == 1)
         {
-            cout << BOLD << left << setw(6) << "ID" << setw(32) << "Title"
-                 << setw(22) << "Author" << setw(14) << "Genre"
-                 << setw(6) << "Year" << "Avail/Total\n"
-                 << RESET;
-            printLine();
-            n->data.print();
+            cout << "  Keyword: ";
+            string kw;
+            getline(cin, kw);
+            lib.catalogue.searchTitle(kw);
         }
-        else
-            cout << RED << "  Not found.\n"
-                 << RESET;
-    }
-    else if (ch == 4)
-    {
-        cout << "  Keyword: ";
-        string kw;
-        getline(cin, kw);
-        lib.catalogue.searchGenre(kw);
-    }
+        else if (ch == 2)
+        {
+            cout << "  Keyword: ";
+            string kw;
+            getline(cin, kw);
+            lib.catalogue.searchAuthor(kw);
+        }
+        else if (ch == 3)
+        {
+            cout << "  Book ID: ";
+            int id = getIntInput();
+            BSTNode *n = lib.catalogue.search(id);
+            if (n)
+            {
+                cout << BOLD << left << setw(6) << "ID" << setw(11) << "" << setw(28) << "Title"
+                     << setw(22) << "Author" << setw(18) << "Genre"
+                     << setw(6) << "Year" << "Avail/Total\n"
+                     << RESET;
+                printLine();
+                n->data.print();
+            }
+            else
+                cout << RED << "  Not found.\n"
+                     << RESET;
+        }
+        else if (ch == 4)
+        {
+            cout << "  Keyword: ";
+            string kw;
+            getline(cin, kw);
+            lib.catalogue.searchGenre(kw);
+        }
 
-    recEngine.displayRecommendations(std::to_string(lib.currentUser->id));
-    pauseScreen();
+        recEngine.displayRecommendations(std::to_string(lib.currentUser->id));
+        pauseScreen();
+    }
 }
 
 static void userBorrowBook(Library &lib)
