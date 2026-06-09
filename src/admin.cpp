@@ -320,7 +320,7 @@ void runAdminPanel(Library &lib)
              << "  5.  View Memberships\n"
              << "  6.  Remove Member\n"
              << "  7.  View Borrow History\n"
-             << "  8.  Fine / Jorimana History\n"
+             << "  8.  Fine History\n"
              << "  9.  Books Due Soon\n"
              << "  10. Wait Queue\n"
              << "  11. Manage Worn Books\n"
