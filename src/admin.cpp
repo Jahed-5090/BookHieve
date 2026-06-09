@@ -131,9 +131,10 @@ static void editBook(Library &lib)
              << "  2. Author\n"
              << "  3. Year\n"
              << "  4. Genre\n"
+             << "  5. Quantity\n"
              << "  0. Done\n"
              << "  Choice: ";
-        int ch = getMenuChoice(0, 4);
+        int ch = getMenuChoice(0, 5);
         if (ch == 0) break;
 
         if (ch == 1)
@@ -177,6 +178,74 @@ static void editBook(Library &lib)
             {
                 node->data.genre = newGenre;
                 cout << GREEN << "  Genre updated.\n" << RESET;
+            }
+        }
+        else if (ch == 5)
+        {
+            cout << BOLD << "\n  Current Quantity:\n" << RESET
+                 << "    Total Copies    : " << node->data.totalCopies << "\n"
+                 << "    Available Copies: " << node->data.availableCopies << "\n";
+            cout << "\n  How would you like to adjust quantity?\n"
+                 << "  1. Set total copies\n"
+                 << "  2. Set available copies\n"
+                 << "  3. Add copies\n"
+                 << "  4. Remove copies\n"
+                 << "  0. Back\n"
+                 << "  Choice: ";
+            int qch = getMenuChoice(0, 4);
+            if (qch == 1)
+            {
+                cout << "  New Total Copies (current: " << node->data.totalCopies << "): ";
+                int newTotal = getIntInput();
+                if (newTotal > 0 && newTotal >= node->data.availableCopies)
+                {
+                    node->data.totalCopies = newTotal;
+                    cout << GREEN << "  Total copies updated.\n" << RESET;
+                }
+                else if (newTotal < node->data.availableCopies)
+                {
+                    cout << RED << "  Error: Total copies cannot be less than available copies.\n" << RESET;
+                }
+            }
+            else if (qch == 2)
+            {
+                cout << "  New Available Copies (current: " << node->data.availableCopies << "): ";
+                int newAvail = getIntInput();
+                if (newAvail >= 0 && newAvail <= node->data.totalCopies)
+                {
+                    node->data.availableCopies = newAvail;
+                    cout << GREEN << "  Available copies updated.\n" << RESET;
+                }
+                else if (newAvail > node->data.totalCopies)
+                {
+                    cout << RED << "  Error: Available copies cannot exceed total copies.\n" << RESET;
+                }
+            }
+            else if (qch == 3)
+            {
+                cout << "  How many copies to add? ";
+                int add = getIntInput();
+                if (add > 0)
+                {
+                    node->data.totalCopies += add;
+                    node->data.availableCopies += add;
+                    cout << GREEN << "  Added " << add << " copies. New total: " << node->data.totalCopies << "\n" << RESET;
+                }
+            }
+            else if (qch == 4)
+            {
+                cout << "  How many copies to remove? ";
+                int remove = getIntInput();
+                if (remove > 0 && remove <= node->data.totalCopies && remove <= node->data.availableCopies)
+                {
+                    node->data.totalCopies -= remove;
+                    node->data.availableCopies -= remove;
+                    cout << GREEN << "  Removed " << remove << " copies. New total: " << node->data.totalCopies << "\n" << RESET;
+                }
+                else if (remove > node->data.totalCopies || remove > node->data.availableCopies)
+                {
+                    cout << RED << "  Error: Cannot remove more copies than available.\n" << RESET;
+                }
             }
         }
     }
