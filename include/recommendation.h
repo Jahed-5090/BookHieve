@@ -8,7 +8,7 @@
 #define RECOMMENDATION_H
 
 #include <string>
-#include <vector>
+#include "dynamic_array.h"
 #include <unordered_map>
 #include <map>
 #include <set>
@@ -64,7 +64,7 @@ private:
         if (!f.is_open()) return;
 
         // Group borrows by userId
-        std::unordered_map<std::string, std::vector<std::string>> userBooks;
+        std::unordered_map<std::string, Array<std::string>> userBooks;
         std::string line;
         while (std::getline(f, line)) {
             if (line.empty()) continue;
@@ -73,7 +73,7 @@ private:
             std::getline(ss, recId,  '|');
             std::getline(ss, userId, '|');
             std::getline(ss, bookId, '|');
-            if (!userId.empty() && !bookId.empty()) {
+                if (!userId.empty() && !bookId.empty()) {
                 userBooks[userId].push_back(bookId);
                 globalBorrowFreq[bookId]++;
             }
@@ -98,7 +98,7 @@ public:
     // ── Main API ────────────────────────────────────────────────────────
     // Returns up to `limit` recommended BookEntry objects for a given user.
     // Priority: 1) co-borrowed companions  2) same author  3) same genre
-    std::vector<BookEntry> recommend(const std::string& userId,
+    Array<BookEntry> recommend(const std::string& userId,
                                      int limit = 5) const {
         // Step 1: collect what this user has already read from data/borrows.txt
         std::set<std::string> alreadyRead;
@@ -153,7 +153,7 @@ public:
         }
 
         // Step 3: sort by score descending, return top `limit`
-        std::vector<std::pair<int,std::string>> ranked;
+        Array<std::pair<int,std::string>> ranked;
         ranked.reserve(score.size());
         for (auto& p : score) {
             auto& bid = p.first;
@@ -163,7 +163,7 @@ public:
         std::sort(ranked.begin(), ranked.end(),
                   [](auto& a, auto& b){ return a.first > b.first; });
 
-        std::vector<BookEntry> result;
+        Array<BookEntry> result;
         for (int i = 0; i < std::min(limit, (int)ranked.size()); ++i) {
             auto it = catalogue.find(ranked[i].second);
             if (it != catalogue.end())

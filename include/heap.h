@@ -1,6 +1,6 @@
 #pragma once
 #include "globals.h"
-#include <vector>
+#include "dynamic_array.h"
 #include <algorithm>
 
 // ══════════════════════════════════════════════════════════════════════════════
@@ -30,7 +30,7 @@ struct FineEntry {
 //  Used for: "Who owes the most?" query & heap sort demo
 // ══════════════════════════════════════════════════════════════════════════════
 class FineMaxHeap {
-    vector<FineEntry> heap;
+    Array<FineEntry> heap;
 
     void heapifyUp(int i) {
         while (i > 0) {
@@ -63,7 +63,7 @@ public:
     FineEntry extractMax() {
         if (heap.empty()) throw runtime_error("Heap empty");
         FineEntry top = heap[0];
-        heap[0] = heap.back();
+        heap[0] = heap[heap.size()-1];
         heap.pop_back();
         if (!heap.empty()) heapifyDown(0);
         return top;
@@ -78,7 +78,7 @@ public:
     int   size()  const { return heap.size(); }
 
     // Heap Sort – sorts a copy in ascending order, prints result
-    void heapSort(vector<FineEntry> arr) {
+    void heapSort(Array<FineEntry> arr) {
         // Build max heap
         int n = arr.size();
         for (int i = n/2-1; i >= 0; i--) {
@@ -137,7 +137,7 @@ struct DueEntry {
 };
 
 class DueMinHeap {
-    vector<DueEntry> heap;
+    Array<DueEntry> heap;
 
     void heapifyUp(int i) {
         while (i > 0) {
@@ -173,7 +173,7 @@ public:
              << setw(28)<< "Book"
              << "Due Date\n" << RESET;
         printLine();
-        vector<DueEntry> tmp = heap;
+        Array<DueEntry> tmp = heap;
         // Simple display (don't destroy heap)
         sort(tmp.begin(), tmp.end(), [](auto& a, auto& b){ return a.dueDate < b.dueDate; });
         int cnt = min(n, (int)tmp.size());

@@ -8,7 +8,7 @@
 #define OVERDUE_WARNING_H
 
 #include <string>
-#include <vector>
+#include "dynamic_array.h"
 #include <fstream>
 #include <sstream>
 #include <iostream>
@@ -50,8 +50,8 @@ private:
 
     // ── Load active borrows for a single user ─────────────────────────────
     // File: data/active/<userId>.txt — format: bookId|bookTitle|dueDate
-    static std::vector<DueSoonEntry> loadUserActive(const std::string& userId) {
-        std::vector<DueSoonEntry> entries;
+    static Array<DueSoonEntry> loadUserActive(const std::string& userId) {
+        Array<DueSoonEntry> entries;
         std::string path = "data/active/" + userId + ".txt";
         std::ifstream f(path);
         if (!f.is_open()) return entries;
@@ -74,7 +74,7 @@ public:
     // ── Called at user login (inside user_panel login flow) ───────────────
     static void checkOnLogin(const std::string& userId) {
         auto entries = loadUserActive(userId);
-        std::vector<DueSoonEntry> warnings;
+        Array<DueSoonEntry> warnings;
 
         for (auto& e : entries) {
             if (e.daysLeft <= 2)   // within 2 days OR already overdue
@@ -110,8 +110,8 @@ public:
             return;
         }
 
-        std::vector<DueSoonEntry> soonOverdue;
-        std::vector<DueSoonEntry> alreadyOverdue;
+        Array<DueSoonEntry> soonOverdue;
+        Array<DueSoonEntry> alreadyOverdue;
 
         std::string userId;
         while (std::getline(ul, userId)) {

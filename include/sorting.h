@@ -1,6 +1,6 @@
 #pragma once
 #include "book.h"
-#include <vector>
+#include "dynamic_array.h"
 #include <functional>
 
 // ══════════════════════════════════════════════════════════════════════════════
@@ -10,7 +10,7 @@
 // ══════════════════════════════════════════════════════════════════════════════
 
 // ─── Bubble Sort ─────────────────────────────────────────────────────────────
-inline void bubbleSortByTitle(vector<Book>& v) {
+inline void bubbleSortByTitle(Array<Book>& v) {
     int n = v.size();
     for (int i = 0; i < n-1; i++)
         for (int j = 0; j < n-i-1; j++)
@@ -19,7 +19,7 @@ inline void bubbleSortByTitle(vector<Book>& v) {
 }
 
 // ─── Insertion Sort ──────────────────────────────────────────────────────────
-inline void insertionSortByYear(vector<Book>& v) {
+inline void insertionSortByYear(Array<Book>& v) {
     int n = v.size();
     for (int i = 1; i < n; i++) {
         Book key = v[i];
@@ -33,7 +33,7 @@ inline void insertionSortByYear(vector<Book>& v) {
 }
 
 // ─── Selection Sort ──────────────────────────────────────────────────────────
-inline void selectionSortByAuthor(vector<Book>& v) {
+inline void selectionSortByAuthor(Array<Book>& v) {
     int n = v.size();
     for (int i = 0; i < n-1; i++) {
         int minIdx = i;
@@ -45,7 +45,7 @@ inline void selectionSortByAuthor(vector<Book>& v) {
 }
 
 // ─── Quick Sort ──────────────────────────────────────────────────────────────
-inline int partition(vector<Book>& v, int low, int high) {
+inline int partition(Array<Book>& v, int low, int high) {
     string pivot = v[high].title;
     int i = low - 1;
     for (int j = low; j < high; j++)
@@ -55,7 +55,7 @@ inline int partition(vector<Book>& v, int low, int high) {
     return i + 1;
 }
 
-inline void quickSort(vector<Book>& v, int low, int high) {
+inline void quickSort(Array<Book>& v, int low, int high) {
     if (low < high) {
         int p = partition(v, low, high);
         quickSort(v, low,  p-1);
@@ -63,14 +63,14 @@ inline void quickSort(vector<Book>& v, int low, int high) {
     }
 }
 
-inline void quickSortByTitle(vector<Book>& v) {
+inline void quickSortByTitle(Array<Book>& v) {
     if (!v.empty()) quickSort(v, 0, (int)v.size()-1);
 }
 
 // ─── Merge Sort ──────────────────────────────────────────────────────────────
-inline void mergeByAvailability(vector<Book>& v, int l, int m, int r) {
-    vector<Book> left(v.begin()+l, v.begin()+m+1);
-    vector<Book> right(v.begin()+m+1, v.begin()+r+1);
+inline void mergeByAvailability(Array<Book>& v, int l, int m, int r) {
+    Array<Book> left(v.begin()+l, v.begin()+m+1);
+    Array<Book> right(v.begin()+m+1, v.begin()+r+1);
     int i=0, j=0, k=l;
     while (i<(int)left.size() && j<(int)right.size())
         v[k++] = (left[i].availableCopies >= right[j].availableCopies) ? left[i++] : right[j++];
@@ -78,7 +78,7 @@ inline void mergeByAvailability(vector<Book>& v, int l, int m, int r) {
     while (j<(int)right.size()) v[k++] = right[j++];
 }
 
-inline void mergeSortByAvailability(vector<Book>& v, int l, int r) {
+inline void mergeSortByAvailability(Array<Book>& v, int l, int r) {
     if (l >= r) return;
     int m = (l+r)/2;
     mergeSortByAvailability(v, l, m);
@@ -86,12 +86,12 @@ inline void mergeSortByAvailability(vector<Book>& v, int l, int r) {
     mergeByAvailability(v, l, m, r);
 }
 
-inline void sortByAvailability(vector<Book>& v) {
+inline void sortByAvailability(Array<Book>& v) {
     if (!v.empty()) mergeSortByAvailability(v, 0, (int)v.size()-1);
 }
 
 // ─── Genre Sort (Bubble Sort) ────────────────────────────────────────────────
-inline void bubbleSortByGenre(vector<Book>& v) {
+inline void bubbleSortByGenre(Array<Book>& v) {
     int n = v.size();
     for (int i = 0; i < n-1; i++)
         for (int j = 0; j < n-i-1; j++)
@@ -100,7 +100,7 @@ inline void bubbleSortByGenre(vector<Book>& v) {
 }
 
 // ─── Print sorted catalogue ───────────────────────────────────────────────────
-inline void printSortedCatalogue(vector<Book>& books, int choice) {
+inline void printSortedCatalogue(Array<Book>& books, int choice) {
     if (books.empty()) { cout << RED << "  Catalogue is empty.\n" << RESET; return; }
     switch (choice) {
         case 1: bubbleSortByTitle(books);      cout << YELLOW << "  Sorted by Title \n" << RESET; break;

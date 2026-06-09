@@ -1,6 +1,6 @@
 #pragma once
 #include "globals.h"
-#include <vector>
+#include "dynamic_array.h"
 
 // ─── ADDED THESE TWO LINES HERE ───────────────────────────────────────────────
 #include "book_condition.h"
@@ -247,7 +247,7 @@ class BookBST
         searchByGenre(node->right, kw, found);
     }
 
-    void collectAll(BSTNode *node, vector<Book> &out) const
+    void collectAll(BSTNode *node, Array<Book> &out) const
     {
         if (!node)
             return;
@@ -347,9 +347,9 @@ public:
                  << RESET;
     }
 
-    vector<Book> getAll() const
+    Array<Book> getAll() const
     {
-        vector<Book> v;
+        Array<Book> v;
         collectAll(root, v);
         return v;
     }

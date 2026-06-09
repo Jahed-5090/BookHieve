@@ -12,7 +12,6 @@
 #include <sstream>
 #include <iostream>
 #include <unordered_map>
-#include <vector>
 
 
 enum class BookCondition {

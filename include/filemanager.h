@@ -103,7 +103,7 @@ public:
     static void savePerUserHistory(const BorrowHistory& bh) {
         portableMkdir("data/history");
         // Group records by userId
-        map<int, vector<const BorrowRecord*>> byUser;
+        map<int, Array<const BorrowRecord*>> byUser;
         for (auto& r : const_cast<BorrowHistory&>(bh).getAll())
             byUser[r.userId].push_back(&r);
 
@@ -122,7 +122,7 @@ public:
     static void saveActiveBorrows(const BorrowHistory& bh, const BookBST& catalogue) {
         portableMkdir("data/active");
         // Group active (non-returned) records by userId
-        map<int, vector<const BorrowRecord*>> byUser;
+        map<int, Array<const BorrowRecord*>> byUser;
         for (auto& r : const_cast<BorrowHistory&>(bh).getAll())
             if (!r.returned)
                 byUser[r.userId].push_back(&r);

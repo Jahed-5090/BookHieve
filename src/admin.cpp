@@ -98,6 +98,94 @@ static void removeBook(Library &lib)
     pauseScreen();
 }
 
+static void editBook(Library &lib)
+{
+    printTitle("Edit Book");
+    int id;
+    cout << "  Enter Book ID to edit (0 to cancel): ";
+    id = getIntInput();
+    if (id == 0) return;
+
+    BSTNode *node = lib.catalogue.search(id);
+    if (!node)
+    {
+        cout << RED << "  Book not found.\n"
+             << RESET;
+        pauseScreen();
+        return;
+    }
+
+    // Display current book information
+    cout << BOLD << "\n  Current Book Information:" << RESET << "\n";
+    cout << BOLD << left << setw(6) << "ID" << setw(11) << "" << setw(28) << "Title"
+         << setw(22) << "Author" << setw(18) << "Genre"
+         << setw(6) << "Year" << "Avail/Total\n" << RESET;
+    printLine();
+    node->data.print();
+
+    // Show edit options
+    while (true)
+    {
+        cout << "\n  What would you like to edit?\n"
+             << "  1. Title\n"
+             << "  2. Author\n"
+             << "  3. Year\n"
+             << "  4. Genre\n"
+             << "  0. Done\n"
+             << "  Choice: ";
+        int ch = getMenuChoice(0, 4);
+        if (ch == 0) break;
+
+        if (ch == 1)
+        {
+            cout << "  New Title (current: " << node->data.title << "): ";
+            string newTitle;
+            getline(cin, newTitle);
+            if (!newTitle.empty())
+            {
+                node->data.title = newTitle;
+                cout << GREEN << "  Title updated.\n" << RESET;
+            }
+        }
+        else if (ch == 2)
+        {
+            cout << "  New Author (current: " << node->data.author << "): ";
+            string newAuthor;
+            getline(cin, newAuthor);
+            if (!newAuthor.empty())
+            {
+                node->data.author = newAuthor;
+                cout << GREEN << "  Author updated.\n" << RESET;
+            }
+        }
+        else if (ch == 3)
+        {
+            cout << "  New Year (current: " << node->data.year << "): ";
+            int newYear = getIntInput();
+            if (newYear > 0)
+            {
+                node->data.year = newYear;
+                cout << GREEN << "  Year updated.\n" << RESET;
+            }
+        }
+        else if (ch == 4)
+        {
+            cout << "  New Genre (current: " << node->data.genre << "): ";
+            string newGenre;
+            getline(cin, newGenre);
+            if (!newGenre.empty())
+            {
+                node->data.genre = newGenre;
+                cout << GREEN << "  Genre updated.\n" << RESET;
+            }
+        }
+    }
+
+    lib.save();
+    cout << GREEN << "\n  Book information saved.\n" << RESET;
+    pauseScreen();
+}
+
 static void searchBook(Library &lib)
 {
     while (true)
@@ -275,7 +363,7 @@ static void viewFineHistory(Library &lib)
         else if (ch == 2)
         {
             // Collect all user fines
-            vector<FineEntry> all;
+            Array<FineEntry> all;
             for (auto &u : lib.members.getAll())
             {
                 double fine = lib.currentFine(u.id);
@@ -337,20 +425,21 @@ void runAdminPanel(Library &lib)
         printTitle("Admin Panel  [" + lib.currentUser->name + "]");
         cout << "  1.  Add Book\n"
              << "  2.  Remove Book\n"
-             << "  3.  Search Book\n"
-             << "  4.  View Catalogue\n"
-             << "  5.  View Memberships\n"
-             << "  6.  Remove Member\n"
-             << "  7.  View Borrow History\n"
-             << "  8.  Fine History\n"
-             << "  9.  Books Due Soon\n"
-             << "  10. Wait Queue\n"
-             << "  11. Manage Worn Books\n"
-             << "  12. Update Borrow Limits\n"
+             << "  3.  Edit Book\n"
+             << "  4.  Search Book\n"
+             << "  5.  View Catalogue\n"
+             << "  6.  View Memberships\n"
+             << "  7.  Remove Member\n"
+             << "  8.  View Borrow History\n"
+             << "  9.  Fine History\n"
+             << "  10. Books Due Soon\n"
+             << "  11. Wait Queue\n"
+             << "  12. Manage Worn Books\n"
+             << "  13. Update Borrow Limits\n"
              << "  0.  Sign Out\n";
         printLine();
         cout << "  Choice: ";
-        int ch = getMenuChoice(0, 12);
+        int ch = getMenuChoice(0, 13);
         switch (ch)
         {
         case 1:
@@ -360,35 +449,38 @@ void runAdminPanel(Library &lib)
             removeBook(lib);
             break;
         case 3:
-            searchBook(lib);
+            editBook(lib);
             break;
         case 4:
-            viewCatalogue(lib);
+            searchBook(lib);
             break;
         case 5:
-            viewMemberships(lib);
+            viewCatalogue(lib);
             break;
         case 6:
-            removeMember(lib);
+            viewMemberships(lib);
             break;
         case 7:
-            viewBorrowHistory(lib);
+            removeMember(lib);
             break;
         case 8:
+            viewBorrowHistory(lib);
+            break;
+        case 9:
             viewFineHistory(lib);
             break;
 
-        case 9:
+        case 10:
             dueSoonMenu(lib);
             break;
-        case 10:
+        case 11:
             waitQueueMenu(lib);
             break;
-        case 11:
+        case 12:
             condMgr.showWornBooks();
             pauseScreen();
             break; // E6
-        case 12:
+        case 13:
             limitMgr.adminUpdateLimit();
             pauseScreen();
             break; // E7
