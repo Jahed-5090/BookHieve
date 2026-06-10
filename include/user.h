@@ -5,7 +5,8 @@
 // ══════════════════════════════════════════════════════════════════════════════
 //  User  –  data entity
 // ══════════════════════════════════════════════════════════════════════════════
-struct User {
+class User {
+public:
     int    id;
     string name;
     string email;
@@ -117,7 +118,8 @@ struct User {
 // ══════════════════════════════════════════════════════════════════════════════
 //  Singly Linked List node for users
 // ══════════════════════════════════════════════════════════════════════════════
-struct UserNode {
+class UserNode {
+public:
     User      data;
     UserNode* next;
     UserNode(const User& u) : data(u), next(nullptr) {}

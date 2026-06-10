@@ -10,8 +10,9 @@ extern ConditionManager condMgr;
 // ══════════════════════════════════════════════════════════════════════════════
 //  Book  –  core data entity
 // ══════════════════════════════════════════════════════════════════════════════
-struct Book
+class Book
 {
+public:
     int id;
     string title;
     string author;
@@ -81,8 +82,9 @@ struct Book
 // ══════════════════════════════════════════════════════════════════════════════
 //  BST Node
 // ══════════════════════════════════════════════════════════════════════════════
-struct BSTNode
+class BSTNode
 {
+public:
     Book data;
     BSTNode *left;
     BSTNode *right;

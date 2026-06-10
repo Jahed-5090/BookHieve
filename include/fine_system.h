@@ -16,7 +16,8 @@
 #include <cmath>
 
 
-struct FineConfig {
+class FineConfig {
+public:
     double tier1Rate    = 5.0;   // BDT per day, days 1-3
     double tier2Rate    = 15.0;  // BDT per day, day 4+
     int    tier1Days    = 3;     // how many days before escalation

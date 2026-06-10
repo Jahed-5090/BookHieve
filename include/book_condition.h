@@ -11,8 +11,7 @@
 #include <fstream>
 #include <sstream>
 #include <iostream>
-#include <unordered_map>
-
+#include "dynamic_array.h"
 
 enum class BookCondition {
     New  = 0,
@@ -56,7 +55,20 @@ class ConditionManager {
 private:
     // Persisted as data/conditions.txt — format: bookId|condition
     const std::string condFile = "data/conditions.txt";
-    std::unordered_map<std::string, BookCondition> condMap;
+    class ConditionEntry {
+    public:
+        std::string bookId;
+        BookCondition condition;
+    };
+    Array<ConditionEntry> condMap;
+
+    static std::size_t findIndex(const Array<ConditionEntry>& arr,
+                                 const std::string& bookId) {
+        for (std::size_t i = 0; i < arr.size(); ++i)
+            if (arr[i].bookId == bookId)
+                return i;
+        return arr.size();
+    }
 
     void load() {
         condMap.clear();
@@ -69,15 +81,23 @@ private:
             if (pos == std::string::npos) continue;
             std::string id  = line.substr(0, pos);
             std::string cnd = line.substr(pos + 1);
-            condMap[id] = strToCondition(cnd);
+            auto idx = findIndex(condMap, id);
+            if (idx < condMap.size())
+                condMap[idx].condition = strToCondition(cnd);
+            else {
+                ConditionEntry entry;
+                entry.bookId = id;
+                entry.condition = strToCondition(cnd);
+                condMap.push_back(entry);
+            }
         }
     }
 
     void save() {
         std::ofstream f(condFile);
         for (auto& p : condMap) {
-            auto& id = p.first;
-            auto& c = p.second;
+            auto& id = p.bookId;
+            auto& c = p.condition;
             f << id << "|" << conditionToStr(c) << "\n";
         }
     }
@@ -87,7 +107,15 @@ public:
 
     // ── Admin: set or update condition ────────────────────────────────────
     void setCondition(const std::string& bookId, BookCondition c) {
-        condMap[bookId] = c;
+        auto idx = findIndex(condMap, bookId);
+        if (idx < condMap.size())
+            condMap[idx].condition = c;
+        else {
+            ConditionEntry entry;
+            entry.bookId = bookId;
+            entry.condition = c;
+            condMap.push_back(entry);
+        }
         save();
     }
 
@@ -114,9 +142,9 @@ public:
 
     // ── Lookup ────────────────────────────────────────────────────────────
     BookCondition getCondition(const std::string& bookId) {
-        auto it = condMap.find(bookId);
-        if (it == condMap.end()) return BookCondition::Unknown;
-        return it->second;
+        auto idx = findIndex(condMap, bookId);
+        if (idx == condMap.size()) return BookCondition::Unknown;
+        return condMap[idx].condition;
     }
 
     // Returns the badge string for inline display in catalog/search results
@@ -130,8 +158,8 @@ public:
         std::cout << "\n  ╔══ Admin: Books Flagged for Review (Worn) ══════════╗\n";
         bool any = false;
         for (auto& p : condMap) {
-            auto& id = p.first;
-            auto& c = p.second;
+            auto& id = p.bookId;
+            auto& c = p.condition;
             if (c == BookCondition::Worn) {
                 std::cout << "  ║      Book ID: " << id << "\n";
                 any = true;

@@ -16,7 +16,8 @@
 #include <cmath>
 #include <iomanip>
 
-struct DueSoonEntry {
+class DueSoonEntry {
+public:
     std::string userId;
     std::string bookId;
     std::string bookTitle;

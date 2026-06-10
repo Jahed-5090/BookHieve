@@ -5,7 +5,8 @@
 // ══════════════════════════════════════════════════════════════════════════════
 //  BorrowRecord  –  one borrow event
 // ══════════════════════════════════════════════════════════════════════════════
-struct BorrowRecord {
+class BorrowRecord {
+public:
     int    recordId;
     int    userId;
     int    bookId;
@@ -83,7 +84,8 @@ struct BorrowRecord {
 // ══════════════════════════════════════════════════════════════════════════════
 //  Stack  –  used for "undo last borrow" and fine history navigation
 // ══════════════════════════════════════════════════════════════════════════════
-struct StackNode {
+class StackNode {
+public:
     BorrowRecord data;
     StackNode*   next;
     StackNode(const BorrowRecord& r) : data(r), next(nullptr) {}
@@ -125,7 +127,8 @@ public:
 // ══════════════════════════════════════════════════════════════════════════════
 //  Queue  –  borrow request queue (FIFO waiting list)
 // ══════════════════════════════════════════════════════════════════════════════
-struct QueueNode {
+class QueueNode {
+public:
     BorrowRecord data;
     QueueNode*   next;
     QueueNode(const BorrowRecord& r) : data(r), next(nullptr) {}

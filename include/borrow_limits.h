@@ -10,11 +10,10 @@
 #define BORROW_LIMITS_H
 
 #include <string>
-#include <unordered_map>
 #include <fstream>
 #include <sstream>
 #include <iostream>
-
+#include "dynamic_array.h"
 
 class BorrowLimitManager {
 private:
@@ -26,7 +25,12 @@ private:
     // (genre is the 4th field — add it when writing active borrows)
     const std::string activeDir   = "data/active/";
 
-    std::unordered_map<std::string, int> limits; // genre→max (case-insensitive key)
+    class GenreLimit {
+    public:
+        std::string genre;
+        int limit;
+    };
+    Array<GenreLimit> limits; // genre→max (case-insensitive key)
     int globalLimit = 5;
 
     // Normalise genre key: trim + lowercase for case-insensitive comparison
@@ -37,6 +41,42 @@ private:
             r += (char)std::tolower(c);
         }
         return r;
+    }
+
+    static std::size_t findIndex(const Array<GenreLimit>& arr, const std::string& key) {
+        for (std::size_t i = 0; i < arr.size(); ++i)
+            if (arr[i].genre == key)
+                return i;
+        return arr.size();
+    }
+
+    static int getValue(const Array<GenreLimit>& arr, const std::string& key) {
+        auto idx = findIndex(arr, key);
+        return idx < arr.size() ? arr[idx].limit : 0;
+    }
+
+    static void setValue(Array<GenreLimit>& arr, const std::string& key, int value) {
+        auto idx = findIndex(arr, key);
+        if (idx < arr.size())
+            arr[idx].limit = value;
+        else {
+            GenreLimit entry;
+            entry.genre = key;
+            entry.limit = value;
+            arr.push_back(entry);
+        }
+    }
+
+    static void incrementValue(Array<GenreLimit>& arr, const std::string& key) {
+        auto idx = findIndex(arr, key);
+        if (idx < arr.size())
+            arr[idx].limit += 1;
+        else {
+            GenreLimit entry;
+            entry.genre = key;
+            entry.limit = 1;
+            arr.push_back(entry);
+        }
     }
 
     void loadLimits() {
@@ -58,7 +98,7 @@ private:
             if (normalise(genre) == "global")
                 globalLimit = lim;
             else
-                limits[normalise(genre)] = lim;
+                setValue(limits, normalise(genre), lim);
         }
     }
 
@@ -79,8 +119,8 @@ public:
     BorrowLimitManager() { loadLimits(); }
 
     // ── Count how many books of each genre a user currently has borrowed ──
-    std::unordered_map<std::string,int> currentCountByGenre(const std::string& userId) const {
-        std::unordered_map<std::string,int> counts;
+    Array<GenreLimit> currentCountByGenre(const std::string& userId) const {
+        Array<GenreLimit> counts;
         std::ifstream f(activeDir + userId + ".txt");
         if (!f.is_open()) return counts;
         std::string line;
@@ -93,8 +133,8 @@ public:
             std::getline(ss, due,   '|');
             std::getline(ss, genre);
             if (!genre.empty())
-                counts[normalise(genre)]++;
-            counts["__total__"]++;
+                incrementValue(counts, normalise(genre));
+            incrementValue(counts, "__total__");
         }
         return counts;
     }
@@ -105,9 +145,7 @@ public:
         auto counts = currentCountByGenre(userId);
 
         // Global cap check
-        int total = 0;
-        auto git = counts.find("__total__");
-        if (git != counts.end()) total = git->second;
+        int total = getValue(counts, "__total__");
         if (total >= globalLimit) {
             std::cout << "\n   Global borrow limit reached (" << globalLimit
                       << " books). Please return a book first.\n";
@@ -116,11 +154,10 @@ public:
 
         // Category cap check
         std::string key = normalise(genre);
-        auto lit = limits.find(key);
-        if (lit != limits.end()) {
-            int catLimit = lit->second;
-            auto cit = counts.find(key);
-            int catCount = (cit != counts.end()) ? cit->second : 0;
+        auto limitIdx = findIndex(limits, key);
+        if (limitIdx < limits.size()) {
+            int catLimit = limits[limitIdx].limit;
+            int catCount = getValue(counts, key);
             if (catCount >= catLimit) {
                 std::cout << "\n    Category limit for \"" << genre
                           << "\" reached (" << catCount << "/" << catLimit
@@ -134,17 +171,14 @@ public:
     // ── Display current usage to user ─────────────────────────────────────
     void showUsage(const std::string& userId) const {
         auto counts = currentCountByGenre(userId);
-        int total = 0;
-        auto git = counts.find("__total__");
-        if (git != counts.end()) total = git->second;
+        int total = getValue(counts, "__total__");
 
         std::cout << "\n  ╔══ Your Borrow Allowance ═══════════════════════════╗\n";
         std::cout << "  ║  Overall: " << total << " / " << globalLimit << " books\n";
         for (auto& p : limits) {
-            auto& genre = p.first;
-            auto& lim = p.second;
-            auto cit = counts.find(genre);
-            int used = (cit != counts.end()) ? cit->second : 0;
+            auto& genre = p.genre;
+            auto& lim = p.limit;
+            int used = getValue(counts, genre);
             std::cout << "  ║  " << genre << ": " << used << " / " << lim << "\n";
         }
         std::cout << "  ╚════════════════════════════════════════════════════╝\n";
@@ -156,8 +190,8 @@ public:
         std::cout << "\n  Current limits:\n";
         std::cout << "    GLOBAL = " << globalLimit << "\n";
         for (auto& p : limits) {
-            auto& g = p.first;
-            auto& l = p.second;
+            auto& g = p.genre;
+            auto& l = p.limit;
             std::cout << "    " << g << " = " << l << "\n";
         }
 
@@ -176,7 +210,7 @@ public:
         if (normalise(genre) == "global")
             globalLimit = lim;
         else
-            limits[normalise(genre)] = lim;
+            setValue(limits, normalise(genre), lim);
 
         // Rewrite with current values
         portableMkdir("data");
@@ -184,8 +218,8 @@ public:
         f << "# Per-category borrow limits (updated by admin)\n"
           << "GLOBAL|" << globalLimit << "\n";
         for (auto& p : limits) {
-            auto& g = p.first;
-            auto& l = p.second;
+            auto& g = p.genre;
+            auto& l = p.limit;
             f << g << "|" << l << "\n";
         }
 
