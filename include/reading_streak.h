@@ -17,7 +17,8 @@
 #include <algorithm>
 #include <ctime>
 
-struct ReadingStats {
+class ReadingStats {
+public:
     int totalBorrowed  = 0;
     int currentStreak  = 0;   // consecutive months with ≥1 borrow
     int longestStreak  = 0;

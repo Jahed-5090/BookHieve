@@ -18,14 +18,15 @@
 #include <iostream>
 
 // ── Data Structures ───────────────────────────────────────────────────────
-struct BookEntry {
+class BookEntry {
+public:
     std::string id;
     std::string title;
     std::string author;
     std::string genre;
 };
 
-struct RecommendationEngine {
+class RecommendationEngine {
 private:
     // frequency map: bookId → how many times borrowed globally
     std::unordered_map<std::string, int> globalBorrowFreq;

@@ -6,7 +6,8 @@
 // ══════════════════════════════════════════════════════════════════════════════
 //  FineEntry  –  user + outstanding fine
 // ══════════════════════════════════════════════════════════════════════════════
-struct FineEntry {
+class FineEntry {
+public:
     int    userId;
     string userName;
     double fineAmount;
@@ -128,7 +129,8 @@ public:
 // ══════════════════════════════════════════════════════════════════════════════
 //  MinHeap  –  for "next return due" queries
 // ══════════════════════════════════════════════════════════════════════════════
-struct DueEntry {
+class DueEntry {
+public:
     int    recordId, userId, bookId;
     string dueDate, bookTitle;
     DueEntry() : recordId(0), userId(0), bookId(0) {}
