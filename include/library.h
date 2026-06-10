@@ -82,7 +82,19 @@ public:
     {
         // Rebuild fine & due heaps from current history
         // (heaps are in-memory, rebuilt on load)
-        map<int, double> userFines;
+        struct UserFine {
+            int userId;
+            double amount;
+        };
+        Array<UserFine> userFines;
+        auto getFine = [&](int uid) -> double& {
+            for (auto& entry : userFines) {
+                if (entry.userId == uid) return entry.amount;
+            }
+            userFines.push_back({uid, 0.0});
+            return userFines.back().amount;
+        };
+
         string today = currentDate();
         for (auto &r : history.getAll())
         {
@@ -93,15 +105,15 @@ public:
                 {
                     double grossFine = fineSys.calculateFine(overdue);
                     double owed = max(0.0, grossFine - r.finePaid);
-                    userFines[r.userId] += owed;
+                    getFine(r.userId) += owed;
                     // Due date
                     // (simple: borrowDate + BORROW_DAYS, skip for brevity)
                 }
             }
         }
-        for (auto &p : userFines) {
-            auto &uid = p.first;
-            auto &fine = p.second;
+        for (auto &entry : userFines) {
+            auto uid = entry.userId;
+            auto fine = entry.amount;
             User *u = members.findById(uid);
             if (u)
             {

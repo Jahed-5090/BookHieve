@@ -3,7 +3,6 @@
 #include "book.h"
 #include "user.h"
 #include "borrow.h"
-#include <map>
 
 
 // ══════════════════════════════════════════════════════════════════════════════
@@ -103,13 +102,25 @@ public:
     static void savePerUserHistory(const BorrowHistory& bh) {
         portableMkdir("data/history");
         // Group records by userId
-        map<int, Array<const BorrowRecord*>> byUser;
-        for (auto& r : const_cast<BorrowHistory&>(bh).getAll())
-            byUser[r.userId].push_back(&r);
+        struct UserHistory {
+            int userId;
+            Array<const BorrowRecord*> records;
+        };
+        Array<UserHistory> byUser;
+        auto getHistory = [&](int uid) -> Array<const BorrowRecord*>& {
+            for (auto& entry : byUser) {
+                if (entry.userId == uid) return entry.records;
+            }
+            byUser.push_back({uid, Array<const BorrowRecord*>()});
+            return byUser.back().records;
+        };
 
-        for (auto& p : byUser) {
-            auto& uid = p.first;
-            auto& records = p.second;
+        for (auto& r : const_cast<BorrowHistory&>(bh).getAll())
+            getHistory(r.userId).push_back(&r);
+
+        for (auto& entry : byUser) {
+            auto& uid = entry.userId;
+            auto& records = entry.records;
             ofstream f("data/history/" + to_string(uid) + ".txt");
             if (!f) continue;
             for (auto* r : records)
@@ -122,14 +133,26 @@ public:
     static void saveActiveBorrows(const BorrowHistory& bh, const BookBST& catalogue) {
         portableMkdir("data/active");
         // Group active (non-returned) records by userId
-        map<int, Array<const BorrowRecord*>> byUser;
+        struct UserHistory {
+            int userId;
+            Array<const BorrowRecord*> records;
+        };
+        Array<UserHistory> byUser;
+        auto getHistory = [&](int uid) -> Array<const BorrowRecord*>& {
+            for (auto& entry : byUser) {
+                if (entry.userId == uid) return entry.records;
+            }
+            byUser.push_back({uid, Array<const BorrowRecord*>()});
+            return byUser.back().records;
+        };
+
         for (auto& r : const_cast<BorrowHistory&>(bh).getAll())
             if (!r.returned)
-                byUser[r.userId].push_back(&r);
+                getHistory(r.userId).push_back(&r);
 
-        for (auto& p : byUser) {
-            auto& uid = p.first;
-            auto& records = p.second;
+        for (auto& entry : byUser) {
+            auto& uid = entry.userId;
+            auto& records = entry.records;
             ofstream f("data/active/" + to_string(uid) + ".txt");
             if (!f) continue;
             for (auto* r : records) {

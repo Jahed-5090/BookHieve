@@ -101,6 +101,9 @@ public:
 
     void clear() { sz_ = 0; }
 
+    T& back() { return data_[sz_ - 1]; }
+    const T& back() const { return data_[sz_ - 1]; }
+
     T* data() { return data_; }
     const T* data() const { return data_; }
 };
