@@ -10,11 +10,9 @@
 
 #include <string>
 #include "dynamic_array.h"
-#include <set>
 #include <fstream>
 #include <sstream>
 #include <iostream>
-#include <algorithm>
 #include <ctime>
 
 class ReadingStats {
@@ -25,7 +23,12 @@ public:
 };
 
 // Milestone thresholds and their badge labels
-static const Array<std::pair<int,std::string>> MILESTONES = {
+class Milestone {
+public:
+    int threshold;
+    std::string badge;
+};
+static const Array<Milestone> MILESTONES = {
     {1,   "First Borrow"},
     {5,   "Bookworm (5 books)"},
     {10,  "Avid Reader (10 books)"},
@@ -62,12 +65,37 @@ private:
 public:
     // ── Compute stats from borrow records ──────────────────────────────
     // Reads data/borrows.txt format: recordId|userId|bookId|bookTitle|borrowDate|returnDate|returned|fine
+    static std::size_t findStringIndex(const Array<std::string>& arr,
+                                        const std::string& value) {
+        for (std::size_t i = 0; i < arr.size(); ++i)
+            if (arr[i] == value)
+                return i;
+        return arr.size();
+    }
+
+    static void insertUnique(Array<std::string>& arr, const std::string& value) {
+        if (findStringIndex(arr, value) == arr.size())
+            arr.push_back(value);
+    }
+
+    static void sortStrings(Array<std::string>& arr) {
+        for (std::size_t i = 1; i < arr.size(); ++i) {
+            std::string key = arr[i];
+            std::size_t j = i;
+            while (j > 0 && arr[j - 1] > key) {
+                arr[j] = arr[j - 1];
+                --j;
+            }
+            arr[j] = key;
+        }
+    }
+
     static ReadingStats compute(const std::string& userId) {
         ReadingStats stats;
         std::ifstream f("data/borrows.txt");
         if (!f.is_open()) return stats;
 
-        std::set<std::string> activeMonths;
+        Array<std::string> activeMonths;
         std::string line;
         while (std::getline(f, line)) {
             if (line.empty()) continue;
@@ -82,30 +110,30 @@ public:
             if (bookId.empty() || bdate.empty()) continue;
             stats.totalBorrowed++;
             std::string ym = yearMonth(bdate);
-            if (!ym.empty()) activeMonths.insert(ym);
+            if (!ym.empty()) insertUnique(activeMonths, ym);
         }
 
         // ── Streak: walk backwards from current month ─────────────────────
         std::string cur = currentYearMonth();
         int streak = 0;
-        while (activeMonths.count(cur)) {
+        while (findStringIndex(activeMonths, cur) < activeMonths.size()) {
             streak++;
             cur = prevMonth(cur);
         }
         stats.currentStreak = streak;
 
-        // Longest streak: brute force over sorted month set
+        // Longest streak: brute force over sorted month list
         if (!activeMonths.empty()) {
-            Array<std::string> months(activeMonths.begin(), activeMonths.end());
-            int best = 1, run = 1;
-            for (size_t i = 1; i < months.size(); ++i) {
-                // Check consecutive
-                std::string expected = prevMonth(months[i]);
-                if (expected == months[i-1])
+            sortStrings(activeMonths);
+            int best = 1;
+            int run = 1;
+            for (size_t i = 1; i < activeMonths.size(); ++i) {
+                std::string expected = prevMonth(activeMonths[i]);
+                if (expected == activeMonths[i-1])
                     run++;
                 else
                     run = 1;
-                best = std::max(best, run);
+                if (run > best) best = run;
             }
             stats.longestStreak = best;
         }
@@ -128,8 +156,8 @@ public:
         std::cout << "  ║\n  ║  Milestones:\n";
         bool anyEarned = false;
         for (auto& p : MILESTONES) {
-            auto& threshold = p.first;
-            auto& badge = p.second;
+            auto& threshold = p.threshold;
+            auto& badge = p.badge;
             if (s.totalBorrowed >= threshold) {
                 std::cout << "  ║       " << badge << "\n";
                 anyEarned = true;
@@ -140,8 +168,8 @@ public:
 
         // Next milestone hint
         for (auto& p : MILESTONES) {
-            auto& threshold = p.first;
-            auto& badge = p.second;
+            auto& threshold = p.threshold;
+            auto& badge = p.badge;
             if (s.totalBorrowed < threshold) {
                 int left = threshold - s.totalBorrowed;
                 std::cout << "  ║\n  ║  Next: " << badge << "  ("

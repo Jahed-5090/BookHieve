@@ -9,10 +9,6 @@
 
 #include <string>
 #include "dynamic_array.h"
-#include <unordered_map>
-#include <map>
-#include <set>
-#include <algorithm>
 #include <fstream>
 #include <sstream>
 #include <iostream>
@@ -28,14 +24,165 @@ public:
 
 class RecommendationEngine {
 private:
-    // frequency map: bookId → how many times borrowed globally
-    std::unordered_map<std::string, int> globalBorrowFreq;
-    // co-borrow map: bookId → set of bookIds borrowed by the same users
-    std::unordered_map<std::string, std::map<std::string,int>> coBorrowMap;
-    // catalogue: bookId → BookEntry
-    std::unordered_map<std::string, BookEntry> catalogue;
+    class StringIntEntry {
+    public:
+        std::string key;
+        int value;
+    };
+    class CatalogueEntry {
+    public:
+        std::string bookId;
+        BookEntry entry;
+    };
+    class UserBooksEntry {
+    public:
+        std::string userId;
+        Array<std::string> books;
+    };
+    class CoBorrowEntry {
+    public:
+        std::string bookId;
+        Array<StringIntEntry> counts;
+    };
+    class ScoreEntry {
+    public:
+        int score;
+        std::string bookId;
+    };
 
-    // Load all books from data/books.txt  (pipe-delimited: id|title|author|genre|...)
+    // frequency map: bookId → how many times borrowed globally
+    Array<StringIntEntry> globalBorrowFreq;
+    // co-borrow map: bookId → set of bookIds borrowed by the same users
+    Array<CoBorrowEntry> coBorrowMap;
+    // catalogue: bookId → BookEntry
+    Array<CatalogueEntry> catalogue;
+
+    static std::size_t findIndex(const Array<StringIntEntry>& arr,
+                                 const std::string& key) {
+        for (std::size_t i = 0; i < arr.size(); ++i)
+            if (arr[i].key == key)
+                return i;
+        return arr.size();
+    }
+
+    static std::size_t findIndex(const Array<CatalogueEntry>& arr,
+                                 const std::string& key) {
+        for (std::size_t i = 0; i < arr.size(); ++i)
+            if (arr[i].bookId == key)
+                return i;
+        return arr.size();
+    }
+
+    static std::size_t findIndex(const Array<CoBorrowEntry>& arr,
+                                 const std::string& key) {
+        for (std::size_t i = 0; i < arr.size(); ++i)
+            if (arr[i].bookId == key)
+                return i;
+        return arr.size();
+    }
+
+    static std::size_t findIndex(const Array<ScoreEntry>& arr,
+                                 const std::string& key) {
+        for (std::size_t i = 0; i < arr.size(); ++i)
+            if (arr[i].bookId == key)
+                return i;
+        return arr.size();
+    }
+
+    static std::size_t findIndex(const Array<std::string>& arr,
+                                 const std::string& key) {
+        for (std::size_t i = 0; i < arr.size(); ++i)
+            if (arr[i] == key)
+                return i;
+        return arr.size();
+    }
+
+    static bool contains(const Array<std::string>& arr, const std::string& key) {
+        return findIndex(arr, key) < arr.size();
+    }
+
+    static std::size_t findIndexInCounts(const Array<StringIntEntry>& arr,
+                                          const std::string& key) {
+        for (std::size_t i = 0; i < arr.size(); ++i)
+            if (arr[i].key == key)
+                return i;
+        return arr.size();
+    }
+
+    static int getCount(const Array<StringIntEntry>& arr, const std::string& key) {
+        auto idx = findIndexInCounts(arr, key);
+        return idx < arr.size() ? arr[idx].value : 0;
+    }
+
+    static void incrementCount(Array<StringIntEntry>& arr, const std::string& key) {
+        auto idx = findIndexInCounts(arr, key);
+        if (idx < arr.size())
+            arr[idx].value += 1;
+        else {
+            StringIntEntry entry;
+            entry.key = key;
+            entry.value = 1;
+            arr.push_back(entry);
+        }
+    }
+
+    static void setCount(Array<StringIntEntry>& arr, const std::string& key, int value) {
+        auto idx = findIndexInCounts(arr, key);
+        if (idx < arr.size())
+            arr[idx].value = value;
+        else {
+            StringIntEntry entry;
+            entry.key = key;
+            entry.value = value;
+            arr.push_back(entry);
+        }
+    }
+
+    static Array<std::string>* findUserBooks(Array<UserBooksEntry>& arr,
+                                             const std::string& userId) {
+        for (std::size_t i = 0; i < arr.size(); ++i)
+            if (arr[i].userId == userId)
+                return &arr[i].books;
+        return nullptr;
+    }
+
+    BookEntry* findCatalogueEntry(const std::string& bookId) {
+        auto idx = findIndex(catalogue, bookId);
+        return idx < catalogue.size() ? &catalogue[idx].entry : nullptr;
+    }
+
+    const BookEntry* findCatalogueEntry(const std::string& bookId) const {
+        auto idx = findIndex(catalogue, bookId);
+        return idx < catalogue.size() ? &catalogue[idx].entry : nullptr;
+    }
+
+    int getGlobalBorrowFreq(const std::string& bookId) const {
+        auto idx = findIndex(globalBorrowFreq, bookId);
+        return idx < globalBorrowFreq.size() ? globalBorrowFreq[idx].value : 0;
+    }
+
+    void incrementGlobalBorrowFreq(const std::string& bookId) {
+        auto idx = findIndex(globalBorrowFreq, bookId);
+        if (idx < globalBorrowFreq.size())
+            globalBorrowFreq[idx].value += 1;
+        else {
+            StringIntEntry entry;
+            entry.key = bookId;
+            entry.value = 1;
+            globalBorrowFreq.push_back(entry);
+        }
+    }
+
+    Array<StringIntEntry>* findCoBorrowSet(const std::string& bookId) {
+        auto idx = findIndex(coBorrowMap, bookId);
+        return idx < coBorrowMap.size() ? &coBorrowMap[idx].counts : nullptr;
+    }
+
+    const Array<StringIntEntry>* findCoBorrowSet(const std::string& bookId) const {
+        auto idx = findIndex(coBorrowMap, bookId);
+        return idx < coBorrowMap.size() ? &coBorrowMap[idx].counts : nullptr;
+    }
+
     void loadCatalogue(const std::string& booksFile = "data/books.txt") {
         std::ifstream f(booksFile);
         if (!f.is_open()) return;
@@ -54,18 +201,25 @@ private:
                     case 3: b.genre  = tok; break;
                 }
             }
-            if (!b.id.empty()) catalogue[b.id] = b;
+            if (!b.id.empty()) {
+                auto idx = findIndex(catalogue, b.id);
+                if (idx < catalogue.size())
+                    catalogue[idx].entry = b;
+                else {
+                    CatalogueEntry entry;
+                    entry.bookId = b.id;
+                    entry.entry = b;
+                    catalogue.push_back(entry);
+                }
+            }
         }
     }
 
-    // Load borrow history from data/borrows.txt (the actual data file)
-    // File format per line: recordId|userId|bookId|bookTitle|borrowDate|returnDate|returned|fine
     void loadAllHistories() {
         std::ifstream f("data/borrows.txt");
         if (!f.is_open()) return;
 
-        // Group borrows by userId
-        std::unordered_map<std::string, Array<std::string>> userBooks;
+        Array<UserBooksEntry> userBooks;
         std::string line;
         while (std::getline(f, line)) {
             if (line.empty()) continue;
@@ -74,19 +228,35 @@ private:
             std::getline(ss, recId,  '|');
             std::getline(ss, userId, '|');
             std::getline(ss, bookId, '|');
-                if (!userId.empty() && !bookId.empty()) {
-                userBooks[userId].push_back(bookId);
-                globalBorrowFreq[bookId]++;
+            if (!userId.empty() && !bookId.empty()) {
+                auto books = findUserBooks(userBooks, userId);
+                if (!books) {
+                    UserBooksEntry userEntry;
+                    userEntry.userId = userId;
+                    userBooks.push_back(userEntry);
+                    books = &userBooks[userBooks.size() - 1].books;
+                }
+                books->push_back(bookId);
+                incrementGlobalBorrowFreq(bookId);
             }
         }
 
-        // Build co-borrow pairs for collaborative filtering
-        for (auto& p : userBooks) {
-            auto& books = p.second;
-            for (size_t i = 0; i < books.size(); ++i)
-                for (size_t j = 0; j < books.size(); ++j)
-                    if (i != j)
-                        coBorrowMap[books[i]][books[j]]++;
+        for (std::size_t p = 0; p < userBooks.size(); ++p) {
+            auto& books = userBooks[p].books;
+            for (std::size_t i = 0; i < books.size(); ++i)
+                for (std::size_t j = 0; j < books.size(); ++j)
+                    if (i != j) {
+                        auto bookId = books[i];
+                        auto otherId = books[j];
+                        auto setPtr = findCoBorrowSet(bookId);
+                        if (!setPtr) {
+                            CoBorrowEntry entry;
+                            entry.bookId = bookId;
+                            coBorrowMap.push_back(entry);
+                            setPtr = &coBorrowMap[coBorrowMap.size() - 1].counts;
+                        }
+                        incrementCount(*setPtr, otherId);
+                    }
         }
     }
 
@@ -96,14 +266,11 @@ public:
         loadAllHistories();
     }
 
-    // ── Main API ────────────────────────────────────────────────────────
-    // Returns up to `limit` recommended BookEntry objects for a given user.
-    // Priority: 1) co-borrowed companions  2) same author  3) same genre
     Array<BookEntry> recommend(const std::string& userId,
                                      int limit = 5) const {
-        // Step 1: collect what this user has already read from data/borrows.txt
-        std::set<std::string> alreadyRead;
-        std::set<std::string> knownAuthors, knownGenres;
+        Array<std::string> alreadyRead;
+        Array<std::string> knownAuthors;
+        Array<std::string> knownGenres;
         {
             std::ifstream f("data/borrows.txt");
             std::string line;
@@ -116,64 +283,71 @@ public:
                 std::getline(ss, bookId, '|');
                 if (uid != userId) continue;
                 if (bookId.empty()) continue;
-                alreadyRead.insert(bookId);
-                auto it = catalogue.find(bookId);
-                if (it != catalogue.end()) {
-                    knownAuthors.insert(it->second.author);
-                    knownGenres.insert(it->second.genre);
+                if (!contains(alreadyRead, bookId))
+                    alreadyRead.push_back(bookId);
+                const BookEntry* entry = findCatalogueEntry(bookId);
+                if (entry != nullptr) {
+                    if (!contains(knownAuthors, entry->author))
+                        knownAuthors.push_back(entry->author);
+                    if (!contains(knownGenres, entry->genre))
+                        knownGenres.push_back(entry->genre);
                 }
             }
         }
 
-        // Step 2: score every unread book
-        std::map<std::string, int> score; // bookId → score
-        for (auto& p : catalogue) {
-            auto& bid = p.first;
-            auto& book = p.second;
-            if (alreadyRead.count(bid)) continue;
+        Array<ScoreEntry> score;
+        for (std::size_t i = 0; i < catalogue.size(); ++i) {
+            const auto& bid = catalogue[i].bookId;
+            const auto& book = catalogue[i].entry;
+            if (contains(alreadyRead, bid)) continue;
 
             int s = 0;
-            // Co-borrow signal
-            for (const auto& readBid : alreadyRead) {
-                auto cit = coBorrowMap.find(readBid);
-                if (cit != coBorrowMap.end()) {
-                    auto pit = cit->second.find(bid);
-                    if (pit != cit->second.end())
-                        s += pit->second * 3; // weight 3 for co-borrow
+            for (std::size_t j = 0; j < alreadyRead.size(); ++j) {
+                const auto& readBid = alreadyRead[j];
+                const auto* coSet = findCoBorrowSet(readBid);
+                if (coSet != nullptr) {
+                    int count = getCount(*coSet, bid);
+                    if (count > 0)
+                        s += count * 3;
                 }
             }
-            // Same author bonus
-            if (knownAuthors.count(book.author)) s += 5;
-            // Same genre bonus
-            if (knownGenres.count(book.genre))   s += 2;
-            // Global popularity tiebreaker
-            auto git = globalBorrowFreq.find(bid);
-            if (git != globalBorrowFreq.end())   s += git->second;
+            if (contains(knownAuthors, book.author)) s += 5;
+            if (contains(knownGenres, book.genre))   s += 2;
+            s += getGlobalBorrowFreq(bid);
 
-            if (s > 0) score[bid] = s;
+            if (s > 0) {
+                auto idx = findIndex(score, bid);
+                if (idx < score.size())
+                    score[idx].score = s;
+                else {
+                    ScoreEntry entry;
+                    entry.score = s;
+                    entry.bookId = bid;
+                    score.push_back(entry);
+                }
+            }
         }
 
-        // Step 3: sort by score descending, return top `limit`
-        Array<std::pair<int,std::string>> ranked;
-        ranked.reserve(score.size());
-        for (auto& p : score) {
-            auto& bid = p.first;
-            auto& sc = p.second;
-            ranked.push_back({sc, bid});
+        // Simple descending insertion sort based on score
+        for (std::size_t i = 1; i < score.size(); ++i) {
+            ScoreEntry key = score[i];
+            std::size_t j = i;
+            while (j > 0 && score[j - 1].score < key.score) {
+                score[j] = score[j - 1];
+                --j;
+            }
+            score[j] = key;
         }
-        std::sort(ranked.begin(), ranked.end(),
-                  [](auto& a, auto& b){ return a.first > b.first; });
 
         Array<BookEntry> result;
-        for (int i = 0; i < std::min(limit, (int)ranked.size()); ++i) {
-            auto it = catalogue.find(ranked[i].second);
-            if (it != catalogue.end())
-                result.push_back(it->second);
+        for (int i = 0; i < limit && i < (int)score.size(); ++i) {
+            const BookEntry* entry = findCatalogueEntry(score[i].bookId);
+            if (entry)
+                result.push_back(*entry);
         }
         return result;
     }
 
-    // ── Display helper (call from user_panel / admin) ────────────────────
     void displayRecommendations(const std::string& userId) const {
         auto recs = recommend(userId);
         if (recs.empty()) {
