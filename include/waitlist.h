@@ -8,7 +8,7 @@
 #define WAITLIST_H
 
 #include <string>
-#include <queue>
+#include "custom_queue.h"
 #include "dynamic_array.h"
 #include <fstream>
 #include <sstream>
@@ -25,8 +25,8 @@ private:
     }
 
     // ── Persistence ──────────────────────────────────────────────────────
-    std::queue<std::string> loadQueue(const std::string& bookId) const {
-        std::queue<std::string> q;
+    Queue<std::string> loadQueue(const std::string& bookId) const {
+        Queue<std::string> q;
         std::ifstream f(waitlistPath(bookId));
         if (!f.is_open()) return q;
         std::string uid;
@@ -36,7 +36,7 @@ private:
     }
 
     void saveQueue(const std::string& bookId,
-                   std::queue<std::string> q) const {
+                   Queue<std::string> q) const {
         portableMkdir(waitlistDir);
         std::ofstream f(waitlistPath(bookId));
         while (!q.empty()) {
@@ -62,21 +62,32 @@ public:
     // ── Add user to queue (called from "Borrow Book" when unavailable) ──
     bool enqueue(const std::string& userId, const std::string& bookId) {
         auto q = loadQueue(bookId);
-        // Prevent duplicate entries
-        std::queue<std::string> temp = q;
-        while (!temp.empty()) {
-            if (temp.front() == userId) {
-                std::cout << "\n  [Waitlist] You are already in the queue "
-                             "for this book.\n";
-                return false;
+        
+        // Prevent duplicate entries - check if user is already in queue
+        Queue<std::string> temp;
+        bool isDuplicate = false;
+        while (!q.empty()) {
+            std::string current = q.front();
+            if (current == userId) {
+                isDuplicate = true;
             }
-            temp.pop();
+            temp.push(current);
+            q.pop();
         }
-        q.push(userId);
-        saveQueue(bookId, q);
+        
+        if (isDuplicate) {
+            std::cout << "\n  [Waitlist] You are already in the queue "
+                         "for this book.\n";
+            return false;
+        }
+        
+        // Add user to queue
+        temp.push(userId);
+        saveQueue(bookId, temp);
+        
         // Show position
         std::cout << "\n  ╔══ Added to Waitlist ════════════════════════╗\n"
-                  << "  ║  You are #" << q.size()
+                  << "  ║  You are #" << (temp.size())
                   << " in the queue.                      ║\n"
                   << "  ║  We'll notify you when it becomes available. ║\n"
                   << "  ╚════════════════════════════════════════════╝\n";
@@ -141,7 +152,7 @@ public:
     // ── Remove user from queue (e.g., user cancels) ───────────────────────
     void dequeue(const std::string& userId, const std::string& bookId) {
         auto q = loadQueue(bookId);
-        std::queue<std::string> newQ;
+        Queue<std::string> newQ;
         bool removed = false;
         while (!q.empty()) {
             if (q.front() == userId && !removed)
