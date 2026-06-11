@@ -7,3 +7,4 @@ fiction|3
 textbook|2
 magazine|2
 fantasy|3
+0|0
