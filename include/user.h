@@ -219,11 +219,29 @@ public:
     int  size()  const { return size_; }
     bool empty() const { return head == nullptr; }
 
-    // Get next available user ID
+    // Get next available user ID (reuses vacant slots to avoid wastage)
     int nextId() const {
-        int mx = 0;
+        // Collect all existing user IDs
+        Array<int> ids;
         UserNode* cur = head;
-        while (cur) { mx = max(mx, cur->data.id); cur = cur->next; }
-        return mx + 1;
+        while (cur) { 
+            ids.push_back(cur->data.id); 
+            cur = cur->next; 
+        }
+        
+        // Sort to find gaps
+        sort(ids.begin(), ids.end());
+        
+        // Find first gap starting from ID 1
+        int nextId = 1;
+        for (auto id : ids) {
+            if (id == nextId) {
+                nextId++;
+            } else if (id > nextId) {
+                // Gap found, return the missing ID
+                return nextId;
+            }
+        }
+        return nextId;
     }
 };

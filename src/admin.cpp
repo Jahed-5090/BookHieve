@@ -438,7 +438,7 @@ static void viewFineHistory(Library &lib)
         OverdueWarningSystem::showAdminWarnings(2);
 
         cout << "  1. View top fines\n"
-             << "  2. Heap-sort all fines\n"
+             << "  2. View all fines\n" /*heap sort*/
              << "  0. Go Back\n"
              << "  Choice: ";
         int ch = getMenuChoice(0, 2);
