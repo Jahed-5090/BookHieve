@@ -394,6 +394,24 @@ static void removeMember(Library &lib)
         pauseScreen();
         return;
     }
+
+    if (u->borrowCount > 0)
+    {
+        cout << RED << "  Cannot remove member: User has " << u->borrowCount << " active borrowed book(s).\n"
+             << RESET;
+        pauseScreen();
+        return;
+    }
+
+    double fine = lib.currentFine(id);
+    if (fine > 0)
+    {
+        cout << RED << "  Cannot remove member: User has an outstanding fine of BDT " << fixed << setprecision(2) << fine << ".\n"
+             << RESET;
+        pauseScreen();
+        return;
+    }
+
     lib.members.remove(id);
     lib.save();
     cout << GREEN << "  Member removed.\n"
