@@ -22,7 +22,7 @@ enum class BookCondition {
 };
 
 // ── Conversion helpers ─────────────────────────────────────────────────
-inline std::string conditionToStr(BookCondition c) {
+inline string conditionToStr(BookCondition c) {
     switch (c) {
         case BookCondition::New:  return "New";
         case BookCondition::Good: return "Good";
@@ -32,7 +32,7 @@ inline std::string conditionToStr(BookCondition c) {
     }
 }
 
-inline BookCondition strToCondition(const std::string& s) {
+inline BookCondition strToCondition(const string& s) {
     if (s == "New")  return BookCondition::New;
     if (s == "Good") return BookCondition::Good;
     if (s == "Fair") return BookCondition::Fair;
@@ -41,7 +41,7 @@ inline BookCondition strToCondition(const std::string& s) {
 }
 
 // Visual badge shown in catalog
-inline std::string conditionBadge(BookCondition c) {
+inline string conditionBadge(BookCondition c) {
     switch (c) {
         case BookCondition::New:  return "[ New    ]";
         case BookCondition::Good: return "[ Good   ]";
@@ -54,17 +54,17 @@ inline std::string conditionBadge(BookCondition c) {
 class ConditionManager {
 private:
     // Persisted as data/conditions.txt — format: bookId|condition
-    const std::string condFile = "data/conditions.txt";
+    const string condFile = "data/conditions.txt";
     class ConditionEntry {
     public:
-        std::string bookId;
+        string bookId;
         BookCondition condition;
     };
     Array<ConditionEntry> condMap;
 
-    static std::size_t findIndex(const Array<ConditionEntry>& arr,
-                                 const std::string& bookId) {
-        for (std::size_t i = 0; i < arr.size(); ++i)
+    static size_t findIndex(const Array<ConditionEntry>& arr,
+                                 const string& bookId) {
+        for (size_t i = 0; i < arr.size(); ++i)
             if (arr[i].bookId == bookId)
                 return i;
         return arr.size();
@@ -72,15 +72,15 @@ private:
 
     void load() {
         condMap.clear();
-        std::ifstream f(condFile);
+        ifstream f(condFile);
         if (!f.is_open()) return;
-        std::string line;
-        while (std::getline(f, line)) {
+        string line;
+        while (getline(f, line)) {
             if (line.empty()) continue;
             auto pos = line.find('|');
-            if (pos == std::string::npos) continue;
-            std::string id  = line.substr(0, pos);
-            std::string cnd = line.substr(pos + 1);
+            if (pos == string::npos) continue;
+            string id  = line.substr(0, pos);
+            string cnd = line.substr(pos + 1);
             auto idx = findIndex(condMap, id);
             if (idx < condMap.size())
                 condMap[idx].condition = strToCondition(cnd);
@@ -94,7 +94,7 @@ private:
     }
 
     void save() {
-        std::ofstream f(condFile);
+        ofstream f(condFile);
         for (auto& p : condMap) {
             auto& id = p.bookId;
             auto& c = p.condition;
@@ -106,7 +106,7 @@ public:
     ConditionManager() { load(); }
 
     // ── Admin: set or update condition ────────────────────────────────────
-    void setCondition(const std::string& bookId, BookCondition c) {
+    void setCondition(const string& bookId, BookCondition c) {
         auto idx = findIndex(condMap, bookId);
         if (idx < condMap.size())
             condMap[idx].condition = c;
@@ -121,64 +121,64 @@ public:
 
     // ── Admin: interactive prompt to tag a condition ───────────────────────
     BookCondition promptCondition() const {
-        std::cout << "\n  Set book condition:\n"
+        cout << "\n  Set book condition:\n"
                   << "    1. New\n"
                   << "    2. Good\n"
                   << "    3. Fair\n"
                   << "    4. Worn\n"
                   << "  Choice: ";
         int ch = 0;
-        std::cin >> ch;
+        cin >> ch;
         switch (ch) {
             case 1: return BookCondition::New;
             case 2: return BookCondition::Good;
             case 3: return BookCondition::Fair;
             case 4: return BookCondition::Worn;
             default:
-                std::cout << "  Invalid; defaulting to Good.\n";
+                cout << "  Invalid; defaulting to Good.\n";
                 return BookCondition::Good;
         }
     }
 
     // ── Lookup ────────────────────────────────────────────────────────────
-    BookCondition getCondition(const std::string& bookId) {
+    BookCondition getCondition(const string& bookId) {
         auto idx = findIndex(condMap, bookId);
         if (idx == condMap.size()) return BookCondition::Unknown;
         return condMap[idx].condition;
     }
 
     // Returns the badge string for inline display in catalog/search results
-    std::string getBadge(const std::string& bookId) {
+    string getBadge(const string& bookId) {
         return conditionBadge(getCondition(bookId));
     }
 
     // ── Admin: flag worn books for maintenance review ─────────────────────
     void showWornBooks() {
         load(); // refresh
-        std::cout << "\n  ╔══ Admin: Books Flagged for Review (Worn) ══════════╗\n";
+        cout << "\n  ╔══ Admin: Books Flagged for Review (Worn) ══════════╗\n";
         bool any = false;
         for (auto& p : condMap) {
             auto& id = p.bookId;
             auto& c = p.condition;
             if (c == BookCondition::Worn) {
-                std::cout << "  ║      Book ID: " << id << "\n";
+                cout << "  ║      Book ID: " << id << "\n";
                 any = true;
             }
         }
         if (!any)
-            std::cout << "  ║  No worn books flagged.\n";
-        std::cout << "  ╚════════════════════════════════════════════════════╝\n";
+            cout << "  ║  No worn books flagged.\n";
+        cout << "  ╚════════════════════════════════════════════════════╝\n";
     }
 
     // ── For catalog display: append condition to a book row ───────────────
     // Call this inside your existing catalog print loop, e.g.:
-    //   std::cout << book.title << " " << condMgr.getBadge(book.id) << "\n";
-    void printCatalogRow(const std::string& bookId,
-                         const std::string& title,
-                         const std::string& author,
-                         const std::string& genre) {
-        std::string badge = getBadge(bookId);
-        std::cout << "  " << badge << "  " << title
+    //   cout << book.title << " " << condMgr.getBadge(book.id) << "\n";
+    void printCatalogRow(const string& bookId,
+                         const string& title,
+                         const string& author,
+                         const string& genre) {
+        string badge = getBadge(bookId);
+        cout << "  " << badge << "  " << title
                   << "  by " << author
                   << "  [" << genre << "]\n";
     }

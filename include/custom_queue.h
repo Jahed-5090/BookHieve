@@ -2,7 +2,7 @@
 // ╔══════════════════════════════════════════════════════════════════════╗
 // ║  Custom Queue Data Structure                                        ║
 // ║  FIFO (First In First Out) implementation using linked list nodes   ║
-// ║  Replaces std::queue to avoid STL dependency                        ║
+// ║  Replaces queue to avoid STL dependency                        ║
 // ╚══════════════════════════════════════════════════════════════════════╝
 
 #ifndef CUSTOM_QUEUE_H
@@ -69,11 +69,11 @@ public:
 
     /**
      * @brief Removes and discards the front element
-     * @throws std::runtime_error if queue is empty
+     * @throws runtime_error if queue is empty
      */
     void pop() {
         if (empty()) {
-            throw std::runtime_error("Cannot pop from empty queue");
+            throw runtime_error("Cannot pop from empty queue");
         }
         
         Node* temp = frontNode;
@@ -90,11 +90,11 @@ public:
     /**
      * @brief Returns a reference to the front element without removing it
      * @return Reference to the front element
-     * @throws std::runtime_error if queue is empty
+     * @throws runtime_error if queue is empty
      */
     T& front() {
         if (empty()) {
-            throw std::runtime_error("Cannot access front of empty queue");
+            throw runtime_error("Cannot access front of empty queue");
         }
         return frontNode->data;
     }
@@ -102,11 +102,11 @@ public:
     /**
      * @brief Returns a const reference to the front element without removing it
      * @return Const reference to the front element
-     * @throws std::runtime_error if queue is empty
+     * @throws runtime_error if queue is empty
      */
     const T& front() const {
         if (empty()) {
-            throw std::runtime_error("Cannot access front of empty queue");
+            throw runtime_error("Cannot access front of empty queue");
         }
         return frontNode->data;
     }
@@ -114,11 +114,11 @@ public:
     /**
      * @brief Returns a reference to the back element without removing it
      * @return Reference to the back element
-     * @throws std::runtime_error if queue is empty
+     * @throws runtime_error if queue is empty
      */
     T& back() {
         if (empty()) {
-            throw std::runtime_error("Cannot access back of empty queue");
+            throw runtime_error("Cannot access back of empty queue");
         }
         return backNode->data;
     }
@@ -126,11 +126,11 @@ public:
     /**
      * @brief Returns a const reference to the back element without removing it
      * @return Const reference to the back element
-     * @throws std::runtime_error if queue is empty
+     * @throws runtime_error if queue is empty
      */
     const T& back() const {
         if (empty()) {
-            throw std::runtime_error("Cannot access back of empty queue");
+            throw runtime_error("Cannot access back of empty queue");
         }
         return backNode->data;
     }

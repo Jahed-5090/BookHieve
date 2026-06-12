@@ -77,13 +77,13 @@ static bool signIn(Library &lib)
         cout << YELLOW << "  Outstanding fine: BDT " << fixed << setprecision(2)
              << fine << "\n" << RESET;
         // E2 & E5: Show Notifications & Overdue Warnings upon Login
-        waitMgr.showNotifications(std::to_string(u->id));
-        OverdueWarningSystem::checkOnLogin(std::to_string(u->id));
+        waitMgr.showNotifications(to_string(u->id));
+        OverdueWarningSystem::checkOnLogin(to_string(u->id));
     }
     else
     {
         // Show only notifications when there is no outstanding fine.
-        waitMgr.showNotifications(std::to_string(u->id));
+        waitMgr.showNotifications(to_string(u->id));
     }
 
     pauseScreen();

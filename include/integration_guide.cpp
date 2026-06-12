@@ -50,10 +50,10 @@ BorrowLimitManager   limitMgr;    // E7 – per-genre borrow caps
 //
 //     if (!book.isAvailable) {
 //         int qSize = waitMgr.queueSize(book.id);
-//         std::cout << "  This book is currently borrowed."
+//         cout << "  This book is currently borrowed."
 //                   << " (" << qSize << " in queue)\n"
 //                   << "  Add yourself to the waitlist? (y/n): ";
-//         char ch; std::cin >> ch;
+//         char ch; cin >> ch;
 //         if (ch == 'y' || ch == 'Y')
 //             waitMgr.enqueue(currentUserId, book.id);
 //         return;
@@ -83,8 +83,8 @@ BorrowLimitManager   limitMgr;    // E7 – per-genre borrow caps
 //
 //   Replace the deduction line with:
 //
-//     std::cout << "  Apply grace period (1 free/year)? (y/n): ";
-//     char g; std::cin >> g;
+//     cout << "  Apply grace period (1 free/year)? (y/n): ";
+//     char g; cin >> g;
 //     bool useGrace = (g == 'y' || g == 'Y');
 //     double charged = fineSys.applyPayment(currentUserId, daysOD, useGrace);
 //     if (charged > 0) {
@@ -137,7 +137,7 @@ BorrowLimitManager   limitMgr;    // E7 – per-genre borrow caps
 //
 //     condMgr.printCatalogRow(book.id, book.title, book.author, book.genre);
 //
-//   Or inline the badge: std::cout << condMgr.getBadge(book.id) << " " << book.title;
+//   Or inline the badge: cout << condMgr.getBadge(book.id) << " " << book.title;
 //
 // File: admin.cpp  ─  inside catalog management menu
 //

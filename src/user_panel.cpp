@@ -8,7 +8,7 @@ static void userViewCatalogue(Library &lib)
 {
     printTitle("Browse Catalogue");
     lib.catalogue.printAll();
-    recEngine.displayRecommendations(std::to_string(lib.currentUser->id));
+    recEngine.displayRecommendations(to_string(lib.currentUser->id));
     pauseScreen();
 }
 
@@ -60,7 +60,7 @@ static void userSearchBook(Library &lib)
             lib.catalogue.searchGenre(kw);
         }
 
-        recEngine.displayRecommendations(std::to_string(lib.currentUser->id));
+        recEngine.displayRecommendations(to_string(lib.currentUser->id));
         pauseScreen();
     }
 }
@@ -71,7 +71,7 @@ static void userBorrowBook(Library &lib)
     int uid = lib.currentUser->id;
     int active = lib.history.activeCount(uid);
 
-    limitMgr.showUsage(std::to_string(uid));
+    limitMgr.showUsage(to_string(uid));
     cout << "  Active borrows: " << active << " / " << MAX_BORROW << "\n\n";
 
     cout << "  Enter Book ID to borrow (0 to cancel): ";
@@ -84,7 +84,7 @@ static void userBorrowBook(Library &lib)
         // E2: Waitlist Queue logic
         if (node->data.availableCopies <= 0)
         {
-            int qSize = waitMgr.queueSize(std::to_string(bid));
+            int qSize = waitMgr.queueSize(to_string(bid));
             cout << "  This book is currently borrowed."
                  << " (" << qSize << " in queue)\n"
                  << "  Add yourself to the waitlist? (y/n): ";
@@ -92,10 +92,10 @@ static void userBorrowBook(Library &lib)
             cin >> ch;
             cin.ignore();
             if (ch == 'y' || ch == 'Y')
-                waitMgr.enqueue(std::to_string(uid), std::to_string(bid));
+                waitMgr.enqueue(to_string(uid), to_string(bid));
         }
         // E7: Borrow Limit check
-        else if (!limitMgr.canBorrow(std::to_string(uid), node->data.genre))
+        else if (!limitMgr.canBorrow(to_string(uid), node->data.genre))
         {
             // limitMgr.canBorrow already printed the reason/error msg
         }
@@ -116,7 +116,7 @@ static void userBorrowBook(Library &lib)
 static void userViewBorrowedHistory(Library &lib)
 {
     printTitle("My Borrow History");
-    ReadingStreakTracker::display(std::to_string(lib.currentUser->id));
+    ReadingStreakTracker::display(to_string(lib.currentUser->id));
     lib.history.sortByDate();
     lib.history.printForUser(lib.currentUser->id);
     pauseScreen();
@@ -154,7 +154,7 @@ static void userReturnBook(Library &lib)
     // E2: Notify next user in waitlist after successful return
     if (node)
     {
-        waitMgr.notifyNext(std::to_string(bid), node->data.title);
+        waitMgr.notifyNext(to_string(bid), node->data.title);
     }
     pauseScreen();
 }

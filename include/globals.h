@@ -66,21 +66,21 @@ inline void clearScreen() {
 
 // ─── Portable directory creation ─────────────────────────────────────────────
 // Handles nested paths and converts forward slashes to backslashes on Windows
-inline void portableMkdir(const std::string &path) {
+inline void portableMkdir(const string &path) {
 #ifdef _WIN32
   // Convert forward slashes to backslashes for Windows mkdir
-  std::string winPath = path;
+  string winPath = path;
   for (char &c : winPath)
     if (c == '/')
       c = '\\';
   // Remove trailing backslash if present (mkdir doesn't like it)
   while (!winPath.empty() && winPath.back() == '\\')
     winPath.pop_back();
-  std::string cmd =
+  string cmd =
       "if not exist \"" + winPath + "\" mkdir \"" + winPath + "\"";
   system(cmd.c_str());
 #else
-  std::string cmd = "mkdir -p \"" + path + "\"";
+  string cmd = "mkdir -p \"" + path + "\"";
   system(cmd.c_str());
 #endif
 }

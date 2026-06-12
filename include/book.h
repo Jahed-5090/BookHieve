@@ -28,10 +28,10 @@ public:
 
     void print()
     {
-        std::cout << std::left << std::setw(6) << id
-                  << condMgr.getBadge(std::to_string(id)) << " " << std::setw(28) << title << std::setw(22) << author
-                  << std::setw(18) << genre
-                  << std::setw(6) << year
+        cout << left << setw(6) << id
+                  << condMgr.getBadge(to_string(id)) << " " << setw(28) << title << setw(22) << author
+                  << setw(18) << genre
+                  << setw(6) << year
                   << availableCopies << "/" << totalCopies << "\n";
     }
 

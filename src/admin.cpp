@@ -54,7 +54,7 @@ static void addBook(Library &lib)
 
     // E6: Prompt and set condition when a new book is added
     BookCondition cond = condMgr.promptCondition();
-    condMgr.setCondition(std::to_string(id), cond);
+    condMgr.setCondition(to_string(id), cond);
     lib.catalogue.insert(Book(id, title, author, genre, year, copies));
     lib.save();
     cout << GREEN << "\n  Book added with ID " << id << "\n"
