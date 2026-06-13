@@ -146,8 +146,12 @@ public:
             return;
         }
         cout << "\n  ╔══ Active Fine Summary (Admin) ══════════════════╗\n";
-        cout << "  ║  User         | Book          | Days OD | Fine\n";
-        cout << "  ║  ─────────────────────────────────────────────\n";
+        cout << "  ║  " << left << setw(10) << "User"
+             << " " << left << setw(16) << "Book"
+             << " " << right << setw(8) << "Days OD"
+             << " " << right << setw(14) << "Fine" << "\n";
+        cout << "  ║  " << string(10, '-') << " " << string(16, '-') << " "
+             << string(8, '-') << " " << string(14, '-') << "\n";
         string line;
         bool any = false;
         // File format: userId|bookId|dueDate
@@ -166,8 +170,12 @@ public:
             int od = daysBetween(due, string(buf));
             if (od > 0) {
                 double fine = calculateFine(od);
-                cout << "  ║  " << uid << " | " << bid
-                          << " | " << od << "d | BDT " << fine << "\n";
+                ostringstream fineText;
+                fineText << fixed << setprecision(2) << "BDT " << fine;
+                cout << "  ║  " << left << setw(10) << uid
+                     << " " << left << setw(16) << bid
+                     << " " << right << setw(8) << (to_string(od) + "d")
+                     << " " << right << setw(14) << fineText.str() << "\n";
                 any = true;
             }
         }

@@ -433,6 +433,7 @@ static void viewFineHistory(Library &lib)
     {
         printTitle("Fine History");
 
+        lib.rebuildHeaps();
         // E3 & E5: Show system overviews for the admin
         fineSys.showAdminFineSummary();
         OverdueWarningSystem::showAdminWarnings(2);

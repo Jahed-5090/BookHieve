@@ -3,7 +3,7 @@
 #include "book.h"
 #include "user.h"
 #include "borrow.h"
-
+#include <filesystem>
 
 // ══════════════════════════════════════════════════════════════════════════════
 //  FileManager  –  load / save all data to text files
@@ -64,6 +64,54 @@ public:
         string line;
         while (getline(f, line))
             if (!line.empty()) bh.add(BorrowRecord::deserialize(line));
+    }
+
+    static void loadActiveBorrows(BorrowHistory& bh) {
+        namespace fs = std::filesystem;
+        fs::path activeDir("data/active");
+        if (!fs::exists(activeDir) || !fs::is_directory(activeDir))
+            return;
+
+        for (auto const& entry : fs::directory_iterator(activeDir)) {
+            if (!entry.is_regular_file()) continue;
+            fs::path path = entry.path();
+            if (path.extension() != ".txt") continue;
+            string filename = path.filename().string();
+            string userIdStr = path.stem().string();
+            if (userIdStr.empty()) continue;
+
+            ifstream f(path.string());
+            if (!f.is_open()) continue;
+            string line;
+            while (getline(f, line)) {
+                if (line.empty()) continue;
+                istringstream ss(line);
+                string bookIdStr, bookTitle, dueDate, genre;
+                getline(ss, bookIdStr, '|');
+                getline(ss, bookTitle, '|');
+                getline(ss, dueDate, '|');
+                getline(ss, genre);
+                int uid = stoi(userIdStr);
+                int bid = stoi(bookIdStr);
+                if (bh.findActive(uid, bid)) continue;
+
+                string borrowDate;
+                {
+                    tm t{};
+                    sscanf(dueDate.c_str(), "%d-%d-%d", &t.tm_year, &t.tm_mon, &t.tm_mday);
+                    t.tm_year -= 1900;
+                    t.tm_mon -= 1;
+                    time_t ts = mktime(&t) - (time_t)BORROW_DAYS * 86400;
+                    tm* lt = localtime(&ts);
+                    char buf[11];
+                    strftime(buf, sizeof(buf), "%Y-%m-%d", lt);
+                    borrowDate = string(buf);
+                }
+
+                BorrowRecord rec(bh.nextId(), uid, bid, bookTitle, borrowDate);
+                bh.add(rec);
+            }
+        }
     }
 
     // ─── Seed default data ────────────────────────────────────────────────
@@ -150,6 +198,7 @@ public:
             if (!r.returned)
                 getHistory(r.userId).push_back(&r);
 
+        ofstream summary("data/active_borrows.txt");
         for (auto& entry : byUser) {
             auto& uid = entry.userId;
             auto& records = entry.records;
@@ -177,6 +226,8 @@ public:
 
                 f << r->bookId << "|" << r->bookTitle << "|"
                   << dueDate << "|" << genre << "\n";
+                if (summary)
+                    summary << uid << "|" << r->bookId << "|" << dueDate << "\n";
             }
         }
     }

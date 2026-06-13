@@ -77,6 +77,7 @@ public:
 
     bool  empty() const { return heap.empty(); }
     int   size()  const { return heap.size(); }
+    void  clear() { heap.clear(); }
 
     // Heap Sort – sorts a copy in ascending order, prints result
     void heapSort(Array<FineEntry> arr) {
@@ -190,4 +191,5 @@ public:
     }
 
     bool empty() const { return heap.empty(); }
+    void clear() { heap.clear(); }
 };

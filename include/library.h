@@ -48,6 +48,7 @@ public:
         FileManager::loadBooks(catalogue);
         FileManager::loadUsers(members);
         FileManager::loadBorrows(history);
+        FileManager::loadActiveBorrows(history);
         // Sync user.borrowCount with active (non-returned) borrows
         // Prevents mismatch between stored user counters and history
         for (auto &u_copy : members.getAll()) {
@@ -61,6 +62,7 @@ public:
             }
         }
         FileManager::seedDefaults(catalogue, members);
+        FileManager::saveActiveBorrows(history, catalogue);
 
         rebuildHeaps();
     }
@@ -81,7 +83,10 @@ public:
     void rebuildHeaps()
     {
         // Rebuild fine & due heaps from current history
-        // (heaps are in-memory, rebuilt on load)
+        // (heaps are in-memory, rebuilt on load and before reporting)
+        fineHeap.clear();
+        dueHeap.clear();
+
         struct UserFine {
             int userId;
             double amount;
@@ -100,14 +105,27 @@ public:
         {
             if (!r.returned)
             {
+                // Compute due date for active borrows
+                string dueDate;
+                {
+                    tm t{};
+                    sscanf(r.borrowDate.c_str(), "%d-%d-%d",
+                           &t.tm_year, &t.tm_mon, &t.tm_mday);
+                    t.tm_year -= 1900; t.tm_mon -= 1;
+                    time_t ts = mktime(&t) + (time_t)BORROW_DAYS * 86400;
+                    tm* lt = localtime(&ts);
+                    char buf[11];
+                    strftime(buf, sizeof(buf), "%Y-%m-%d", lt);
+                    dueDate = string(buf);
+                }
+                dueHeap.insert(DueEntry(r.recordId, r.userId, r.bookId, dueDate, r.bookTitle));
+
                 int overdue = daysBetween(r.borrowDate, today) - BORROW_DAYS;
                 if (overdue > 0)
                 {
                     double grossFine = fineSys.calculateFine(overdue);
                     double owed = max(0.0, grossFine - r.finePaid);
                     getFine(r.userId) += owed;
-                    // Due date
-                    // (simple: borrowDate + BORROW_DAYS, skip for brevity)
                 }
             }
         }
