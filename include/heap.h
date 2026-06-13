@@ -17,12 +17,12 @@ public:
         : userId(uid), userName(name), fineAmount(fine) {}
 
     void print() const {
-        cout << CYAN << left
+        cout << left
              << setw(8)  << userId
              << setw(24) << userName.substr(0,23)
-             << RED
+            
              << fixed << setprecision(2) << fineAmount << " BDT"
-             << RESET << "\n";
+             << "\n";
     }
 };
 
@@ -108,7 +108,7 @@ public:
             }
         }
         // arr is now sorted ascending
-        cout << BOLD << left << setw(8) << "UserID" << setw(24) << "Name" << "Fine (BDT)\n" << RESET;
+        cout << left << setw(8) << "UserID" << setw(24) << "Name" << "Fine (BDT)\n";
         printLine();
         for (auto& e : arr) e.print();
     }
@@ -117,8 +117,8 @@ public:
         // Copy heap and extract top k
         FineMaxHeap tmp = *this;
         int cnt = min(k, (int)tmp.size());
-        cout << BOLD << "  Top " << cnt << " outstanding fines:\n" << RESET;
-        cout << BOLD << left << setw(8) << "UserID" << setw(24) << "Name" << "Fine\n" << RESET;
+        cout << "  Top " << cnt << " outstanding fines:\n";
+        cout << left << setw(8) << "UserID" << setw(24) << "Name" << "Fine\n";
         printLine();
         for (int i = 0; i < cnt; i++) {
             tmp.extractMax().print();
@@ -168,24 +168,24 @@ public:
     }
 
     void printUpcoming(int n=10) const {
-        if (heap.empty()) { cout << RED << "  No active borrows.\n" << RESET; return; }
-        cout << BOLD << left
+        if (heap.empty()) { cout << "  No active borrows.\n"; return; }
+        cout << left
              << setw(8) << "RecID"
              << setw(8) << "User"
              << setw(28)<< "Book"
-             << "Due Date\n" << RESET;
+             << "Due Date\n";
         printLine();
         Array<DueEntry> tmp = heap;
         // Simple display (don't destroy heap)
         sort(tmp.begin(), tmp.end(), [](auto& a, auto& b){ return a.dueDate < b.dueDate; });
         int cnt = min(n, (int)tmp.size());
         for (int i = 0; i < cnt; i++) {
-            cout << CYAN << left
+            cout << left
                  << setw(8) << tmp[i].recordId
                  << setw(8) << tmp[i].userId
                  << setw(28)<< tmp[i].bookTitle.substr(0,27)
-                 << YELLOW << tmp[i].dueDate
-                 << RESET << "\n";
+                 << tmp[i].dueDate
+                 << "\n";
         }
     }
 

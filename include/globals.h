@@ -7,31 +7,7 @@
 #include <sstream>
 #include <string>
 
-#ifdef _WIN32
-#include <windows.h>
-// Older MinGW SDKs may lack this constant (added for Windows 10 VT100 support)
-#ifndef ENABLE_VIRTUAL_TERMINAL_PROCESSING
-#define ENABLE_VIRTUAL_TERMINAL_PROCESSING 0x0004
-#endif
-#endif
-
 using namespace std;
-
-// Enable ANSI escape codes on Windows 10+ terminals
-inline void enableAnsiColors() {
-#ifdef _WIN32
-  HANDLE hOut = GetStdHandle(STD_OUTPUT_HANDLE);
-  if (hOut != INVALID_HANDLE_VALUE) {
-    DWORD mode = 0;
-    if (GetConsoleMode(hOut, &mode)) {
-      mode |= ENABLE_VIRTUAL_TERMINAL_PROCESSING;
-      SetConsoleMode(hOut, mode);
-    }
-  }
-  // Set console output code page to UTF-8 for emoji/unicode support
-  SetConsoleOutputCP(CP_UTF8);
-#endif
-}
 
 // ─── Constants
 // ────────────────────────────────────────────────────────────────
@@ -45,15 +21,7 @@ const int MAX_BORROW = 3;        // max books a user can borrow
 const double FINE_PER_DAY = 5.0; // taka per day overdue
 const int BORROW_DAYS = 14;      // allowed borrow period
 
-// ─── Colour helpers (ANSI) ───────────────────────────────────────────────────
-#define RESET "\033[0m"
-#define BOLD "\033[1m"
-#define RED "\033[31m"
-#define GREEN "\033[32m"
-#define YELLOW "\033[33m"
-#define CYAN "\033[36m"
-#define MAGENTA "\033[35m"
-#define WHITE "\033[37m"
+// ─── Colour helpers (REMOVED - colors disabled) ───────────────────────────────
 
 // ─── Utility helpers ─────────────────────────────────────────────────────────
 inline void clearScreen() {
@@ -86,7 +54,7 @@ inline void portableMkdir(const string &path) {
 }
 
 inline void pauseScreen() {
-  cout << "\n" << YELLOW << "Press Enter to continue..." << RESET;
+  cout << "\n" << "Press Enter to continue...";
   cin.ignore(numeric_limits<streamsize>::max(), '\n');
   cin.get();
 }
@@ -119,10 +87,9 @@ inline void printLine(char c = '-', int n = 102) {
 inline void printTitle(const string &title) {
   clearScreen();
   printLine('=');
-  cout << BOLD << CYAN << "  BookHieve – Digital Library Management System\n"
-       << RESET;
+  cout << "  BookHieve – Digital Library Management System\n";
   printLine('=');
-  cout << BOLD << YELLOW << "  " << title << "\n" << RESET;
+  cout << "  " << title << "\n";
   printLine('-');
 }
 
@@ -132,7 +99,7 @@ inline int getIntInput() {
     while (!(cin >> val)) {
         cin.clear();
         cin.ignore(numeric_limits<streamsize>::max(), '\n');
-        cout << RED << "  Invalid input. Please enter a valid number: " << RESET;
+        cout << "  Invalid input. Please enter a valid number: ";
     }
     cin.ignore(numeric_limits<streamsize>::max(), '\n');
     return val;
@@ -145,7 +112,7 @@ inline int getMenuChoice(int minVal, int maxVal) {
         if (val >= minVal && val <= maxVal) {
             return val;
         }
-        cout << RED << "  Invalid choice. Please enter a number between " 
-             << minVal << " and " << maxVal << ": " << RESET;
+        cout << "  Invalid choice. Please enter a number between " 
+             << minVal << " and " << maxVal << ": ";
     }
 }

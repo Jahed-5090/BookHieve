@@ -42,8 +42,8 @@ static void addBook(Library &lib)
                 node->data.totalCopies += copies;
                 node->data.availableCopies += copies;
                 lib.save();
-                cout << GREEN << "\n  Book already exists. Added " << copies 
-                     << " copies to existing book (ID: " << b.id << ").\n" << RESET;
+                cout << "\n  Book already exists. Added " << copies 
+                     << " copies to existing book (ID: " << b.id << ").\n";
                 pauseScreen();
                 return;
             }
@@ -57,8 +57,8 @@ static void addBook(Library &lib)
     condMgr.setCondition(to_string(id), cond);
     lib.catalogue.insert(Book(id, title, author, genre, year, copies));
     lib.save();
-    cout << GREEN << "\n  Book added with ID " << id << "\n"
-         << RESET;
+    cout << "\n  Book added with ID " << id << "\n"
+        ;
     pauseScreen();
 }
 
@@ -72,15 +72,15 @@ static void removeBook(Library &lib)
     BSTNode *node = lib.catalogue.search(id);
     if (!node)
     {
-        cout << RED << "  Book not found.\n"
-             << RESET;
+        cout << "  Book not found.\n"
+            ;
         pauseScreen();
         return;
     }
     if (node->data.availableCopies < node->data.totalCopies)
     {
-        cout << YELLOW << "  Warning: some copies are currently borrowed!\n"
-             << RESET;
+        cout << "  Warning: some copies are currently borrowed!\n"
+            ;
         cout << "  Continue? (y/n): ";
         char c;
         cin >> c;
@@ -93,8 +93,8 @@ static void removeBook(Library &lib)
     }
     lib.catalogue.remove(id);
     lib.save();
-    cout << GREEN << "  Book removed.\n"
-         << RESET;
+    cout << "  Book removed.\n"
+        ;
     pauseScreen();
 }
 
@@ -109,17 +109,17 @@ static void editBook(Library &lib)
     BSTNode *node = lib.catalogue.search(id);
     if (!node)
     {
-        cout << RED << "  Book not found.\n"
-             << RESET;
+        cout << "  Book not found.\n"
+            ;
         pauseScreen();
         return;
     }
 
     // Display current book information
-    cout << BOLD << "\n  Current Book Information:" << RESET << "\n";
-    cout << BOLD << left << setw(6) << "ID" << setw(11) << "" << setw(28) << "Title"
+    cout << "\n  Current Book Information:" << "\n";
+    cout << left << setw(6) << "ID" << setw(11) << "" << setw(28) << "Title"
          << setw(22) << "Author" << setw(18) << "Genre"
-         << setw(6) << "Year" << "Avail/Total\n" << RESET;
+         << setw(6) << "Year" << "Avail/Total\n";
     printLine();
     node->data.print();
 
@@ -145,7 +145,7 @@ static void editBook(Library &lib)
             if (!newTitle.empty())
             {
                 node->data.title = newTitle;
-                cout << GREEN << "  Title updated.\n" << RESET;
+                cout << "  Title updated.\n";
             }
         }
         else if (ch == 2)
@@ -156,7 +156,7 @@ static void editBook(Library &lib)
             if (!newAuthor.empty())
             {
                 node->data.author = newAuthor;
-                cout << GREEN << "  Author updated.\n" << RESET;
+                cout << "  Author updated.\n";
             }
         }
         else if (ch == 3)
@@ -166,7 +166,7 @@ static void editBook(Library &lib)
             if (newYear > 0)
             {
                 node->data.year = newYear;
-                cout << GREEN << "  Year updated.\n" << RESET;
+                cout << "  Year updated.\n";
             }
         }
         else if (ch == 4)
@@ -177,12 +177,12 @@ static void editBook(Library &lib)
             if (!newGenre.empty())
             {
                 node->data.genre = newGenre;
-                cout << GREEN << "  Genre updated.\n" << RESET;
+                cout << "  Genre updated.\n";
             }
         }
         else if (ch == 5)
         {
-            cout << BOLD << "\n  Current Quantity:\n" << RESET
+            cout << "\n  Current Quantity:\n"
                  << "    Total Copies    : " << node->data.totalCopies << "\n"
                  << "    Available Copies: " << node->data.availableCopies << "\n";
             cout << "\n  How would you like to adjust quantity?\n"
@@ -200,11 +200,11 @@ static void editBook(Library &lib)
                 if (newTotal > 0 && newTotal >= node->data.availableCopies)
                 {
                     node->data.totalCopies = newTotal;
-                    cout << GREEN << "  Total copies updated.\n" << RESET;
+                    cout << "  Total copies updated.\n";
                 }
                 else if (newTotal < node->data.availableCopies)
                 {
-                    cout << RED << "  Error: Total copies cannot be less than available copies.\n" << RESET;
+                    cout << "  Error: Total copies cannot be less than available copies.\n";
                 }
             }
             else if (qch == 2)
@@ -214,11 +214,11 @@ static void editBook(Library &lib)
                 if (newAvail >= 0 && newAvail <= node->data.totalCopies)
                 {
                     node->data.availableCopies = newAvail;
-                    cout << GREEN << "  Available copies updated.\n" << RESET;
+                    cout << "  Available copies updated.\n";
                 }
                 else if (newAvail > node->data.totalCopies)
                 {
-                    cout << RED << "  Error: Available copies cannot exceed total copies.\n" << RESET;
+                    cout << "  Error: Available copies cannot exceed total copies.\n";
                 }
             }
             else if (qch == 3)
@@ -229,7 +229,7 @@ static void editBook(Library &lib)
                 {
                     node->data.totalCopies += add;
                     node->data.availableCopies += add;
-                    cout << GREEN << "  Added " << add << " copies. New total: " << node->data.totalCopies << "\n" << RESET;
+                    cout << "  Added " << add << " copies. New total: " << node->data.totalCopies << "\n";
                 }
             }
             else if (qch == 4)
@@ -240,18 +240,18 @@ static void editBook(Library &lib)
                 {
                     node->data.totalCopies -= remove;
                     node->data.availableCopies -= remove;
-                    cout << GREEN << "  Removed " << remove << " copies. New total: " << node->data.totalCopies << "\n" << RESET;
+                    cout << "  Removed " << remove << " copies. New total: " << node->data.totalCopies << "\n";
                 }
                 else if (remove > node->data.totalCopies || remove > node->data.availableCopies)
                 {
-                    cout << RED << "  Error: Cannot remove more copies than available.\n" << RESET;
+                    cout << "  Error: Cannot remove more copies than available.\n";
                 }
             }
         }
     }
 
     lib.save();
-    cout << GREEN << "\n  Book information saved.\n" << RESET;
+    cout << "\n  Book information saved.\n";
     pauseScreen();
 }
 
@@ -289,16 +289,16 @@ static void searchBook(Library &lib)
             BSTNode *n = lib.catalogue.search(id);
             if (n)
             {
-                cout << BOLD << left << setw(6) << "ID" << setw(11) << "" << setw(28) << "Title"
+                cout << left << setw(6) << "ID" << setw(11) << "" << setw(28) << "Title"
                      << setw(22) << "Author" << setw(18) << "Genre"
                      << setw(6) << "Year" << "Avail/Total\n"
-                     << RESET;
+                    ;
                 printLine();
                 n->data.print();
             }
             else
-                cout << RED << "  Not found.\n"
-                     << RESET;
+                cout << "  Not found.\n"
+                    ;
         }
         else if (ch == 4)
         {
@@ -309,7 +309,7 @@ static void searchBook(Library &lib)
         }
         else
         {
-            cout << RED << "  Invalid choice.\n" << RESET;
+            cout << "  Invalid choice.\n";
         }
         pauseScreen();
     }
@@ -359,7 +359,7 @@ static void viewCatalogue(Library &lib)
         }
         else
         {
-            cout << RED << "  Invalid choice.\n" << RESET;
+            cout << "  Invalid choice.\n";
         }
         pauseScreen();
     }
@@ -382,23 +382,23 @@ static void removeMember(Library &lib)
     User *u = lib.members.findById(id);
     if (!u)
     {
-        cout << RED << "  User not found.\n"
-             << RESET;
+        cout << "  User not found.\n"
+            ;
         pauseScreen();
         return;
     }
     if (u->isAdmin)
     {
-        cout << RED << "  Cannot remove admin.\n"
-             << RESET;
+        cout << "  Cannot remove admin.\n"
+            ;
         pauseScreen();
         return;
     }
 
     if (u->borrowCount > 0)
     {
-        cout << RED << "  Cannot remove member: User has " << u->borrowCount << " active borrowed book(s).\n"
-             << RESET;
+        cout << "  Cannot remove member: User has " << u->borrowCount << " active borrowed book(s).\n"
+            ;
         pauseScreen();
         return;
     }
@@ -406,16 +406,16 @@ static void removeMember(Library &lib)
     double fine = lib.currentFine(id);
     if (fine > 0)
     {
-        cout << RED << "  Cannot remove member: User has an outstanding fine of BDT " << fixed << setprecision(2) << fine << ".\n"
-             << RESET;
+        cout << "  Cannot remove member: User has an outstanding fine of BDT " << fixed << setprecision(2) << fine << ".\n"
+            ;
         pauseScreen();
         return;
     }
 
     lib.members.remove(id);
     lib.save();
-    cout << GREEN << "  Member removed.\n"
-         << RESET;
+    cout << "  Member removed.\n"
+        ;
     pauseScreen();
 }
 
@@ -459,13 +459,13 @@ static void viewFineHistory(Library &lib)
             }
             if (all.empty())
             {
-                cout << GREEN << "  No outstanding fines.\n"
-                     << RESET;
+                cout << "  No outstanding fines.\n"
+                    ;
             }
             else
             {
-                cout << YELLOW << "  Fine list:\n"
-                     << RESET;
+                cout << "  Fine list:\n"
+                    ;
                 lib.fineHeap.heapSort(all);
             }
         }
@@ -496,9 +496,9 @@ static void waitQueueMenu(Library &lib)
         if (c == 'y' || c == 'Y')
         {
             BorrowRecord req = lib.waitQueue.dequeue();
-            cout << GREEN << "  Processing request for book ID " << req.bookId
+            cout << "  Processing request for book ID " << req.bookId
                  << " by user " << req.userId << "\n"
-                 << RESET;
+                ;
             lib.borrowBook(req.userId, req.bookId);
         }
     }

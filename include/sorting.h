@@ -101,23 +101,23 @@ inline void bubbleSortByGenre(Array<Book>& v) {
 
 // ─── Print sorted catalogue ───────────────────────────────────────────────────
 inline void printSortedCatalogue(Array<Book>& books, int choice) {
-    if (books.empty()) { cout << RED << "  Catalogue is empty.\n" << RESET; return; }
+    if (books.empty()) { cout << "  Catalogue is empty.\n"; return; }
     switch (choice) {
-        case 1: bubbleSortByTitle(books);      cout << YELLOW << "  Sorted by Title \n" << RESET; break;
-        case 2: insertionSortByYear(books);    cout << YELLOW << "  Sorted by Year \n" << RESET; break;
-        case 3: selectionSortByAuthor(books);  cout << YELLOW << "  Sorted by Author \n" << RESET; break;
-        case 4: quickSortByTitle(books);       cout << YELLOW << "  Sorted by Title \n" << RESET; break;
-        case 5: sortByAvailability(books);     cout << YELLOW << "  Sorted by Availability \n" << RESET; break;
-        case 6: bubbleSortByGenre(books);       cout << YELLOW << "  Sorted by Genre\n" << RESET; break;
+        case 1: bubbleSortByTitle(books);      cout << "  Sorted by Title \n"; break;
+        case 2: insertionSortByYear(books);    cout << "  Sorted by Year \n"; break;
+        case 3: selectionSortByAuthor(books);  cout << "  Sorted by Author \n"; break;
+        case 4: quickSortByTitle(books);       cout << "  Sorted by Title \n"; break;
+        case 5: sortByAvailability(books);     cout << "  Sorted by Availability \n"; break;
+        case 6: bubbleSortByGenre(books);       cout << "  Sorted by Genre\n"; break;
         default: break;
     }
-    cout << BOLD << left
+    cout << left
          << setw(6)  << "ID"
          << setw(11) << "" << setw(28) << "Title"
          << setw(22) << "Author"
          << setw(18) << "Genre"
          << setw(6)  << "Year"
-         << "Avail/Total\n" << RESET;
+         << "Avail/Total\n";
     printLine();
     for (auto& b : books) b.print();
 }

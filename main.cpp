@@ -22,10 +22,11 @@ FineSystem           fineSys;
 ConditionManager     condMgr;
 BorrowLimitManager   limitMgr;
 
-void runHomepage(Library& lib);
+void runHomepage(Library &lib);
+
+static void NewFunction();
 
 int main() {
-    enableAnsiColors();
     Library lib;
     runHomepage(lib);
     return 0;

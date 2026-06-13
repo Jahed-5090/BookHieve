@@ -159,27 +159,23 @@ public:
         User *u = members.findById(uid);
         if (!u)
         {
-            cout << RED << "  User not found.\n"
-                 << RESET;
+            cout << "  User not found.\n";
             return false;
         }
         if (u->borrowCount >= MAX_BORROW)
         {
-            cout << RED << "  Borrow limit (" << MAX_BORROW << ") reached.\n"
-                 << RESET;
+            cout << "  Borrow limit (" << MAX_BORROW << ") reached.\n";
             return false;
         }
         BSTNode *node = catalogue.search(bid);
         if (!node)
         {
-            cout << RED << "  Book not found.\n"
-                 << RESET;
+            cout << "  Book not found.\n";
             return false;
         }
         if (node->data.availableCopies <= 0)
         {
-            cout << YELLOW << "  No copies available. Adding to wait queue.\n"
-                 << RESET;
+            cout << "  No copies available. Adding to wait queue.\n";
             BorrowRecord req(history.nextId(), uid, bid, node->data.title, currentDate());
             waitQueue.enqueue(req);
             return false;
@@ -188,16 +184,14 @@ public:
         double unpaid = currentFine(uid);
         if (unpaid > 100.0)
         {
-            cout << RED << "  Your unpaid fines are BDT " << fixed << setprecision(2)
-                 << unpaid << ". You must pay them before borrowing more books.\n"
-                 << RESET;
+            cout << "  Your unpaid fines are BDT " << fixed << setprecision(2)
+                 << unpaid << ". You must pay them before borrowing more books.\n";
             return false;
         }
         // Check already borrowed
         if (history.findActive(uid, bid))
         {
-            cout << RED << "  You have already borrowed this book.\n"
-                 << RESET;
+            cout << "  You have already borrowed this book.\n";
             return false;
         }
         BorrowRecord rec(history.nextId(), uid, bid, node->data.title, currentDate());
@@ -213,9 +207,8 @@ public:
         strftime(buf, sizeof(buf), "%Y-%m-%d", lt);
         dueHeap.insert(DueEntry(rec.recordId, uid, bid, string(buf), node->data.title));
         save();
-        cout << GREEN << "  Borrowed: " << node->data.title
-             << " (due " << buf << ")\n"
-             << RESET;
+        cout << "  Borrowed: " << node->data.title
+             << " (due " << buf << ")\n";
         return true;
     }
 
@@ -225,8 +218,7 @@ public:
         BorrowRecord *rec = history.findActive(uid, bid);
         if (!rec)
         {
-            cout << RED << "  No active borrow record found.\n"
-                 << RESET;
+            cout << "  No active borrow record found.\n";
             return false;
         }
 
@@ -242,23 +234,20 @@ public:
             rec->fine = grossFine;
             if (owed > 0)
             {
-                cout << YELLOW << "  Book returned " << overdue << " day(s) late."
-                     << " Fine: BDT " << fixed << setprecision(2) << owed << "\n"
-                     << RESET;
+                cout << "  Book returned " << overdue << " day(s) late."
+                     << " Fine: BDT " << fixed << setprecision(2) << owed << "\n";
                 User *u = members.findById(uid);
                 if (u)
                     fineHeap.insert(FineEntry(uid, u->name, owed));
             }
             else
             {
-                cout << GREEN << "  Book returned late, but overdue fine already cleared.\n"
-                     << RESET;
+                cout << "  Book returned late, but overdue fine already cleared.\n";
             }
         }
         else
         {
-            cout << GREEN << "  Book returned on time. No fine.\n"
-                 << RESET;
+            cout << "  Book returned on time. No fine.\n";
         }
 
         BSTNode *node = catalogue.search(bid);

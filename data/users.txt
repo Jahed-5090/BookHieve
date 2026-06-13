@@ -1,6 +1,6 @@
 1|Admin|@admin.bookhievecom|#admin123|1|0
 4|AK AK|#AK|#AK|0|0
-5|alif|#alif|#alif|0|1
+5|alif|#alif|#alif|0|0
 6|ahmed|#ahmed|#ahmed|0|3
-7|jahed|#jahed|#jahed|0|1
+7|jahed|#jahed|#jahed|0|0
 8|KAMAL AHMED|@ahmed.gmailcom|#ahmed123|0|0

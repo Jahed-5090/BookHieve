@@ -62,20 +62,18 @@ static bool signIn(Library &lib)
     User *u = lib.members.findByEmail(email);
     if (!u || u->password != pass)
     {
-        cout << RED << "\n  Invalid email or password.\n"
-             << RESET;
+        cout << "\n  Invalid email or password.\n";
         pauseScreen();
         return false;
     }
     lib.currentUser = u;
-    cout << GREEN << "\n  Welcome, " << u->name << "!\n"
-         << RESET;
+    cout << "\n  Welcome, " << u->name << "!\n";
 
     double fine = lib.currentFine(u->id);
     if (fine > 0)
     {
-        cout << YELLOW << "  Outstanding fine: BDT " << fixed << setprecision(2)
-             << fine << "\n" << RESET;
+        cout << "  Outstanding fine: BDT " << fixed << setprecision(2)
+             << fine << "\n";
         // E2 & E5: Show Notifications & Overdue Warnings upon Login
         waitMgr.showNotifications(to_string(u->id));
         OverdueWarningSystem::checkOnLogin(to_string(u->id));
@@ -109,24 +107,20 @@ static bool signUp(Library &lib)
 
     if (lib.members.findByEmail(email))
     {
-        cout << RED << "\n  Email already registered.\n"
-             << RESET;
+        cout << "\n  Email already registered.\n";
         pauseScreen();
         return false;
     }
 
-    cout << YELLOW
-         << "  Strong password suggestion: letters + special symbols + numbers\n"
-         << "  Example : " << passwordPrototype() << "\n"
-         << RESET;
+    cout << "  Strong password suggestion: letters + special symbols + numbers\n"
+         << "  Example : " << passwordPrototype() << "\n";
     cout << "  Password  : ";
     pass = readPassword();
     cout << "  Confirm   : ";
     confirm = readPassword();
     if (pass != confirm)
     {
-        cout << RED << "\n  Passwords do not match.\n"
-             << RESET;
+        cout << "\n  Passwords do not match.\n";
         pauseScreen();
         return false;
     }
@@ -134,8 +128,7 @@ static bool signUp(Library &lib)
     int id = lib.members.nextId();
     lib.members.insertEnd(User(id, name, email, pass, false));
     lib.save();
-    cout << GREEN << "\n  Account created! You can now sign in.\n"
-         << RESET;
+    cout << "\n  Account created! You can now sign in.\n";
     pauseScreen();
     return true;
 }
@@ -147,7 +140,7 @@ void runHomepage(Library &lib)
     {
         printTitle("Homepage");
         cout << "\n"
-             << "  " << BOLD << YELLOW << "Welcome to BookHieve!" << RESET << "\n"
+             << "  Welcome to BookHieve!\n"
              << "  Your Digital Library Management System\n\n"
              << "  1. Sign In\n"
              << "  2. Sign Up\n"
@@ -158,8 +151,7 @@ void runHomepage(Library &lib)
 
         if (ch == 0)
         {
-            cout << CYAN << "\n  Goodbye! Data saved.\n"
-                 << RESET;
+            cout << "\n  Goodbye! Data saved.\n";
             break;
         }
         if (ch == 1)

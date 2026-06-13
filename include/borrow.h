@@ -41,16 +41,16 @@ public:
 
     void print() const {
         double due = dueFine();
-        cout << CYAN << left
+        cout << left
              << setw(6)  << recordId
              << setw(8)  << userId
              << setw(8)  << bookId
              << setw(28) << bookTitle.substr(0,27)
              << setw(12) << borrowDate
              << setw(12) << (returned ? returnDate : "—")
-             << (due > 0 ? RED : GREEN)
+             << (due > 0 ? "Yes" : "No ")
              << fixed << setprecision(2) << due
-             << RESET << "\n";
+             << "\n";
     }
 
     string serialize() const {
@@ -169,13 +169,13 @@ public:
     int  size()  const { return size_; }
 
     void printAll() const {
-        if (empty()) { cout << RED << "  No pending requests.\n" << RESET; return; }
-        cout << BOLD << left
+        if (empty()) { cout << "  No pending requests.\n"; return; }
+        cout << left
              << setw(6)  << "RecID"
              << setw(8)  << "User"
              << setw(8)  << "Book"
              << setw(28) << "Title"
-             << "Date\n" << RESET;
+             << "Date\n";
         printLine();
         QueueNode* cur = front_;
         while (cur) { cur->data.print(); cur = cur->next; }
@@ -229,33 +229,33 @@ public:
     }
 
     void printAll() const {
-        if (records.empty()) { cout << RED << "  No borrow history.\n" << RESET; return; }
-        cout << BOLD << left
+        if (records.empty()) { cout << "  No borrow history.\n"; return; }
+        cout << left
              << setw(6)  << "RecID"
              << setw(8)  << "User"
              << setw(8)  << "Book"
              << setw(28) << "Title"
              << setw(12) << "Borrowed"
              << setw(12) << "Returned"
-             << "Due Fine\n" << RESET;
+             << "Due Fine\n";
         printLine();
         for (auto& r : records) r.print();
     }
 
     void printForUser(int uid) const {
         bool found = false;
-        cout << BOLD << left
+        cout << left
              << setw(6)  << "RecID"
              << setw(8)  << "User"
              << setw(8)  << "Book"
              << setw(28) << "Title"
              << setw(12) << "Borrowed"
              << setw(12) << "Returned"
-             << "Due Fine\n" << RESET;
+             << "Due Fine\n";
         printLine();
         for (auto& r : records)
             if (r.userId == uid) { r.print(); found = true; }
-        if (!found) cout << RED << "  No history for this user.\n" << RESET;
+        if (!found) cout << "  No history for this user.\n";
     }
 
     double totalFineForUser(int uid) const {

@@ -41,16 +41,16 @@ static void userSearchBook(Library &lib)
             BSTNode *n = lib.catalogue.search(id);
             if (n)
             {
-                cout << BOLD << left << setw(6) << "ID" << setw(11) << "" << setw(28) << "Title"
+                cout << left << setw(6) << "ID" << setw(11) << "" << setw(28) << "Title"
                      << setw(22) << "Author" << setw(18) << "Genre"
                      << setw(6) << "Year" << "Avail/Total\n"
-                     << RESET;
+                    ;
                 printLine();
                 n->data.print();
             }
             else
-                cout << RED << "  Not found.\n"
-                     << RESET;
+                cout << "  Not found.\n"
+                    ;
         }
         else if (ch == 4)
         {
@@ -107,8 +107,8 @@ static void userBorrowBook(Library &lib)
     }
     else
     {
-        cout << RED << "  Book not found.\n"
-             << RESET;
+        cout << "  Book not found.\n"
+            ;
     }
     pauseScreen();
 }
@@ -127,17 +127,17 @@ static void userViewProfile(Library &lib)
     printTitle("My Profile");
     User *u = lib.currentUser;
     cout << "\n"
-         << CYAN << "  Name      : " << WHITE << u->name << "\n"
-         << CYAN << "  Email     : " << WHITE << u->email << "\n"
-         << CYAN << "  User ID   : " << WHITE << u->id << "\n"
-         << CYAN << "  Role      : " << (u->isAdmin ? GREEN "Admin" : YELLOW "Member") << "\n"
-         << RESET
-         << CYAN << "  Borrows   : " << WHITE << u->borrowCount << " / " << MAX_BORROW << "\n";
+         << "  Name      : " << u->name << "\n"
+         << "  Email     : " << u->email << "\n"
+         << "  User ID   : " << u->id << "\n"
+         << "  Role      : " << (u->isAdmin ? "Admin" : "Member") << "\n"
+        
+         << "  Borrows   : " << u->borrowCount << " / " << MAX_BORROW << "\n";
 
     double fine = lib.currentFine(u->id);
-    cout << CYAN << "  Fine Due  : " << (fine > 0 ? RED : GREEN)
-         << "BDT " << fixed << setprecision(2) << fine << "\n"
-         << RESET;
+    cout << "  Fine Due  : " << (fine > 0 ? "Pending" : "None")
+         << " - BDT " << fixed << setprecision(2) << fine << "\n";
+        ;
     pauseScreen();
 }
 
@@ -165,13 +165,13 @@ static void userPayFine(Library &lib)
     double fine = lib.currentFine(lib.currentUser->id);
     if (fine <= 0)
     {
-        cout << GREEN << "  You have no outstanding fines!\n"
-             << RESET;
+        cout << "  You have no outstanding fines!\n"
+            ;
     }
     else
     {
-        cout << RED << "  Outstanding Fine: BDT " << fixed << setprecision(2) << fine << "\n"
-             << RESET;
+        cout << "  Outstanding Fine: BDT " << fixed << setprecision(2) << fine << "\n"
+            ;
         cout << "  Pay now? (y/n): ";
         char c;
         cin >> c;
@@ -183,18 +183,18 @@ static void userPayFine(Library &lib)
             double remainingFine = lib.currentFine(lib.currentUser->id);
             if (charged > 0)
             {
-                cout << GREEN << "  Fine paid. Amount deducted: BDT " << charged << "!\n"
-                     << RESET;
+                cout << "  Fine paid. Amount deducted: BDT " << charged << "!\n"
+                    ;
             }
             else if (remainingFine < previousFine)
             {
-                cout << GREEN << "  Fine cleared!\n"
-                     << RESET;
+                cout << "  Fine cleared!\n"
+                    ;
             }
             else
             {
-                cout << YELLOW << "  No payment was made.\n"
-                     << RESET;
+                cout << "  No payment was made.\n"
+                    ;
             }
         }
     }

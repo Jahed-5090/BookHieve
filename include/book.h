@@ -279,18 +279,18 @@ public:
     {
         if (!root)
         {
-            cout << RED << "  (catalogue is empty)\n"
-                 << RESET;
+            cout << "  (catalogue is empty)\n"
+                ;
             return;
         }
-        cout << BOLD << left
+        cout << left
              << setw(6) << "ID"
              << setw(11) << "" << setw(28) << "Title"
              << setw(22) << "Author"
              << setw(18) << "Genre"
              << setw(6) << "Year"
              << "Avail/Total\n"
-             << RESET;
+            ;
         printLine();
         inorder(root);
     }
@@ -298,55 +298,55 @@ public:
     void searchTitle(const string &kw) const
     {
         bool found = false;
-        cout << BOLD << left
+        cout << left
              << setw(6) << "ID"
              << setw(11) << "" << setw(28) << "Title"
              << setw(22) << "Author"
              << setw(18) << "Genre"
              << setw(6) << "Year"
              << "Avail/Total\n"
-             << RESET;
+            ;
         printLine();
         searchByTitle(root, kw, found);
         if (!found)
-            cout << RED << "  No books found.\n"
-                 << RESET;
+            cout << "  No books found.\n"
+                ;
     }
 
     void searchAuthor(const string &kw) const
     {
         bool found = false;
-        cout << BOLD << left
+        cout << left
              << setw(6) << "ID"
              << setw(11) << "" << setw(28) << "Title"
              << setw(22) << "Author"
              << setw(18) << "Genre"
              << setw(6) << "Year"
              << "Avail/Total\n"
-             << RESET;
+            ;
         printLine();
         searchByAuthor(root, kw, found);
         if (!found)
-            cout << RED << "  No books found.\n"
-                 << RESET;
+            cout << "  No books found.\n"
+                ;
     }
 
     void searchGenre(const string &kw) const
     {
         bool found = false;
-        cout << BOLD << left
+        cout << left
              << setw(6) << "ID"
              << setw(11) << "" << setw(28) << "Title"
              << setw(22) << "Author"
              << setw(18) << "Genre"
              << setw(6) << "Year"
              << "Avail/Total\n"
-             << RESET;
+            ;
         printLine();
         searchByGenre(root, kw, found);
         if (!found)
-            cout << RED << "  No books found.\n"
-                 << RESET;
+            cout << "  No books found.\n"
+                ;
     }
 
     Array<Book> getAll() const

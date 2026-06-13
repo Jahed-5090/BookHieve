@@ -200,7 +200,7 @@ public:
         getline(cin, genre);
 
         if (normalise(genre).empty()) {
-            cout << YELLOW << "  Warning: Genre cannot be blank or spaces.\n" << RESET;
+            cout << "  Warning: Genre cannot be blank or spaces.\n";
             return;
         }
 

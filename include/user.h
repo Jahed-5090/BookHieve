@@ -81,12 +81,12 @@ public:
     }
 
     void print() const {
-        cout << CYAN << left
+        cout << left
              << setw(6)  << id
              << setw(24) << name.substr(0,23)
              << setw(30) << email.substr(0,29)
-             << (isAdmin ? GREEN"Admin" : WHITE"User ")
-             << RESET
+             << (isAdmin ? "Admin" : "User ")
+            
              << "  borrows=" << borrowCount << "\n";
     }
 
@@ -198,12 +198,12 @@ public:
     }
 
     void printAll() const {
-        if (!head) { cout << RED << "  No members found.\n" << RESET; return; }
-        cout << BOLD << left
+        if (!head) { cout << "  No members found.\n"; return; }
+        cout << left
              << setw(6)  << "ID"
              << setw(24) << "Name"
              << setw(30) << "Email"
-             << "Role       Borrows\n" << RESET;
+             << "Role       Borrows\n";
         printLine();
         UserNode* cur = head;
         while (cur) { cur->data.print(); cur = cur->next; }
