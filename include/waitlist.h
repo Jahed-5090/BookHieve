@@ -1,9 +1,9 @@
 #pragma once
-// ╔══════════════════════════════════════════════════════════════════════╗
-// ║  Enhancement 2 – Borrow Waitlist Queue                              ║
-// ║  Per-book FIFO queue persisted to data/waitlists/<bookId>.txt       ║
-// ║  On book return, first user in queue is auto-notified.              ║
-// ╚══════════════════════════════════════════════════════════════════════╝
+// +----------------------------------------------------------------------╗
+// |  Enhancement 2 - Borrow Waitlist Queue                              |
+// |  Per-book FIFO queue persisted to data/waitlists/<bookId>.txt       |
+// |  On book return, first user in queue is auto-notified.              |
+// +----------------------------------------------------------------------╝
 #ifndef WAITLIST_H
 #define WAITLIST_H
 
@@ -86,11 +86,11 @@ public:
         saveQueue(bookId, temp);
         
         // Show position
-        cout << "\n  ╔══ Added to Waitlist ════════════════════════╗\n"
-                  << "  ║  You are #" << (temp.size())
-                  << " in the queue.                      ║\n"
-                  << "  ║  We'll notify you when it becomes available. ║\n"
-                  << "  ╚════════════════════════════════════════════╝\n";
+        cout << "\n  +-- Added to Waitlist ------------------------╗\n"
+                  << "  |  You are #" << (temp.size())
+                  << " in the queue.                      |\n"
+                  << "  |  We'll notify you when it becomes available. |\n"
+                  << "  +--------------------------------------------╝\n";
         return true;
     }
 
@@ -132,10 +132,10 @@ public:
         f.close();
 
         if (!pending.empty()) {
-            cout << "\n  ╔══ 📬 You Have Waitlist Notifications ══════════╗\n";
+            cout << "\n  +-- [NOTIF] You Have Waitlist Notifications ----------╗\n";
             for (auto& m : pending)
-                cout << "  ║  ► " << m << "\n";
-            cout << "  ╚════════════════════════════════════════════════╝\n";
+                cout << "  |  -> " << m << "\n";
+            cout << "  +------------------------------------------------╝\n";
 
             // Remove shown notifications so they don't repeat
             ofstream out(notifyFile);

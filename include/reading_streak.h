@@ -1,10 +1,10 @@
 #pragma once
-// ╔══════════════════════════════════════════════════════════════════════╗
-// ║  Enhancement 4 – Reading Streak & Borrowing Milestones              ║
-// ║  Parses borrow history timestamps to compute:                        ║
-// ║   • Total books borrowed (with milestone badges)                     ║
-// ║   • Consecutive monthly streak                                       ║
-// ╚══════════════════════════════════════════════════════════════════════╝
+// +----------------------------------------------------------------------╗
+// |  Enhancement 4 - Reading Streak & Borrowing Milestones              |
+// |  Parses borrow history timestamps to compute:                        |
+// |   • Total books borrowed (with milestone badges)                     |
+// |   • Consecutive monthly streak                                       |
+// +----------------------------------------------------------------------╝
 #ifndef READING_STREAK_H
 #define READING_STREAK_H
 
@@ -145,26 +145,26 @@ public:
     static void display(const string& userId) {
         ReadingStats s = compute(userId);
 
-        cout << "\n  ╔══ Your Reading Journey ═══════════════════════════╗\n";
-        cout << "  ║    Total books borrowed : " << s.totalBorrowed << "\n";
-        cout << "  ║  Current streak       : " << s.currentStreak
+        cout << "\n  +-- Your Reading Journey ---------------------------╗\n";
+        cout << "  |    Total books borrowed : " << s.totalBorrowed << "\n";
+        cout << "  |  Current streak       : " << s.currentStreak
                   << " month" << (s.currentStreak != 1 ? "s" : "") << " in a row\n";
-        cout << "  ║  Best streak ever      : " << s.longestStreak
+        cout << "  |  Best streak ever      : " << s.longestStreak
                   << " month" << (s.longestStreak != 1 ? "s" : "") << "\n";
 
         // Show earned milestones
-        cout << "  ║\n  ║  Milestones:\n";
+        cout << "  |\n  |  Milestones:\n";
         bool anyEarned = false;
         for (auto& p : MILESTONES) {
             auto& threshold = p.threshold;
             auto& badge = p.badge;
             if (s.totalBorrowed >= threshold) {
-                cout << "  ║       " << badge << "\n";
+                cout << "  |       " << badge << "\n";
                 anyEarned = true;
             }
         }
         if (!anyEarned)
-            cout << "  ║    (Borrow your first book to earn a badge!)\n";
+            cout << "  |    (Borrow your first book to earn a badge!)\n";
 
         // Next milestone hint
         for (auto& p : MILESTONES) {
@@ -172,13 +172,13 @@ public:
             auto& badge = p.badge;
             if (s.totalBorrowed < threshold) {
                 int left = threshold - s.totalBorrowed;
-                cout << "  ║\n  ║  Next: " << badge << "  ("
+                cout << "  |\n  |  Next: " << badge << "  ("
                           << left << " book" << (left>1?"s":"") << " to go)\n";
                 break;
             }
         }
 
-        cout << "  ╚═══════════════════════════════════════════════════╝\n";
+        cout << "  +---------------------------------------------------╝\n";
     }
 };
 

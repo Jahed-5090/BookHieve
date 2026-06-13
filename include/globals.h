@@ -87,7 +87,7 @@ inline void printLine(char c = '-', int n = 102) {
 inline void printTitle(const string &title) {
   clearScreen();
   printLine('=');
-  cout << "  BookHieve – Digital Library Management System\n";
+  cout << "  BookHieve - Digital Library Management System\n";
   printLine('=');
   cout << "  " << title << "\n";
   printLine('-');

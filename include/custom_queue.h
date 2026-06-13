@@ -1,9 +1,9 @@
 #pragma once
-// ╔══════════════════════════════════════════════════════════════════════╗
-// ║  Custom Queue Data Structure                                        ║
-// ║  FIFO (First In First Out) implementation using linked list nodes   ║
-// ║  Replaces queue to avoid STL dependency                        ║
-// ╚══════════════════════════════════════════════════════════════════════╝
+// +----------------------------------------------------------------------╗
+// |  Custom Queue Data Structure                                        |
+// |  FIFO (First In First Out) implementation using linked list nodes   |
+// |  Replaces queue to avoid STL dependency                        |
+// +----------------------------------------------------------------------╝
 
 #ifndef CUSTOM_QUEUE_H
 #define CUSTOM_QUEUE_H

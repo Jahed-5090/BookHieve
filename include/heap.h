@@ -3,9 +3,9 @@
 #include "dynamic_array.h"
 #include <algorithm>
 
-// ══════════════════════════════════════════════════════════════════════════════
-//  FineEntry  –  user + outstanding fine
-// ══════════════════════════════════════════════════════════════════════════════
+// ------------------------------------------------------------------------------
+//  FineEntry  -  user + outstanding fine
+// ------------------------------------------------------------------------------
 class FineEntry {
 public:
     int    userId;
@@ -26,10 +26,10 @@ public:
     }
 };
 
-// ══════════════════════════════════════════════════════════════════════════════
-//  MaxHeap  –  FineEntry keyed on fineAmount
+// ------------------------------------------------------------------------------
+//  MaxHeap  -  FineEntry keyed on fineAmount
 //  Used for: "Who owes the most?" query & heap sort demo
-// ══════════════════════════════════════════════════════════════════════════════
+// ------------------------------------------------------------------------------
 class FineMaxHeap {
     Array<FineEntry> heap;
 
@@ -79,7 +79,7 @@ public:
     int   size()  const { return heap.size(); }
     void  clear() { heap.clear(); }
 
-    // Heap Sort – sorts a copy in ascending order, prints result
+    // Heap Sort - sorts a copy in ascending order, prints result
     void heapSort(Array<FineEntry> arr) {
         // Build max heap
         int n = arr.size();
@@ -127,9 +127,9 @@ public:
     }
 };
 
-// ══════════════════════════════════════════════════════════════════════════════
-//  MinHeap  –  for "next return due" queries
-// ══════════════════════════════════════════════════════════════════════════════
+// ------------------------------------------------------------------------------
+//  MinHeap  -  for "next return due" queries
+// ------------------------------------------------------------------------------
 class DueEntry {
 public:
     int    recordId, userId, bookId;

@@ -1,9 +1,9 @@
 #pragma once
-// ╔══════════════════════════════════════════════════════════════════════╗
-// ║  Enhancement 6 – Book Condition Tagging                             ║
-// ║  Admin tags each book: New / Good / Fair / Worn                     ║
-// ║  Worn books are flagged in admin catalog for potential removal.      ║
-// ╚══════════════════════════════════════════════════════════════════════╝
+// +----------------------------------------------------------------------╗
+// |  Enhancement 6 - Book Condition Tagging                             |
+// |  Admin tags each book: New / Good / Fair / Worn                     |
+// |  Worn books are flagged in admin catalog for potential removal.      |
+// +----------------------------------------------------------------------╝
 #ifndef BOOK_CONDITION_H
 #define BOOK_CONDITION_H
 
@@ -53,7 +53,7 @@ inline string conditionBadge(BookCondition c) {
 
 class ConditionManager {
 private:
-    // Persisted as data/conditions.txt — format: bookId|condition
+    // Persisted as data/conditions.txt - format: bookId|condition
     const string condFile = "data/conditions.txt";
     class ConditionEntry {
     public:
@@ -155,19 +155,19 @@ public:
     // ── Admin: flag worn books for maintenance review ─────────────────────
     void showWornBooks() {
         load(); // refresh
-        cout << "\n  ╔══ Admin: Books Flagged for Review (Worn) ══════════╗\n";
+        cout << "\n  +-- Admin: Books Flagged for Review (Worn) ----------╗\n";
         bool any = false;
         for (auto& p : condMap) {
             auto& id = p.bookId;
             auto& c = p.condition;
             if (c == BookCondition::Worn) {
-                cout << "  ║      Book ID: " << id << "\n";
+                cout << "  |      Book ID: " << id << "\n";
                 any = true;
             }
         }
         if (!any)
-            cout << "  ║  No worn books flagged.\n";
-        cout << "  ╚════════════════════════════════════════════════════╝\n";
+            cout << "  |  No worn books flagged.\n";
+        cout << "  +----------------------------------------------------╝\n";
     }
 
     // ── For catalog display: append condition to a book row ───────────────

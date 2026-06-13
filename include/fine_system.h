@@ -1,10 +1,10 @@
 #pragma once
-// ╔══════════════════════════════════════════════════════════════════════╗
-// ║  Enhancement 3 – Progressive Fine System with Grace Period          ║
-// ║  Tier 1 (days 1-3 overdue) : BDT 5/day                             ║
-// ║  Tier 2 (day 4+)           : BDT 15/day                            ║
-// ║  Grace period              : 1 free waiver per user per year        ║
-// ╚══════════════════════════════════════════════════════════════════════╝
+// +----------------------------------------------------------------------╗
+// |  Enhancement 3 - Progressive Fine System with Grace Period          |
+// |  Tier 1 (days 1-3 overdue) : BDT 5/day                             |
+// |  Tier 2 (day 4+)           : BDT 15/day                            |
+// |  Grace period              : 1 free waiver per user per year        |
+// +----------------------------------------------------------------------╝
 #ifndef FINE_SYSTEM_H
 #define FINE_SYSTEM_H
 
@@ -58,7 +58,7 @@ public:
     }
 
     // ── Calculate fine for `daysOverdue` days ────────────────────────────
-    // Does NOT apply grace here — grace is applied separately at payment time.
+    // Does NOT apply grace here - grace is applied separately at payment time.
     double calculateFine(int daysOverdue, const FineConfig& cfg = {}) const {
         if (daysOverdue <= 0) return 0.0;
 
@@ -77,32 +77,32 @@ public:
         bool graceAvail = !graceUsedThisYear(userId);
         double gross = calculateFine(daysOverdue, cfg);
 
-        cout << "\n  ╔══ Fine Breakdown ═══════════════════════════════╗\n";
+        cout << "\n  +-- Fine Breakdown -------------------------------╗\n";
         if (daysOverdue <= 0) {
-            cout << "  ║  Returned on time — no fine.                 ║\n";
+            cout << "  |  Returned on time - no fine.                 |\n";
         } else {
             int t1 = min(daysOverdue, cfg.tier1Days);
             int t2 = max(0, daysOverdue - cfg.tier1Days);
-            cout << "  ║  Days overdue    : " << daysOverdue << "\n";
+            cout << "  |  Days overdue    : " << daysOverdue << "\n";
             if (t1 > 0)
-                cout << "  ║  Tier-1 (" << t1 << " day"
+                cout << "  |  Tier-1 (" << t1 << " day"
                           << (t1>1?"s":"") << " × BDT " << cfg.tier1Rate
                           << ") = BDT " << (t1 * cfg.tier1Rate) << "\n";
             if (t2 > 0)
-                cout << "  ║  Tier-2 (" << t2 << " day"
+                cout << "  |  Tier-2 (" << t2 << " day"
                           << (t2>1?"s":"") << " × BDT " << cfg.tier2Rate
                           << ") = BDT " << (t2 * cfg.tier2Rate) << "\n";
-            cout << "  ║  Gross fine      : BDT " << gross << "\n";
+            cout << "  |  Gross fine      : BDT " << gross << "\n";
 
             if (graceAvail) {
-                cout << "  ║  Grace Period  : Available! (1 free waiver/year)\n"
-                          << "  ║  Net fine        : BDT 0.00 (if grace applied)\n";
+                cout << "  |  Grace Period  : Available! (1 free waiver/year)\n"
+                          << "  |  Net fine        : BDT 0.00 (if grace applied)\n";
             } else {
-                cout << "  ║  Grace Period    : Already used this year.\n"
-                          << "  ║  Net fine        : BDT " << gross << "\n";
+                cout << "  |  Grace Period    : Already used this year.\n"
+                          << "  |  Net fine        : BDT " << gross << "\n";
             }
         }
-        cout << "  ╚════════════════════════════════════════════════╝\n";
+        cout << "  +------------------------------------------------╝\n";
     }
 
     // ── Apply payment (called from "Pay Fine") ───────────────────────────
@@ -116,7 +116,7 @@ public:
         bool canUseGrace = useGrace && !graceUsedThisYear(userId);
         if (canUseGrace) {
             markGraceUsed(userId);
-            cout << "\n  Grace period applied — fine waived for this offence.\n"
+            cout << "\n  Grace period applied - fine waived for this offence.\n"
                       << "  (Grace period quota exhausted until next year.)\n";
             return 0.0;
         }
@@ -145,12 +145,12 @@ public:
             cout << "  [Fine System] No active borrows file found.\n";
             return;
         }
-        cout << "\n  ╔══ Active Fine Summary (Admin) ══════════════════╗\n";
-        cout << "  ║  " << left << setw(10) << "User"
+        cout << "\n  +-- Active Fine Summary (Admin) ------------------╗\n";
+        cout << "  |  " << left << setw(10) << "User"
              << " " << left << setw(16) << "Book"
              << " " << right << setw(8) << "Days OD"
              << " " << right << setw(14) << "Fine" << "\n";
-        cout << "  ║  " << string(10, '-') << " " << string(16, '-') << " "
+        cout << "  |  " << string(10, '-') << " " << string(16, '-') << " "
              << string(8, '-') << " " << string(14, '-') << "\n";
         string line;
         bool any = false;
@@ -172,7 +172,7 @@ public:
                 double fine = calculateFine(od);
                 ostringstream fineText;
                 fineText << fixed << setprecision(2) << "BDT " << fine;
-                cout << "  ║  " << left << setw(10) << uid
+                cout << "  |  " << left << setw(10) << uid
                      << " " << left << setw(16) << bid
                      << " " << right << setw(8) << (to_string(od) + "d")
                      << " " << right << setw(14) << fineText.str() << "\n";
@@ -180,8 +180,8 @@ public:
             }
         }
         if (!any)
-            cout << "  ║  No overdue borrows at this time.\n";
-        cout << "  ╚════════════════════════════════════════════════╝\n";
+            cout << "  |  No overdue borrows at this time.\n";
+        cout << "  +------------------------------------------------╝\n";
     }
 };
 
