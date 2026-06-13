@@ -17,28 +17,28 @@
 
 class WaitlistManager {
 private:
-    const std::string waitlistDir = "data/waitlists/";
-    const std::string notifyFile  = "data/notifications.txt";
+    const string waitlistDir = "data/waitlists/";
+    const string notifyFile  = "data/notifications.txt";
 
-    std::string waitlistPath(const std::string& bookId) const {
+    string waitlistPath(const string& bookId) const {
         return waitlistDir + bookId + ".txt";
     }
 
     // ── Persistence ──────────────────────────────────────────────────────
-    Queue<std::string> loadQueue(const std::string& bookId) const {
-        Queue<std::string> q;
-        std::ifstream f(waitlistPath(bookId));
+    Queue<string> loadQueue(const string& bookId) const {
+        Queue<string> q;
+        ifstream f(waitlistPath(bookId));
         if (!f.is_open()) return q;
-        std::string uid;
-        while (std::getline(f, uid))
+        string uid;
+        while (getline(f, uid))
             if (!uid.empty()) q.push(uid);
         return q;
     }
 
-    void saveQueue(const std::string& bookId,
-                   Queue<std::string> q) const {
+    void saveQueue(const string& bookId,
+                   Queue<string> q) const {
         portableMkdir(waitlistDir);
-        std::ofstream f(waitlistPath(bookId));
+        ofstream f(waitlistPath(bookId));
         while (!q.empty()) {
             f << q.front() << "\n";
             q.pop();
@@ -46,10 +46,10 @@ private:
     }
 
     // Append a notification line: userId|bookId|message
-    void addNotification(const std::string& userId,
-                         const std::string& bookId,
-                         const std::string& bookTitle) const {
-        std::ofstream f(notifyFile, std::ios::app);
+    void addNotification(const string& userId,
+                         const string& bookId,
+                         const string& bookTitle) const {
+        ofstream f(notifyFile, ios::app);
         f << userId << "|" << bookId << "|"
           << "Your waitlisted book is now available: " << bookTitle << "\n";
     }
@@ -60,14 +60,14 @@ public:
     }
 
     // ── Add user to queue (called from "Borrow Book" when unavailable) ──
-    bool enqueue(const std::string& userId, const std::string& bookId) {
+    bool enqueue(const string& userId, const string& bookId) {
         auto q = loadQueue(bookId);
         
         // Prevent duplicate entries - check if user is already in queue
-        Queue<std::string> temp;
+        Queue<string> temp;
         bool isDuplicate = false;
         while (!q.empty()) {
-            std::string current = q.front();
+            string current = q.front();
             if (current == userId) {
                 isDuplicate = true;
             }
@@ -76,7 +76,7 @@ public:
         }
         
         if (isDuplicate) {
-            std::cout << "\n  [Waitlist] You are already in the queue "
+            cout << "\n  [Waitlist] You are already in the queue "
                          "for this book.\n";
             return false;
         }
@@ -86,7 +86,7 @@ public:
         saveQueue(bookId, temp);
         
         // Show position
-        std::cout << "\n  ╔══ Added to Waitlist ════════════════════════╗\n"
+        cout << "\n  ╔══ Added to Waitlist ════════════════════════╗\n"
                   << "  ║  You are #" << (temp.size())
                   << " in the queue.                      ║\n"
                   << "  ║  We'll notify you when it becomes available. ║\n"
@@ -96,34 +96,34 @@ public:
 
     // ── Called automatically when a book is returned ─────────────────────
     // Returns the userId that was next in line (or "" if queue was empty).
-    std::string notifyNext(const std::string& bookId,
-                           const std::string& bookTitle) {
+    string notifyNext(const string& bookId,
+                           const string& bookTitle) {
         auto q = loadQueue(bookId);
         if (q.empty()) return "";
-        std::string nextUser = q.front();
+        string nextUser = q.front();
         q.pop();
         saveQueue(bookId, q);
         addNotification(nextUser, bookId, bookTitle);
-        std::cout << "\n  [Waitlist] User '" << nextUser
+        cout << "\n  [Waitlist] User '" << nextUser
                   << "' has been notified that '" << bookTitle
                   << "' is now available.\n";
         return nextUser;
     }
 
     // ── Called at login to display pending notifications ──────────────────
-    void showNotifications(const std::string& userId) const {
-        Array<std::string> pending;
-        Array<std::string> remaining;
+    void showNotifications(const string& userId) const {
+        Array<string> pending;
+        Array<string> remaining;
 
-        std::ifstream f(notifyFile);
-        std::string line;
-        while (std::getline(f, line)) {
+        ifstream f(notifyFile);
+        string line;
+        while (getline(f, line)) {
             if (line.empty()) continue;
-            std::istringstream ss(line);
-            std::string uid, bid, msg;
-            std::getline(ss, uid, '|');
-            std::getline(ss, bid, '|');
-            std::getline(ss, msg);
+            istringstream ss(line);
+            string uid, bid, msg;
+            getline(ss, uid, '|');
+            getline(ss, bid, '|');
+            getline(ss, msg);
             if (uid == userId)
                 pending.push_back(msg);
             else
@@ -132,27 +132,27 @@ public:
         f.close();
 
         if (!pending.empty()) {
-            std::cout << "\n  ╔══ 📬 You Have Waitlist Notifications ══════════╗\n";
+            cout << "\n  ╔══ 📬 You Have Waitlist Notifications ══════════╗\n";
             for (auto& m : pending)
-                std::cout << "  ║  ► " << m << "\n";
-            std::cout << "  ╚════════════════════════════════════════════════╝\n";
+                cout << "  ║  ► " << m << "\n";
+            cout << "  ╚════════════════════════════════════════════════╝\n";
 
             // Remove shown notifications so they don't repeat
-            std::ofstream out(notifyFile);
+            ofstream out(notifyFile);
             for (auto& r : remaining) out << r << "\n";
         }
     }
 
     // ── Queue size (display in catalog next to unavailable books) ─────────
-    int queueSize(const std::string& bookId) const {
+    int queueSize(const string& bookId) const {
         auto q = loadQueue(bookId);
         return (int)q.size();
     }
 
     // ── Remove user from queue (e.g., user cancels) ───────────────────────
-    void dequeue(const std::string& userId, const std::string& bookId) {
+    void dequeue(const string& userId, const string& bookId) {
         auto q = loadQueue(bookId);
-        Queue<std::string> newQ;
+        Queue<string> newQ;
         bool removed = false;
         while (!q.empty()) {
             if (q.front() == userId && !removed)
@@ -163,7 +163,7 @@ public:
         }
         saveQueue(bookId, newQ);
         if (removed)
-            std::cout << "\n  [Waitlist] Removed from queue for book " << bookId << ".\n";
+            cout << "\n  [Waitlist] Removed from queue for book " << bookId << ".\n";
     }
 };
 
