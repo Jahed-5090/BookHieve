@@ -1,9 +1,9 @@
 #pragma once
-// ╔══════════════════════════════════════════════════════════════════════╗
-// ║  Enhancement 5 – Overdue Early Warning System                       ║
-// ║  User login: warn if any borrowed book is due within 2 days         ║
-// ║  Admin panel: "soon overdue" list before fines accumulate           ║
-// ╚══════════════════════════════════════════════════════════════════════╝
+// +----------------------------------------------------------------------╗
+// |  Enhancement 5 - Overdue Early Warning System                       |
+// |  User login: warn if any borrowed book is due within 2 days         |
+// |  Admin panel: "soon overdue" list before fines accumulate           |
+// +----------------------------------------------------------------------╝
 #ifndef OVERDUE_WARNING_H
 #define OVERDUE_WARNING_H
 
@@ -50,7 +50,7 @@ private:
     }
 
     // ── Load active borrows for a single user ─────────────────────────────
-    // File: data/active/<userId>.txt — format: bookId|bookTitle|dueDate
+    // File: data/active/<userId>.txt - format: bookId|bookTitle|dueDate
     static Array<DueSoonEntry> loadUserActive(const string& userId) {
         Array<DueSoonEntry> entries;
         string path = "data/active/" + userId + ".txt";
@@ -84,22 +84,22 @@ public:
 
         if (warnings.empty()) return;
 
-        cout << "\n  ╔══ ⚠️  DUE DATE ALERT ═══════════════════════════════╗\n";
+        cout << "\n  +-- [!]  DUE DATE ALERT -------------------------------╗\n";
         for (auto& w : warnings) {
             if (w.daysLeft < 0) {
-                cout << "  ║  OVERDUE by " << -w.daysLeft << " day"
+                cout << "  |  OVERDUE by " << -w.daysLeft << " day"
                           << (-w.daysLeft > 1 ? "s" : "") << ": \""
                           << w.bookTitle << "\" (due " << w.dueDate << ")\n";
             } else if (w.daysLeft == 0) {
-                cout << "  ║  🟠 DUE TODAY: \"" << w.bookTitle << "\"\n";
+                cout << "  |  [TODAY] DUE TODAY: \"" << w.bookTitle << "\"\n";
             } else {
-                cout << "  ║  Due in " << w.daysLeft << " day"
+                cout << "  |  Due in " << w.daysLeft << " day"
                           << (w.daysLeft > 1 ? "s" : "") << ": \""
                           << w.bookTitle << "\" (due " << w.dueDate << ")\n";
             }
         }
-        cout << "  ║  Please return or renew on time to avoid fines.\n"
-                  << "  ╚═══════════════════════════════════════════════════╝\n";
+        cout << "  |  Please return or renew on time to avoid fines.\n"
+                  << "  +---------------------------------------------------╝\n";
     }
 
     // ── Admin panel: list all borrows due within `days` days ─────────────
@@ -126,30 +126,30 @@ public:
             }
         }
 
-        cout << "\n  ╔══ Admin: Overdue & Soon-Due Report ══════════════════╗\n";
+        cout << "\n  +-- Admin: Overdue & Soon-Due Report ------------------╗\n";
 
         if (!alreadyOverdue.empty()) {
-            cout << "  ║  Currently Overdue:\n";
+            cout << "  |  Currently Overdue:\n";
             for (auto& e : alreadyOverdue)
-                cout << "  ║    User: " << e.userId
+                cout << "  |    User: " << e.userId
                           << "  Book: " << e.bookTitle
                           << "  (" << -e.daysLeft << " days overdue)\n";
         }
 
         if (!soonOverdue.empty()) {
-            cout << "  ║\n  ║  Due Within " << days << " Day"
+            cout << "  |\n  |  Due Within " << days << " Day"
                       << (days > 1 ? "s" : "") << ":\n";
             for (auto& e : soonOverdue)
-                cout << "  ║    User: " << e.userId
+                cout << "  |    User: " << e.userId
                           << "  Book: " << e.bookTitle
                           << "  (due " << e.dueDate << ", "
                           << e.daysLeft << "d left)\n";
         }
 
         if (alreadyOverdue.empty() && soonOverdue.empty())
-            cout << "  ║  No overdue or near-due books right now.\n";
+            cout << "  |  No overdue or near-due books right now.\n";
 
-        cout << "  ╚═════════════════════════════════════════════════════╝\n";
+        cout << "  +-----------------------------------------------------╝\n";
     }
 };
 

@@ -2,9 +2,9 @@
 #include "globals.h"
 #include "dynamic_array.h"
 
-// ══════════════════════════════════════════════════════════════════════════════
-//  BorrowRecord  –  one borrow event
-// ══════════════════════════════════════════════════════════════════════════════
+// ------------------------------------------------------------------------------
+//  BorrowRecord  -  one borrow event
+// ------------------------------------------------------------------------------
 class BorrowRecord {
 public:
     int    recordId;
@@ -47,7 +47,7 @@ public:
              << setw(8)  << bookId
              << setw(28) << bookTitle.substr(0,27)
              << setw(12) << borrowDate
-             << setw(12) << (returned ? returnDate : "—")
+             << setw(12) << (returned ? returnDate : "-")
              << (due > 0 ? "Yes" : "No ")
              << fixed << setprecision(2) << due
              << "\n";
@@ -81,9 +81,9 @@ public:
     }
 };
 
-// ══════════════════════════════════════════════════════════════════════════════
-//  Stack  –  used for "undo last borrow" and fine history navigation
-// ══════════════════════════════════════════════════════════════════════════════
+// ------------------------------------------------------------------------------
+//  Stack  -  used for "undo last borrow" and fine history navigation
+// ------------------------------------------------------------------------------
 class StackNode {
 public:
     BorrowRecord data;
@@ -124,9 +124,9 @@ public:
     int  size()  const { return size_; }
 };
 
-// ══════════════════════════════════════════════════════════════════════════════
-//  Queue  –  borrow request queue (FIFO waiting list)
-// ══════════════════════════════════════════════════════════════════════════════
+// ------------------------------------------------------------------------------
+//  Queue  -  borrow request queue (FIFO waiting list)
+// ------------------------------------------------------------------------------
 class QueueNode {
 public:
     BorrowRecord data;
@@ -182,9 +182,9 @@ public:
     }
 };
 
-// ══════════════════════════════════════════════════════════════════════════════
-//  BorrowHistory  –  array-based, sorted by recordId using merge sort
-// ══════════════════════════════════════════════════════════════════════════════
+// ------------------------------------------------------------------------------
+//  BorrowHistory  -  array-based, sorted by recordId using merge sort
+// ------------------------------------------------------------------------------
 class BorrowHistory {
     Array<BorrowRecord> records;
 

@@ -5,9 +5,9 @@
 #include "borrow.h"
 #include <filesystem>
 
-// ══════════════════════════════════════════════════════════════════════════════
-//  FileManager  –  load / save all data to text files
-// ══════════════════════════════════════════════════════════════════════════════
+// ------------------------------------------------------------------------------
+//  FileManager  -  load / save all data to text files
+// ------------------------------------------------------------------------------
 class FileManager {
 public:
     static void ensureDataDir() {
@@ -137,7 +137,7 @@ public:
 
     // ─── Per-user data files (for enhancements) ──────────────────────────
 
-    // data/userlist.txt — one userId per line
+    // data/userlist.txt - one userId per line
     static void saveUserList(const UserList& ul) {
         portableMkdir("data");
         ofstream f("data/userlist.txt");
@@ -146,7 +146,7 @@ public:
             f << u.id << "\n";
     }
 
-    // data/history/<userId>.txt — bookId|borrowDate|returnDate
+    // data/history/<userId>.txt - bookId|borrowDate|returnDate
     static void savePerUserHistory(const BorrowHistory& bh) {
         portableMkdir("data/history");
         // Group records by userId
@@ -176,7 +176,7 @@ public:
         }
     }
 
-    // data/active/<userId>.txt — bookId|bookTitle|dueDate|genre
+    // data/active/<userId>.txt - bookId|bookTitle|dueDate|genre
     // (only non-returned borrows; needs catalogue for genre lookup)
     static void saveActiveBorrows(const BorrowHistory& bh, const BookBST& catalogue) {
         portableMkdir("data/active");

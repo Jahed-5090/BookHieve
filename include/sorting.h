@@ -3,11 +3,11 @@
 #include "dynamic_array.h"
 #include <functional>
 
-// ══════════════════════════════════════════════════════════════════════════════
+// ------------------------------------------------------------------------------
 //  Sorting utilities for Book vectors
 //  Implements: Bubble, Insertion, Selection, Quick, Merge
 //  Used when admin views sorted catalogue views
-// ══════════════════════════════════════════════════════════════════════════════
+// ------------------------------------------------------------------------------
 
 // ─── Bubble Sort ─────────────────────────────────────────────────────────────
 inline void bubbleSortByTitle(Array<Book>& v) {

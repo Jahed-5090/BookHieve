@@ -1,10 +1,10 @@
 #pragma once
-// ╔══════════════════════════════════════════════════════════════════════╗
-// ║  Enhancement 7 – Borrow Limit by Book Category                     ║
-// ║  Admin configures per-genre limits in data/borrow_limits.txt        ║
-// ║  "Borrow Book" checks both global and category limits before        ║
-// ║  allowing a borrow.                                                 ║
-// ╚══════════════════════════════════════════════════════════════════════╝
+// +----------------------------------------------------------------------╗
+// |  Enhancement 7 - Borrow Limit by Book Category                     |
+// |  Admin configures per-genre limits in data/borrow_limits.txt        |
+// |  "Borrow Book" checks both global and category limits before        |
+// |  allowing a borrow.                                                 |
+// +----------------------------------------------------------------------╝
 #include "globals.h"
 #ifndef BORROW_LIMITS_H
 #define BORROW_LIMITS_H
@@ -18,11 +18,11 @@
 class BorrowLimitManager {
 private:
     // ── Config ────────────────────────────────────────────────────────────
-    // data/borrow_limits.txt — format: genre|limit  (e.g. "Academic|2")
+    // data/borrow_limits.txt - format: genre|limit  (e.g. "Academic|2")
     // A special key "GLOBAL" sets the overall cap.
     const string limitsFile  = "data/borrow_limits.txt";
-    // data/active/<userId>.txt — each line: bookId|bookTitle|dueDate|genre
-    // (genre is the 4th field — add it when writing active borrows)
+    // data/active/<userId>.txt - each line: bookId|bookTitle|dueDate|genre
+    // (genre is the 4th field - add it when writing active borrows)
     const string activeDir   = "data/active/";
 
     class GenreLimit {
@@ -173,15 +173,15 @@ public:
         auto counts = currentCountByGenre(userId);
         int total = getValue(counts, "__total__");
 
-        cout << "\n  ╔══ Your Borrow Allowance ═══════════════════════════╗\n";
-        cout << "  ║  Overall: " << total << " / " << globalLimit << " books\n";
+        cout << "\n  +-- Your Borrow Allowance ---------------------------╗\n";
+        cout << "  |  Overall: " << total << " / " << globalLimit << " books\n";
         for (auto& p : limits) {
             auto& genre = p.genre;
             auto& lim = p.limit;
             int used = getValue(counts, genre);
-            cout << "  ║  " << genre << ": " << used << " / " << lim << "\n";
+            cout << "  |  " << genre << ": " << used << " / " << lim << "\n";
         }
-        cout << "  ╚════════════════════════════════════════════════════╝\n";
+        cout << "  +----------------------------------------------------╝\n";
     }
 
     // ── Admin: update a category limit interactively ─────────────────────

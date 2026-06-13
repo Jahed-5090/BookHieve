@@ -1,8 +1,8 @@
-// ╔══════════════════════════════════════════════════════════════════════════╗
-// ║  BookHieve – Enhancement Integration Guide                              ║
-// ║  This file documents EXACTLY where and how to integrate each header.   ║
-// ║  Copy the snippets below into admin.cpp / user_panel.cpp / auth.cpp.   ║
-// ╚══════════════════════════════════════════════════════════════════════════╝
+// +--------------------------------------------------------------------------╗
+// |  BookHieve - Enhancement Integration Guide                              |
+// |  This file documents EXACTLY where and how to integrate each header.   |
+// |  Copy the snippets below into admin.cpp / user_panel.cpp / auth.cpp.   |
+// +--------------------------------------------------------------------------╝
 
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 // STEP 0 ─ Add these #includes to library.h (or each .cpp that uses them)
@@ -22,15 +22,15 @@
 //          Add these near the top of library.h or as Library member fields:
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 /*
-RecommendationEngine recEngine;   // E1 – auto-loads catalogue + histories
-WaitlistManager      waitMgr;     // E2 – FIFO queue per book
-FineSystem           fineSys;     // E3 – tiered fines + grace period
-ConditionManager     condMgr;     // E6 – New/Good/Fair/Worn tags
-BorrowLimitManager   limitMgr;    // E7 – per-genre borrow caps
+RecommendationEngine recEngine;   // E1 - auto-loads catalogue + histories
+WaitlistManager      waitMgr;     // E2 - FIFO queue per book
+FineSystem           fineSys;     // E3 - tiered fines + grace period
+ConditionManager     condMgr;     // E6 - New/Good/Fair/Worn tags
+BorrowLimitManager   limitMgr;    // E7 - per-genre borrow caps
 */
 
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-// ENHANCEMENT 1 – Smart Book Recommendation Engine
+// ENHANCEMENT 1 - Smart Book Recommendation Engine
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 // File: user_panel.cpp  ─  inside viewCatalog() and searchBook()
 //
@@ -42,7 +42,7 @@ BorrowLimitManager   limitMgr;    // E7 – per-genre borrow caps
 // and data/books.txt, builds frequency + co-borrow maps, and prints the top 5.
 
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-// ENHANCEMENT 2 – Borrow Waitlist Queue
+// ENHANCEMENT 2 - Borrow Waitlist Queue
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 // File: user_panel.cpp  ─  inside borrowBook()
 //
@@ -70,7 +70,7 @@ BorrowLimitManager   limitMgr;    // E7 – per-genre borrow caps
 //     waitMgr.showNotifications(currentUserId);   // shows + clears notifications
 
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-// ENHANCEMENT 3 – Progressive Fine System with Grace Period
+// ENHANCEMENT 3 - Progressive Fine System with Grace Period
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 // File: user_panel.cpp  ─  inside viewFineHistory()
 //
@@ -96,7 +96,7 @@ BorrowLimitManager   limitMgr;    // E7 – per-genre borrow caps
 //     fineSys.showAdminFineSummary();
 
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-// ENHANCEMENT 4 – Reading Streak & Borrowing Milestones
+// ENHANCEMENT 4 - Reading Streak & Borrowing Milestones
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 // File: user_panel.cpp  ─  inside viewBorrowHistory()
 //
@@ -108,7 +108,7 @@ BorrowLimitManager   limitMgr;    // E7 – per-genre borrow caps
 //   computes total borrows, monthly streak, and earned milestone badges.
 
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-// ENHANCEMENT 5 – Overdue Early Warning System
+// ENHANCEMENT 5 - Overdue Early Warning System
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 // File: auth.cpp / user_panel.cpp  ─  right after successful user login
 //
@@ -122,7 +122,7 @@ BorrowLimitManager   limitMgr;    // E7 – per-genre borrow caps
 // This file should be maintained by your existing borrowBook/returnBook logic.
 
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-// ENHANCEMENT 6 – Book Condition Tagging
+// ENHANCEMENT 6 - Book Condition Tagging
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 // File: admin.cpp  ─  inside addBook()
 //
@@ -144,7 +144,7 @@ BorrowLimitManager   limitMgr;    // E7 – per-genre borrow caps
 //     condMgr.showWornBooks();   // flag worn books for removal
 
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-// ENHANCEMENT 7 – Borrow Limit by Book Category
+// ENHANCEMENT 7 - Borrow Limit by Book Category
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 // File: user_panel.cpp  ─  inside borrowBook(), before issuing the borrow
 //
@@ -170,12 +170,12 @@ BorrowLimitManager   limitMgr;    // E7 – per-genre borrow caps
 // DATA FILE SUMMARY (new files introduced by these enhancements)
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 //
-//  data/waitlists/<bookId>.txt    – one userId per line (FIFO queue)
-//  data/notifications.txt         – userId|bookId|message
-//  data/grace/<userId>.txt        – year grace was used (e.g. "2025")
-//  data/conditions.txt            – bookId|condition (New/Good/Fair/Worn)
-//  data/borrow_limits.txt         – genre|limit (including "GLOBAL|5")
-//  data/active/<userId>.txt       – bookId|bookTitle|dueDate|genre  (UPDATED)
-//  data/history/<userId>.txt      – bookId|borrowDate|returnDate  (EXISTING)
-//  data/userlist.txt              – one userId per line  (EXISTING)
-//  data/books.txt                 – id|title|author|genre|...  (EXISTING)
+//  data/waitlists/<bookId>.txt    - one userId per line (FIFO queue)
+//  data/notifications.txt         - userId|bookId|message
+//  data/grace/<userId>.txt        - year grace was used (e.g. "2025")
+//  data/conditions.txt            - bookId|condition (New/Good/Fair/Worn)
+//  data/borrow_limits.txt         - genre|limit (including "GLOBAL|5")
+//  data/active/<userId>.txt       - bookId|bookTitle|dueDate|genre  (UPDATED)
+//  data/history/<userId>.txt      - bookId|borrowDate|returnDate  (EXISTING)
+//  data/userlist.txt              - one userId per line  (EXISTING)
+//  data/books.txt                 - id|title|author|genre|...  (EXISTING)

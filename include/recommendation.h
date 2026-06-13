@@ -1,9 +1,9 @@
 #pragma once
-// ╔══════════════════════════════════════════════════════════════════════╗
-// ║  Enhancement 1 – Smart Book Recommendation Engine                   ║
-// ║  Uses frequency maps to suggest books by same author/genre and      ║
-// ║  collaborative filtering via co-borrow counts.                       ║
-// ╚══════════════════════════════════════════════════════════════════════╝
+// +----------------------------------------------------------------------╗
+// |  Enhancement 1 - Smart Book Recommendation Engine                   |
+// |  Uses frequency maps to suggest books by same author/genre and      |
+// |  collaborative filtering via co-borrow counts.                       |
+// +----------------------------------------------------------------------╝
 #ifndef RECOMMENDATION_H
 #define RECOMMENDATION_H
 
@@ -355,13 +355,13 @@ public:
                          "to unlock personalised suggestions!\n";
             return;
         }
-        cout << "\n  ╔══ Recommended For You ════════════════════════════╗\n";
+        cout << "\n  +-- Recommended For You ----------------------------╗\n";
         int n = 1;
         for (auto& b : recs) {
-            cout << "  ║  " << n++ << ". " << b.title
+            cout << "  |  " << n++ << ". " << b.title
                       << "  (" << b.author << ")  [" << b.genre << "]\n";
         }
-        cout << "  ╚═══════════════════════════════════════════════════╝\n";
+        cout << "  +---------------------------------------------------╝\n";
     }
 };
 

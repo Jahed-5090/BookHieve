@@ -21,9 +21,9 @@ extern FineSystem           fineSys;
 extern ConditionManager     condMgr;
 extern BorrowLimitManager   limitMgr;
 
-// ══════════════════════════════════════════════════════════════════════════════
-//  Library  –  central engine that owns all DSA structures
-// ══════════════════════════════════════════════════════════════════════════════
+// ------------------------------------------------------------------------------
+//  Library  -  central engine that owns all DSA structures
+// ------------------------------------------------------------------------------
 class Library
 {
 public:
