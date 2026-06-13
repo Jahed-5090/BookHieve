@@ -24,8 +24,6 @@ BorrowLimitManager   limitMgr;
 
 void runHomepage(Library &lib);
 
-static void NewFunction();
-
 int main() {
     Library lib;
     runHomepage(lib);
