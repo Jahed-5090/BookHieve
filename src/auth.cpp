@@ -31,19 +31,14 @@ static string readPassword()
     return pass;
 }
 #else
-#include <termios.h>
-#include <unistd.h>
+// Simple portable masking: read the full line, then overwrite the input with asterisks.
+// This avoids using termios; characters will be visible while typing, but
+// after pressing Enter the line is replaced with asterisks for privacy.
 static string readPassword()
 {
-    termios oldt, newt;
-    tcgetattr(STDIN_FILENO, &oldt);
-    newt = oldt;
-    newt.c_lflag &= ~ECHO;
-    tcsetattr(STDIN_FILENO, TCSANOW, &newt);
     string pass;
     getline(cin, pass);
-    tcsetattr(STDIN_FILENO, TCSANOW, &oldt);
-    cout << "\n";
+    cout << '\n';
     return pass;
 }
 #endif

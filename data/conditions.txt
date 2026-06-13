@@ -1,6 +1,6 @@
 9|Good
 3|Good
 14|New
-13|Fair
+13|New
 16|New
 15|Good
