@@ -3,7 +3,7 @@
 #include "book.h"
 #include "user.h"
 #include "borrow.h"
-#include <filesystem>
+#include <dirent.h>
 
 // ══════════════════════════════════════════════════════════════════════════════
 //  FileManager  –  load / save all data to text files
@@ -67,51 +67,53 @@ public:
     }
 
     static void loadActiveBorrows(BorrowHistory& bh) {
-        namespace fs = std::filesystem;
-        fs::path activeDir("data/active");
-        if (!fs::exists(activeDir) || !fs::is_directory(activeDir))
-            return;
+        DIR* dir = opendir("data/active");
+        if (!dir) return;
 
-        for (auto const& entry : fs::directory_iterator(activeDir)) {
-            if (!entry.is_regular_file()) continue;
-            fs::path path = entry.path();
-            if (path.extension() != ".txt") continue;
-            string filename = path.filename().string();
-            string userIdStr = path.stem().string();
-            if (userIdStr.empty()) continue;
+        struct dirent* entry;
+        while ((entry = readdir(dir)) != nullptr) {
+            string filename = entry->d_name;
+            if (filename == "." || filename == "..") continue;
 
-            ifstream f(path.string());
-            if (!f.is_open()) continue;
-            string line;
-            while (getline(f, line)) {
-                if (line.empty()) continue;
-                istringstream ss(line);
-                string bookIdStr, bookTitle, dueDate, genre;
-                getline(ss, bookIdStr, '|');
-                getline(ss, bookTitle, '|');
-                getline(ss, dueDate, '|');
-                getline(ss, genre);
-                int uid = stoi(userIdStr);
-                int bid = stoi(bookIdStr);
-                if (bh.findActive(uid, bid)) continue;
+            if (filename.length() > 4 && filename.substr(filename.length() - 4) == ".txt") {
+                string userIdStr = filename.substr(0, filename.length() - 4);
+                if (userIdStr.empty()) continue;
 
-                string borrowDate;
-                {
-                    tm t{};
-                    sscanf(dueDate.c_str(), "%d-%d-%d", &t.tm_year, &t.tm_mon, &t.tm_mday);
-                    t.tm_year -= 1900;
-                    t.tm_mon -= 1;
-                    time_t ts = mktime(&t) - (time_t)BORROW_DAYS * 86400;
-                    tm* lt = localtime(&ts);
-                    char buf[11];
-                    strftime(buf, sizeof(buf), "%Y-%m-%d", lt);
-                    borrowDate = string(buf);
+                string fullPath = "data/active/" + filename;
+                ifstream f(fullPath);
+                if (!f.is_open()) continue;
+                string line;
+                while (getline(f, line)) {
+                    if (line.empty()) continue;
+                    istringstream ss(line);
+                    string bookIdStr, bookTitle, dueDate, genre;
+                    getline(ss, bookIdStr, '|');
+                    getline(ss, bookTitle, '|');
+                    getline(ss, dueDate, '|');
+                    getline(ss, genre);
+                    int uid = stoi(userIdStr);
+                    int bid = stoi(bookIdStr);
+                    if (bh.findActive(uid, bid)) continue;
+
+                    string borrowDate;
+                    {
+                        tm t{};
+                        sscanf(dueDate.c_str(), "%d-%d-%d", &t.tm_year, &t.tm_mon, &t.tm_mday);
+                        t.tm_year -= 1900;
+                        t.tm_mon -= 1;
+                        time_t ts = mktime(&t) - (time_t)BORROW_DAYS * 86400;
+                        tm* lt = localtime(&ts);
+                        char buf[11];
+                        strftime(buf, sizeof(buf), "%Y-%m-%d", lt);
+                        borrowDate = string(buf);
+                    }
+
+                    BorrowRecord rec(bh.nextId(), uid, bid, bookTitle, borrowDate);
+                    bh.add(rec);
                 }
-
-                BorrowRecord rec(bh.nextId(), uid, bid, bookTitle, borrowDate);
-                bh.add(rec);
             }
         }
+        closedir(dir);
     }
 
     // ─── Seed default data ────────────────────────────────────────────────
